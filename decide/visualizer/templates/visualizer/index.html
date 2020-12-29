@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load i18n static %}
+{% block extrahead %}
+    <link type="text/css" rel="stylesheet"
+         href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet"
+         href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
+    <link type="text/css" rel="stylesheet" href="{% static "booth/style.css" %}" />
+{% endblock %}
+{% block content %}
+    <div id="app-visualizer">
+        <b-navbar type="dark" variant="secondary">
+            <b-navbar-brand tag="h1">Decide</b-navbar-brand>
+        </b-navbar>
+        {% if object_list %}
+        <div class="voting container">
+            <h2 class="heading">Lista de votaciones:</h2>
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Votación</th>
+                        <th>Fecha de comienzo</th>
+                        <th>Fecha de fin</th>
+                        <th>Enlace para votar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for voting in object_list %}
+                    <tr>
+                        <th>{{voting.name}}</th>
+                        {% if voting.start_date %}
+                            <th>{{voting.start_date}}</th>
+                        {% else %}
+                            <th>La votación aún no ha comenzado</th>
+                        {% endif %}
+                        {% if not voting.end_date %}
+                            <th>La votación sigue en curso</th>
+                            <th>Votar!</th>
+                        {% else %}
+                            <th>{{voting.end_date}}</th>
+                            <th>La votacion ya ha acabado.</th>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div v-else class="voting container">
+            <h2>No hay votaciones.</h2>
+        </div>
+        {% endif %}
+    </div>
+{% endblock %}
+{% block extrabody %}
+    <!-- Vuejs -->
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+
+    <script>
+        var voting = {{voting|safe}};
+        var app = new Vue({
+            delimiters: ['[[', ']]'],
+            el: '#app-visualizer',
+            data: {
+                voting: voting
+            }
+        })
+    </script>
+</body>
+{% endblock %}

@@ -1,9 +1,27 @@
 import json
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView
 from django.conf import settings
 from django.http import Http404
+#----------------------------------
+import django_filters.rest_framework
+from django.conf import settings
+from django.utils import timezone
+from django.shortcuts import get_object_or_404
+from rest_framework import generics, status
+from rest_framework.response import Response
 
+from voting.models import Question, QuestionOption, Voting
+from census.models import Census
+from voting.serializers import SimpleVotingSerializer, VotingSerializer
+from base.perms import UserIsStaff
+from base.models import Auth
+#----------------------------------------------------
 from base import mods
+
+
+class VisualizerList(ListView):
+    template_name = 'visualizer/index.html'
+    model = Voting
 
 
 class VisualizerView(TemplateView):
