@@ -9,9 +9,9 @@
 {% endblock %}
 {% block content %}
     <div id="app-visualizer">
-        <b-navbar type="dark" variant="secondary">
-            <b-navbar-brand tag="h1">Decide</b-navbar-brand>
-        </b-navbar>
+        <nav class="navbar navbar-dark bg-secondary navbar-expand">
+            <h1 class="navbar-brand">Decide</h1>
+        </nav>
         {% if object_list %}
         <div class="voting container">
             <h2 class="heading">Lista de votaciones:</h2>
@@ -27,18 +27,19 @@
                 <tbody>
                     {% for voting in object_list %}
                     <tr>
-                        <th>{{voting.name}}</th>
-                        {% if voting.start_date %}
+                        <th><a href="./{{voting.id}}">{{voting.name}}</a></th>
+                        {% if voting.end_date %}
                             <th>{{voting.start_date}}</th>
-                        {% else %}
-                            <th>La votación aún no ha comenzado</th>
-                        {% endif %}
-                        {% if not voting.end_date %}
-                            <th>La votación sigue en curso</th>
-                            <th>Votar!</th>
-                        {% else %}
                             <th>{{voting.end_date}}</th>
                             <th>La votacion ya ha acabado.</th>
+                        {% elif not voting.start_date%}
+                            <th>La votación aún no ha comenzado</th>
+                            <th>-</th>
+                            <th>Espere a que la votación se abra</th>
+                        {% else %}
+                            <th>{{voting.start_date}}</th>
+                            <th>La votación sigue en curso</th>
+                            <th><a href="/booth/{{voting.id}}" class="btn btn-primary">¡Votar!</a></th>
                         {% endif %}
                     </tr>
                     {% endfor %}
