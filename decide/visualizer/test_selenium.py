@@ -15,8 +15,6 @@ import time
 from voting.models import Voting, Question
 
 from census.models import Census
-
-
 class TestVisualizerIndex(StaticLiveServerTestCase):
     def setUp(self):
         q = Question(desc = "Aquí tiene su pregunta: ")
