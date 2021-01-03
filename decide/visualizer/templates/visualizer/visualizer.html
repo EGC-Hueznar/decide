@@ -7,6 +7,11 @@
     <link type="text/css" rel="stylesheet"
          href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
     <link type="text/css" rel="stylesheet" href="{% static "booth/style.css" %}" />
+    <!-- <script src="{% static "js/Chart.js" %}"></script> -->
+    <script src="{% static 'highcharts-8.2.2/highcharts.js' %}"></script>
+    <script src="{% static 'highcharts-8.2.2/modules/exporting.js' %}"></script>
+    <script src="{% static 'highcharts-8.2.2/modules/export-data.js' %}"></script>
+    <script src="{% static 'highcharts-8.2.2/modules/accessibility.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -17,37 +22,93 @@
         </b-navbar>
 
         <div class="voting container">
-            <h1>[[ voting.id ]] - [[ voting.name ]]</h1>
+            <h1>{{ voting.id }} - {{ voting.name }}</h1>
+            
+            <br>
+            {% if voting.start_date == null %}
+                <h2>Votación no comenzada</h2>
+            {% elif voting.end_date == null %}
+                <h2>Votación en curso</h2>
+            {% else %}
+                <div>
+                    <h2 class="heading">Resultados:</h2>
 
-            <h2 v-if="!voting.start_date">Votación no comenzada</h2>
-            <h2 v-else-if="!voting.end_date">Votación en curso</h2>
-            <div v-else>
-                <h2 class="heading">Resultados:</h2>
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Opción</th>
+                                <th>Puntuación</th>
+                                <th>Votos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for opt in voting.postproc %}
+                                <tr>
+                                    <th><a href="/opcionDetails/{{opt.number}}">{{opt.option}}</a></th>
+                                    <td>{{opt.postproc}}</td>
+                                    <td class="text-muted">{{opt.votes}}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div id="container"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <script type="application/javascript">
+                        Highcharts.chart('container', {
+                            chart: {
+                                type: 'column'
+                            },
+                            title: {
+                                text: 'Comparación de votos entre las opciones'
+                            },
+                            xAxis: {
+                                categories: {{opcion|safe}},
+                                crosshair: true
+                            },
+                            yAxis: {
+                                min: 0,
+                                title: {
+                                    text: 'Número de votos'
+                                }
+                            },
+                            tooltip: {
+                                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                    '<td style="padding:0"><b> {point.y:.if} voto(s)</b></td></tr>',
+                                footerFormat: '</table>',
+                                shared: true,
+                                useHTML: true
+                            },
+                            plotOptions: {
+                                column: {
+                                    pointPadding: 0.2,
+                                    borderWidth: 0
+                                }
+                            },
+                            series: [{
+                                name: 'Votos',
+                                showInLegend: false,
+                                colorByPoint: true,
+                                data: {{voto|safe}}
 
-                <table class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>Opción</th>
-                            <th>Puntuación</th>
-                            <th>Votos</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="opt in voting.postproc" :key="opt.number">
-                            <th>[[opt.option]]</th>
-                            <td>[[opt.postproc]]</td>
-                            <td class="text-muted">[[opt.votes]]</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                            }]
+                        });
+                    </script>
+                </div>
+            {% endif %}
 
         </div>
     </div>
 {% endblock %}
 
 {% block extrabody %}
-    <!-- Vuejs -->
+    <!-- Vuejs 
     <script src="https://unpkg.com/vue"></script>
     <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
     <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
@@ -62,5 +123,7 @@
             }
         })
     </script>
+    -->
+    
 </body>
 {% endblock %}
