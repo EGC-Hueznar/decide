@@ -12,45 +12,60 @@
         <nav class="navbar navbar-dark bg-secondary navbar-expand">
             <h1 class="navbar-brand">Decide</h1>
         </nav>
-        {% if object_list %}
         <div class="voting container">
-            <h2 class="heading">Lista de votaciones:</h2>
+            <br>
+            <div class="contador">
+                <h2>Entre los 3 tipos hay {{cantidad}} votaciones</h2>
+            </div>
+            <br>
+            <h2 class="heading">Tipos de votaciones:</h2>
             <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
-                        <th>Votación</th>
-                        <th>Fecha de comienzo</th>
-                        <th>Fecha de fin</th>
-                        <th>Enlace para votar</th>
+                        <th>Tipo</th>
+                        <th>Próximamente</th>
+                        <th>Pendientes</th>
+                        <th>Acabado</th>
+                        <th>Total</th>
+                        <th>Ver votaciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for voting in object_list %}
                     <tr>
-                        <th><a href="./{{voting.id}}">{{voting.name}}</a></th>
-                        {% if voting.end_date %}
-                            <th>{{voting.start_date}}</th>
-                            <th>{{voting.end_date}}</th>
-                            <th>La votacion ya ha acabado.</th>
-                        {% elif not voting.start_date%}
-                            <th>La votación aún no ha comenzado</th>
-                            <th>-</th>
-                            <th>Espere a que la votación se abra</th>
-                        {% else %}
-                            <th>{{voting.start_date}}</th>
-                            <th>La votación sigue en curso</th>
-                            <th><a href="/booth/{{voting.id}}" class="btn btn-primary">¡Votar!</a></th>
-                        {% endif %}
+                        <th>Ver votaciones del tipo normal</th>
+                        <th>{{cantNProx}}</th>
+                        <th>{{cantNPend}}</th>
+                        <th>{{cantNFin}}</th>
+                        <th>{{cantNorm}}</th>
+                        <th><a href="./{{'normal'}}/" class="btn btn-primary">Ver</a></th>
                     </tr>
-                    {% endfor %}
+                    <tr>
+                        <th>Ver votaciones del tipo por preferencia</th>
+                        <th>{{cantPProx}}</th>
+                        <th>{{cantPPend}}</th>
+                        <th>{{cantPFin}}</th>
+                        <th>{{cantPref}}</th>
+                        <th><a href="./{{'preferencia'}}/" class="btn btn-primary">Ver</a></th>
+                    </tr>
+                    <tr>
+                        <th>Ver votaciones del tipo múltiple</th>
+                        <th>{{cantMProx}}</th>
+                        <th>{{cantMPend}}</th>
+                        <th>{{cantMFin}}</th>
+                        <th>{{cantMult}}</th>
+                        <th><a href="./{{'multiple'}}/" class="btn btn-primary">Ver</a></th>
+                    </tr>
+                    <tr>
+                        <th>Ver votaciones del tipo binaria</th>
+                        <th>{{cantBProx}}</th>
+                        <th>{{cantBPend}}</th>
+                        <th>{{cantBFin}}</th>
+                        <th>{{cantBin}}</th>
+                        <th><a href="./{{'binaria'}}/" class="btn btn-primary">Ver</a></th>
+                    </tr>
                 </tbody>
             </table>
         </div>
-        {% else %}
-        <div v-else class="voting container">
-            <h2>No hay votaciones.</h2>
-        </div>
-        {% endif %}
     </div>
 {% endblock %}
 {% block extrabody %}
