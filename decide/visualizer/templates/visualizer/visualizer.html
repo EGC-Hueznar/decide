@@ -51,7 +51,7 @@
                             {% endfor %}
                         </tbody>
                     </table>
-                    
+                    <a href="telegram_report">Compartir votación en Telegram</a>
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-lg-12">
@@ -71,12 +71,11 @@
             {% endif %}
 
         </div>
-        <a href="telegram_report">Compartir votación en Telegram</button>
     </div>
 {% endblock %}
 
 {% block extrabody %}
-    <!-- Vuejs 
+    <!-- Vuejs -->
     <script src="https://unpkg.com/vue"></script>
     <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
     <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
@@ -91,7 +90,6 @@
             }
         })
     </script>
-    -->
     <script type="application/javascript">
         Highcharts.chart('container', {
             chart: {
