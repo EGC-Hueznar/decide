@@ -16,10 +16,10 @@ class VisualizerVotesTestCase(BaseTestCase):
         self.v1.save()
         self.v2.save()
         self.v3.save()
-        self.user = User(username='Daniel', is_staff=True)
+        self.user = User(id=1, username='Daniel', is_staff=True)
         self.user.set_password('1234')
         self.user.save()
-        self.c = Census(id=1, voting_id=1, voter_id = self.user.id)
+        self.c = Census(id=1, voting_id=1, voter_id = 1)
         self.c.save()
         super().setUp()
     def tearDown(self):
@@ -39,3 +39,9 @@ class VisualizerVotesTestCase(BaseTestCase):
         self.assertEqual(response.status_code,200)
         v = Voting.objects.get(name = "¿Te gusta EGC?")
         self.assertEqual(v.desc, "Para saber si te gusta EGC")
+    def test_visualizer_voting_no_exits(self):
+        self.login()
+        response = self.client.get('/visualizer/{}'.format(104), follow=True)
+        self.assertEqual(response.status_code,404)
+        v = Voting.objects.get(name = "¿Te gusta EGC?")
+        self.assertNotEqual(v.desc, "Para saber si te gusta PGPI")
