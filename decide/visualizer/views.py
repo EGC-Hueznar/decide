@@ -27,8 +27,8 @@ def telegram_report(self, **kwargs):
     voting_id = kwargs.get('voting_id', 0)
     r = mods.get('voting', params={'id': voting_id})
     voting = r[0]
-    
-    send_telegram_report(voting)
+
+    send_telegram_report_json(voting)
 
     return redirect('/visualizer/'+str(voting_id)+'/')
 

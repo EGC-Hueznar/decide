@@ -1,6 +1,8 @@
 import telegram
 from django.test import TestCase
 from base.tests import BaseTestCase
+from voting.tests import *
+from visualizer.telegrambot import *
 
 # Create your tests here.
 class VisualizerTestCase(BaseTestCase):
@@ -28,4 +30,10 @@ class VisualizerTestCase(BaseTestCase):
         bot = self.create_bot()
         id = -1001318632551
         message = bot.send_message(id,"Test de envío de mensaje de texto")
+        self.assertEqual(message.chat.title,"Actualizaciones Decide Huéznar")
+
+    # Test de envío de reporte de una votación a Telegram
+    def test_send_telegram_report(self):
+        v = VotingTestCase.create_voting(self)
+        message = send_telegram_report(v)
         self.assertEqual(message.chat.title,"Actualizaciones Decide Huéznar")
