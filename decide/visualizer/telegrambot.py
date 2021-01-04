@@ -59,11 +59,11 @@ def send_telegram_report(voting):
     status = "Votación no comenzada"
     if voting_start is not None:     
         if voting_end is None:
-            a = voting_start.split("T")[0].split("-")
+            a = str(voting_start).split(" ")[0].split("-")
             start_date=a[2] + " del " + a[1] + " de " + a[0]
             status = "Votación en Curso. Comenzada el " + start_date
         else:
-            a = voting_end.split("T")[0].split("-")
+            a = str(voting_end).split(" ")[0].split("-")
             end_date=a[2] + " del " + a[1] + " de " + a[0]
             status = "Votación Finalizada el " + end_date
 
@@ -78,7 +78,7 @@ def send_telegram_report(voting):
         text += "Pregunta: " + str(voting_q) + "\n"
         for option in options:
             text += "Opción " + str(option.number) + " - " + option.option+ "\n"
-        # text += "\nEsperando el resultado del recuento"
+        text += "\nEsperando el resultado del recuento"
     else:
         text += "Pregunta: " + str(voting_q) + "\n"
         for option in post:
