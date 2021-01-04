@@ -2,13 +2,10 @@ import json
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.http import Http404
-<<<<<<< HEAD
 from django.shortcuts import redirect
-=======
 from django.shortcuts import get_object_or_404
 from voting.models import Voting
 import random
->>>>>>> vi/develop
 
 from base import mods
 import telegram
