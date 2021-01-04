@@ -1,4 +1,4 @@
-#!/home/usuario/decide/egc/bin/python3.8
+#!/home/pepe-egc/decide/egc/bin/python3
 from django.core import management
 
 if __name__ == "__main__":
