@@ -1,6 +1,7 @@
 import React from 'react';
 import Barra from './components/Barra';
 import Login from './components/Login';
+import Admin from './components/Admin';
 import Voting from './components/Voting';
 import {StatusBar, FlatList, Text, TouchableOpacity, View, Button, Alert, SafeAreaView} from 'react-native';
 import axios from 'axios';
@@ -128,7 +129,7 @@ class App extends React.Component {
                                 {this.state.signup ? 
                                     <Login setUser={this.setUser} setToken={this.setToken} setSignup={this.setSignup} token={this.state.token} handleSetStorage={this.handleSetStorage}/>
                                     : 
-                                    (!this.state.selectedVoting ? 
+                                    (this.state.user.is_staff ? (<Admin votings={this.state.votings}/>) : (!this.state.selectedVoting ?
                                         <View>
                                             <View View style={styles.html}>
                                                 <View View style={styles.body}>
@@ -156,7 +157,7 @@ class App extends React.Component {
                                             </View>
                                         </View> :
                                         <Voting setDone={this.setDone} voting={this.state.selectedVoting} user={this.state.user} token={this.state.token} resetSelected={() => this.setSelectedVoting(undefined)}/> )
-                                }
+                                )}
   
             </View>);
     }
