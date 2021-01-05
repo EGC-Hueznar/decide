@@ -34,7 +34,7 @@ matrix:
         - cd decide/booth/decide-react
       install:
         - npm install
-        - cd
+        - cd .. && cd .. && cd ..
       script:
         - npm test
 
