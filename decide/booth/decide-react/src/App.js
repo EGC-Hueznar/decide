@@ -8,6 +8,7 @@ import config from './config.json';
 import { postData } from './utils';
 import AsyncStorage from '@react-native-community/async-storage'
 import { StyleSheet} from "react-native";
+import * as JSONbig from "json-bigint";
 
 
 class App extends React.Component {
@@ -85,7 +86,9 @@ class App extends React.Component {
 
     loadVotings = () => {
         this.setDone(false)
-        axios.get(config.VOTING_URL).then(response => {
+        axios.get(config.VOTING_URL, {
+            transformResponse: res => JSONbig.parse(res)
+        }).then(response => {
             this.setState({votings: response.data});
         });
 
