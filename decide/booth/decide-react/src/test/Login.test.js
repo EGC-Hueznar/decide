@@ -1,7 +1,13 @@
 import React from 'react';
-import { shallow, configure } from 'enzyme';
+import { shallow, configure, mount } from 'enzyme';
 import Login from '../components/Login';
 import Adapter from 'enzyme-adapter-react-16';
+import config from '../config.json';
+import * as myFile from '../utils';
+import 'jsdom-global/register';
+import { onSubmitLogin } from '../components/Login';
+jest.useFakeTimers()
+
 
 describe('Test case for testing login',() => {
 
@@ -25,4 +31,14 @@ describe('Test case for testing login',() => {
         expect(wrapper.state('form').password).toEqual('decidehueznar');
     })
 
+    it('handleChange check',() => {
+        const wrapper = shallow(<Login />)
+
+        const instance = wrapper.instance();
+        expect(wrapper.state('form').username).toBe('');
+        instance.handleChange('username','user');
+        expect(wrapper.state('form').username).toBe('user');
+   })
+
+   
 })
