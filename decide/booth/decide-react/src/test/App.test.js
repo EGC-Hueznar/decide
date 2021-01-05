@@ -156,3 +156,13 @@ describe('Testing App methods',() => {
 
     });
 })
+
+describe('Testing App style',() => {
+    
+    it('Correct "Votaciones disponibles" text style', async () => {
+        wrapper = mount(<App/>);
+        wrapperText = wrapper.find(Text).at(1).get(0)
+        expect(wrapperText.props.style).toHaveProperty('fontSize', 24);
+    });
+
+})
