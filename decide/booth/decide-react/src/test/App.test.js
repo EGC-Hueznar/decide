@@ -160,12 +160,19 @@ describe('Testing App methods',() => {
         const wrapper = shallow(<App />)
 
         const instance = wrapper.instance();
-        expect(wrapper.state('selectedVoting')).toBe(undefined)
-        instance.setSelectedVoting('qwerty')
-        expect(wrapper.state('selectedVoting')).toBe('qwerty')
+        expect(wrapper.state('selectedVoting')).toBe(undefined);
+        instance.setSelectedVoting('qwerty');
+        expect(wrapper.state('selectedVoting')).toBe('qwerty');
     });
 
-    
+    it('Correct setDone', () => {
+        const wrapper = shallow(<App />);
+
+        const instance = wrapper.instance();
+        expect(wrapper.state('done')).toBe(false);
+        instance.setDone(true);
+        expect(wrapper.state('done')).toBe(true);
+    });
 
 })
 
