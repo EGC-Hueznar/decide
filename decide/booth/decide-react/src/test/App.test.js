@@ -5,7 +5,7 @@ import Adapter from 'enzyme-adapter-react-16';
 import AsyncStorage from '@react-native-community/async-storage'
 import 'jsdom-global/register';
 import Login from '../components/Login';
-import { Alert, Button, Text, TextInput, View } from 'react-native';
+import { Alert, Button, FlatList, Text, TextInput, View } from 'react-native';
 import Barra from '../components/Barra';
 
 describe('Testing App component',() => {
@@ -161,8 +161,13 @@ describe('Testing App style',() => {
     
     it('Correct "Votaciones disponibles" text style', async () => {
         wrapper = mount(<App/>);
-        wrapperText = wrapper.find(Text).at(1).get(0)
+        wrapperText = wrapper.find(Text).at(1).get(0);
         expect(wrapperText.props.style).toHaveProperty('fontSize', 24);
     });
 
+    it('Correct Button style', async () => {
+        wrapper = mount(<App/>);
+        wrapperButton = wrapper.find(Button);
+        expect(wrapperButton.prop('color')).toBe('linear-gradient(top, #049cdb, #0064cd)');
+    });
 })
