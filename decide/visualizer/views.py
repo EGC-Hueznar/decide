@@ -76,5 +76,11 @@ def telegram_report(self, **kwargs):
 
     return redirect('/visualizer/'+str(voting_id)+'/')
 
+def twitter_report(self, **kwargs):
+    voting_id = kwargs.get('voting_id', 0)
+    r = mods.get('voting', params={'id': voting_id})
+    voting = r[0]
 
-   
+    send_twitter_report_json(voting)
+
+    return redirect('/visualizer/'+str(voting_id)+'/')
