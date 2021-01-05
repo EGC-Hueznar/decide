@@ -27,17 +27,17 @@
                 <tbody>
                     {% for voting in lista %}
                     <tr>
-                        <th><a href="./{{voting.id}}">{{voting.name}}</a></th>
-                        {% if voting.end_date %}
-                            <th>{{voting.start_date}}</th>
-                            <th>{{voting.end_date}}</th>
+                        <th><a href="./{{voting.id}}">{{voting.titulo}}</a></th>
+                        {% if voting.fecha_fin %}
+                            <th>{{voting.fecha_inicio}}</th>
+                            <th>{{voting.fecha_fin}}</th>
                             <th>La votacion ya ha acabado.</th>
-                        {% elif not voting.start_date%}
+                        {% elif not voting.fecha_inicio%}
                             <th>La votación aún no ha comenzado</th>
                             <th>-</th>
                             <th>Espere a que la votación se abra</th>
                         {% else %}
-                            <th>{{voting.start_date}}</th>
+                            <th>{{voting.fecha_inicio}}</th>
                             <th>La votación sigue en curso</th>
                             <th><a href="/booth/{{voting.id}}" class="btn btn-primary">¡Votar!</a></th>
                         {% endif %}

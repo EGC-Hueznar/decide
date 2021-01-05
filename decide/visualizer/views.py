@@ -2,7 +2,7 @@ import json
 from django.views.generic import TemplateView, ListView
 from django.conf import settings
 from django.http import Http404
-from voting.models import Voting#, VotacionBinaria, Votacion, VotacionMultiple, VotacionPreferencia
+from voting.models import Voting, VotacionBinaria, Votacion, VotacionMultiple, VotacionPreferencia
 from base import mods
 from django.shortcuts import render
 
@@ -10,25 +10,32 @@ class VisualizerIndex(TemplateView):
     template_name = 'visualizer/index.html'
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['cantNorm'] = Voting.objects.count()#Votacion.objects.count()
-        context['cantNProx'] = Voting.objects.filter(start_date__isnull=True).count()#Votacion.objects.filter(start_date__isnull=True).count()
-        context['cantNFin'] = Voting.objects.filter(end_date__isnull=False).count()#Votacion.objects.filter(end_date__isnull=False).count()
+        context['cantNorm'] = Votacion.objects.count()
+        context['cantNProx'] = Votacion.objects.filter(fecha_inicio__isnull=True).count()
+        context['cantNFin'] = Votacion.objects.filter(fecha_fin__isnull=False).count()
         context['cantNPend'] = context['cantNorm'] - context['cantNProx'] - context['cantNFin']
 
-        context['cantPref'] = Voting.objects.count()#VotacionPreferencia.objects.count()
-        context['cantPProx'] = Voting.objects.filter(start_date__isnull=True).count()#VotacionPreferencia.objects.filter(start_date__isnull=True).count()
-        context['cantPFin'] = Voting.objects.filter(end_date__isnull=False).count()#VotacionPreferencia.objects.filter(end_date__isnull=False).count()
+        context['cantPref'] = VotacionPreferencia.objects.count()
+        context['cantPProx'] = VotacionPreferencia.objects.filter(fecha_inicio__isnull=True).count()
+        context['cantPFin'] = VotacionPreferencia.objects.filter(fecha_fin__isnull=False).count()
         context['cantPPend'] = context['cantPref']  - context['cantPProx'] - context['cantPFin']
 
-        context['cantMult'] = Voting.objects.count()#VotacionMultiple.objects.count()
-        context['cantMProx'] = Voting.objects.filter(start_date__isnull=True).count()#VotacionMultiple.objects.filter(start_date__isnull=True).count()
-        context['cantMFin'] = Voting.objects.filter(end_date__isnull=False).count()#VotacionMultiple.objects.filter(end_date__isnull=False).count()
+        context['cantMult'] = VotacionMultiple.objects.count()
+        context['cantMProx'] = VotacionMultiple.objects.filter(fecha_inicio__isnull=True).count()
+        context['cantMFin'] = VotacionMultiple.objects.filter(fecha_fin__isnull=False).count()
         context['cantMPend'] = context['cantMult'] - context['cantMProx'] - context['cantMFin']
 
-        context['cantBin'] = Voting.objects.count()#VotacionBinaria.objects.count()
-        context['cantBProx'] = Voting.objects.filter(start_date__isnull=True).count()#VotacionBinaria.objects.filter(start_date__isnull=True).count()
-        context['cantBFin'] = Voting.objects.filter(end_date__isnull=False).count()#VotacionBinaria.objects.filter(end_date__isnull=False).count()
+        context['cantBin'] = VotacionBinaria.objects.count()
+        context['cantBProx'] = VotacionBinaria.objects.filter(fecha_inicio__isnull=True).count()
+        context['cantBFin'] = VotacionBinaria.objects.filter(fecha_fin__isnull=False).count()
         context['cantBPend'] = context['cantBin'] - context['cantBProx'] - context['cantBFin']
+
+        context['cantidad'] = Voting.objects.count()
+        context['cantProx'] = Voting.objects.filter(start_date__isnull=True).count()
+        context['cantFin'] = Voting.objects.filter(end_date__isnull=False).count()
+        context['cantPend'] = context['cantidad'] - context['cantProx'] - context['cantFin']
+
+        context["total"] = context["cantBin"] + context["cantPref"] + context["cantMult"] + context["cantNorm"]
         return context
 
 class VisualizerVotingList(TemplateView):
@@ -38,17 +45,19 @@ class VisualizerVotingList(TemplateView):
         context = super().get_context_data(**kwargs)
         if(tipo == 'normal'):
             context['tipov'] = 'normal'
-            context['lista'] = Voting.objects.all() #Votacion.objects.all()
+            context['lista'] = Votacion.objects.all()
         elif(tipo == 'multiple'):
             context['tipov'] = 'lista'
-            context['lista'] = Voting.objects.all() #VotacionMultiple.objects.all()
+            context['lista'] = VotacionMultiple.objects.all()
         elif(tipo == 'preferencia'):
             context['tipov'] = 'preferencia'
-            context['lista'] = Voting.objects.all() #VotacionPreferencia.objects.all()
+            context['lista'] = VotacionPreferencia.objects.all()
         elif(tipo == 'binaria'):
             context['tipov'] = 'binaria'
-            context['lista'] = Voting.objects.all() #VotacionBinaria.objects.all()
+            context['lista'] = VotacionBinaria.objects.all()
         else:
+            context['tipov'] = 'default'
+            context['lista'] = Voting.objects.all()
             raise Http404
         return context
 

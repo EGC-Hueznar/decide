@@ -15,7 +15,7 @@
         <div class="voting container">
             <br>
             <div class="contador">
-                <h2>Entre los 3 tipos hay {{cantidad}} votaciones</h2>
+                <h2>Entre los 4 tipos hay {{total}} votaciones</h2>
             </div>
             <br>
             <h2 class="heading">Tipos de votaciones:</h2>
@@ -61,6 +61,14 @@
                         <th>{{cantBPend}}</th>
                         <th>{{cantBFin}}</th>
                         <th>{{cantBin}}</th>
+                        <th><a href="./{{'binaria'}}/" class="btn btn-primary">Ver</a></th>
+                    </tr>
+                    <tr>
+                        <th>Ver votaciones del tipo default</th>
+                        <th>{{cantProx}}</th>
+                        <th>{{cantPend}}</th>
+                        <th>{{cantFin}}</th>
+                        <th>{{cantidad}}</th>
                         <th><a href="./{{'binaria'}}/" class="btn btn-primary">Ver</a></th>
                     </tr>
                 </tbody>
