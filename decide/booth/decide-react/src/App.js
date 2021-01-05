@@ -64,9 +64,16 @@ class App extends React.Component {
             });
     }
 
-    setUser = (user2) => {
-        this.setState({user:user2});
-        this.loadVotings();
+    setUser = (user) => {
+        const oldUserValue = this.state.user;
+        this.setState({user});
+        
+        // Actualizar votings
+        if (user && oldUserValue !== user) {
+            this.loadVotings();
+        } else if (!user) {
+            this.setState({votings: []})
+        }
     }
 
     setToken = (token2) =>  {
