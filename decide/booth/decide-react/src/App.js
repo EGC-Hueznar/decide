@@ -66,6 +66,7 @@ class App extends React.Component {
 
     setUser = (user2) => {
         this.setState({user:user2});
+        this.loadVotings();
     }
 
     setToken = (token2) =>  {
@@ -86,7 +87,7 @@ class App extends React.Component {
 
     loadVotings = () => {
         this.setDone(false)
-        axios.get('http://localhost:8000/gateway/census/votings/1').then(response => {
+        axios.get(`${config.CENSUS_VOTINGS_URL}${this.state.user.id}`).then(response => {
             const votings = response.data.votings;
             
             axios.get(config.VOTING_URL, {
@@ -102,7 +103,6 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        this.loadVotings();   
         this.init();
         this.render();
     }

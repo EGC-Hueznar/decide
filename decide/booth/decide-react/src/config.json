@@ -5,5 +5,6 @@
     "LOGOUT_URL": "http://localhost:8000/authentication/logout/",
     "STORE_URL": "http://localhost:8000/store/",
     "VOTING_URL": "http://localhost:8000/voting/",
+    "CENSUS_VOTINGS_URL": "http://localhost:8000/census/votings/",
     "KEYBITS": 256
 }
