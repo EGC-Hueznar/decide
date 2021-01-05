@@ -114,5 +114,27 @@ describe('Testing Voting component',() => {
 
         expect(wrapper.state().error).not.toBe(false);
     });
+
+    it('Store vote without selecting option', async () => {   
+        wrapper = mount(<Voting voting={correctVoting} user={user} setDone={setDone} resetSelected={resetSelected} />);
+        const submitButton = wrapper.find(Button).first();
+        submitButton.props().onPress();
+
+        expect(wrapper.state().noSelection).toBe(true);
+    });
+
+    it('Store valid vote', async () => {      
+        wrapper = mount(<Voting voting={correctVoting} user={user} setDone={setDone} resetSelected={resetSelected} />);
+        const radioButtons = wrapper.find(RadioButton);
+        const submitButton = wrapper.find(Button).first();
+        
+        const opt1 = radioButtons.at(0).props();
+        opt1.onPress(opt1.obj.value);
+        submitButton.simulate("click")
+    
+        await new Promise(r => setTimeout(r, 250));
+
+        expect(wrapper.state().error).toBe(false);
+    });
 })
 
