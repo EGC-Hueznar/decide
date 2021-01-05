@@ -43,6 +43,11 @@ const voting = {
 const correctVoting = {...voting, id:1}
 const nonExistentVoting = {...voting, id:2}
 const closedVoting = {...voting, id:3}
+const user = {
+    id: 1
+};
+const setDone = () => {};
+const resetSelected = () => {}
 
 const mockAxios =  new MockAdapter(axios);
 mockAxios.onPost(config.STORE_URL).reply(config => {
@@ -65,7 +70,18 @@ describe('Testing Voting component',() => {
     let wrapper;
     configure({adapter: new Adapter()});
 
-    it('Init', () => {
+    it('Render voting component', () => {
+        wrapper = mount(<Voting voting={correctVoting} user={user} setDone={setDone} resetSelected={resetSelected} />);
+        const wrapperVoting = wrapper.find(Voting);
+
+        expect(wrapperVoting).toHaveLength(1);
+    });
+
+    it('Render questions', async () => {
+        wrapper = mount(<Voting voting={correctVoting} user={user} setDone={setDone} resetSelected={resetSelected} />);
+        const radioButtons = wrapper.find(RadioButton);
+        
+        expect(radioButtons).toHaveLength(3);
     });
 
 })
