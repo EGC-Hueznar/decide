@@ -84,5 +84,21 @@ describe('Testing Voting component',() => {
         expect(radioButtons).toHaveLength(3);
     });
 
+    it('Correct change question select state', () => {
+        wrapper = mount(<Voting voting={correctVoting} user={user} setDone={setDone} resetSelected={resetSelected} />);
+        const radioButtons = wrapper.find(RadioButton);
+
+        const opt1 = radioButtons.at(0).props();
+        opt1.onPress(opt1.obj.value);
+        expect(wrapper.state().selected).toBe(voting.question.options[0].number);
+
+        const opt2 = radioButtons.at(1).props();
+        opt2.onPress(opt2.obj.value);
+        expect(wrapper.state().selected).toBe(voting.question.options[1].number);
+
+        const opt3 = radioButtons.at(2).props();
+        opt3.onPress(opt3.obj.value);
+        expect(wrapper.state().selected).toBe(voting.question.options[2].number);
+    });
 })
 
