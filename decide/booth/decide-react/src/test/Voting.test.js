@@ -136,5 +136,21 @@ describe('Testing Voting component',() => {
 
         expect(wrapper.state().error).toBe(false);
     });
+
+    it('Store vote of closed voting', async () => {     
+        wrapper = mount(<Voting voting={closedVoting} user={user} setDone={setDone} resetSelected={resetSelected} />);
+        const radioButtons = wrapper.find(RadioButton);
+        const submitButton = wrapper.find(Button).first();
+        
+        const opt1 = radioButtons.at(0).props();
+        opt1.onPress(opt1.obj.value);
+        submitButton.simulate("click")
+    
+        await new Promise(r => setTimeout(r, 250));
+
+        expect(wrapper.state().error).not.toBe(false);
+    });
+
+
 })
 
