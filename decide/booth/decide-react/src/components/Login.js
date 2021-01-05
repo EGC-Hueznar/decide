@@ -77,6 +77,11 @@ export default class Login extends Component {
                                             <View>
                                                 <TextInput id='password' name="password" hint="password" style={styles.input} secureTextEntry={true} onChangeText={(val) => this.handleChange('password', val)} placeholder="Introduce tu contraseña"></TextInput>
                                             </View>
+                                            {this.state.error && <View style={{paddingTop:10, paddingBottom:7}}>
+                                                <Text style={{fontWeight: 'bold', color:'rgb(192,26,26)', fontFamily: 'calibri', fontSize:'15px', textAlign:'center'}}>
+                                                El usuario introducido no existe
+                                                </Text>
+                                            </View>}
                                         </View>
                                         <View style={styles.btnprimary}>
                                             <Button id='button' color="linear-gradient(top, #049cdb, #0064cd)" onPress={this.onSubmitLogin} title="Login" />
@@ -87,9 +92,6 @@ export default class Login extends Component {
                         </View>
                     </View>
                 </View>
-                {this.state.error && <View style={{paddingTop:10, paddingBottom:7}}>
-                <Text style={{fontWeight: 'bold', color:'rgb(192,26,26)', fontFamily: 'calibri', fontSize:'15px'}}>El usuario introducido no existe</Text>
-                </View>}
             </View>
         );
     }
