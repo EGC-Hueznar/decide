@@ -48,9 +48,10 @@ def send_telegram_report_json(voting):
 # Selector de tipos de votación   
 def send_telegram_report(voting):
     if isinstance(voting,VotacionBinaria):
-        send_telegram_report_binary(voting)
+        message = send_telegram_report_binary(voting)
     elif isinstance(voting,Voting):
-        send_telegram_report_voting(voting)
+        message = send_telegram_report_voting(voting)
+    return message
 # Envío de reporte desde un objeto voting
 def send_telegram_report_voting(voting):
         voting_id = voting.id
