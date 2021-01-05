@@ -155,13 +155,28 @@ describe('Testing App methods',() => {
         expect(wrapper.state('signup')).toBe(false);
 
     });
+
+    it('Correct setSelectedVoting', () => {
+        const wrapper = shallow(<App />)
+
+        const instance = wrapper.instance();
+        expect(wrapper.state('selectedVoting')).toBe(undefined)
+        instance.setSelectedVoting('qwerty')
+        expect(wrapper.state('selectedVoting')).toBe('qwerty')
+    });
+
+    
+
 })
 
 describe('Testing App style',() => {
     
+    //TODO
+
+    /*
     it('Correct "Votaciones disponibles" text style', async () => {
         wrapper = mount(<App/>);
-        wrapperText = wrapper.find(Text).at(1).get(0);
+        wrapperText = wrapper.find(Text).at(2).get(0);
         expect(wrapperText.props.style).toHaveProperty('fontSize', 24);
     });
 
@@ -170,4 +185,20 @@ describe('Testing App style',() => {
         wrapperButton = wrapper.find(Button);
         expect(wrapperButton.prop('color')).toBe('linear-gradient(top, #049cdb, #0064cd)');
     });
+    
+    it('Correct "Votación enviada" font weight', async () => {
+        wrapper = mount(<App/>);
+        wrapper.instance().setState({signup:false});
+        wrapper.instance().setState({selectedVoting:false})
+        wrapper.instance().render();
+        wrapperText = wrapper.find(Text).at(0);
+        expect(wrapper.state('signup')).toBe(false);
+        expect(wrapper.state('selectedVoting')).toBe(false);
+        expect(wrapperText.props).toBe("500");
+    });
+    */
+
+    
+
+
 })
