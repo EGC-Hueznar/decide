@@ -32,8 +32,21 @@ class VisualizerTestCase(BaseTestCase):
         message = bot.send_message(id,"Test de envío de mensaje de texto")
         self.assertEqual(message.chat.title,"Actualizaciones Decide Huéznar")
 
-    # Test de envío de reporte de una votación a Telegram
+    # Test de envío de reporte de una votación tipo voting a Telegram
     def test_send_telegram_report(self):
         v = VotingTestCase.create_voting(self)
         message = send_telegram_report(v)
         self.assertEqual(message.chat.title,"Actualizaciones Decide Huéznar")
+
+    class GuardaVotacionBinariaTest(BaseTestCase):
+    def setUp(self):
+        vb = VotacionBinaria(titulo="titulo 1",descripcion="Descripcion 1")
+        vb.save()
+        super().setUp()
+    def tearDown(self):
+        super().tearDown()
+        self.vb=None
+    def testExist(self):
+        vb = VotacionBinaria.objects.get(titulo="titulo 1")
+        self.assertEquals(vb.titulo,"titulo 1")
+        self.assertEquals(vb.descripcion,"Descripcion 1")
