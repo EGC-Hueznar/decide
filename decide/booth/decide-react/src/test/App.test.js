@@ -145,4 +145,14 @@ describe('Testing App methods',() => {
         expect(wrapper.state('token')).toBe('AjhdjahDahdjahdajAj');
 
     });
+
+    it('Correct setSignup',() => {
+        const wrapper = shallow(<App />)
+
+        const instance = wrapper.instance();
+        expect(wrapper.state('signup')).toBe(true);
+        instance.setSignup(false);
+        expect(wrapper.state('signup')).toBe(false);
+
+    });
 })
