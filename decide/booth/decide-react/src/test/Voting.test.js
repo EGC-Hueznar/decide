@@ -100,5 +100,19 @@ describe('Testing Voting component',() => {
         opt3.onPress(opt3.obj.value);
         expect(wrapper.state().selected).toBe(voting.question.options[2].number);
     });
+
+    it('Store vote for non-existent voting', async () => {
+        wrapper = mount(<Voting voting={nonExistentVoting} user={user} setDone={setDone} resetSelected={resetSelected} />);
+        const radioButtons = wrapper.find(RadioButton);
+        const submitButton = wrapper.find(Button).first();
+        
+        const opt1 = radioButtons.at(0).props();
+        opt1.onPress(opt1.obj.value);
+        submitButton.simulate("click")
+    
+        await new Promise(r => setTimeout(r, 250)); 
+
+        expect(wrapper.state().error).not.toBe(false);
+    });
 })
 
