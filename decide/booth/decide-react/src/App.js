@@ -86,10 +86,17 @@ class App extends React.Component {
 
     loadVotings = () => {
         this.setDone(false)
-        axios.get(config.VOTING_URL, {
-            transformResponse: res => JSONbig.parse(res)
-        }).then(response => {
-            this.setState({votings: response.data});
+        axios.get('http://localhost:8000/gateway/census/votings/1').then(response => {
+            const votings = response.data.votings;
+            
+            axios.get(config.VOTING_URL, {
+              transformResponse: res => JSONbig.parse(res)
+            }).then(response => { 
+                this.setState({votings: response.data.filter(v => votings.includes(v.id) 
+                    && v.start_date 
+                    && Date.parse(v.start_date) < Date.now() 
+                    && !v.end_date)});
+            });
         });
 
     }
