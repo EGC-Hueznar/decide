@@ -114,8 +114,8 @@ def send_telegram_report_binary(v):
     text += "Votación: " + str(voting_id) + " - " + voting_title +"\n"
     # text += "Estado: " + status + "\n"
     text += "Descripción: " + str(voting_desc) + "\n\n"
-    text += "Nº de respuestas Sí: " +str(VotacionBinaria.Numero_De_Trues(v))
-    text += "Nº de respuestas No: " +str(VotacionBinaria.Numero_De_Falses(v))
+    text += "Nº de respuestas Sí: " +str(VotacionBinaria.Numero_De_Trues(v)) + "\n"
+    text += "Nº de respuestas No: " +str(VotacionBinaria.Numero_De_Falses(v)) + "\n"
     bot_token = '1415070510:AAE49OJPu4viYNo5Tfov4vzkoIyeNf_JBr4'
     bot = telegram.Bot(bot_token)
     id = -1001318632551

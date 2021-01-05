@@ -38,15 +38,37 @@ class VisualizerTestCase(BaseTestCase):
         message = send_telegram_report(v)
         self.assertEqual(message.chat.title,"Actualizaciones Decide Huéznar")
 
-    class GuardaVotacionBinariaTest(BaseTestCase):
+
+# Tests envíos de reporte Votación Binaria
+class SendTelegramVotacionBinariaTest(BaseTestCase):
     def setUp(self):
-        vb = VotacionBinaria(titulo="titulo 1",descripcion="Descripcion 1")
-        vb.save()
+        v = VotacionBinaria(titulo="Votación Binaria Test 1",descripcion="Descripcion 1")
+        v.save()
+        v2 = VotacionBinaria(titulo="Votación Binaria Test 2", descripcion="Descripcion 2")
+        v2.save()
+        r1  = RespuestaBinaria(respuesta = 1)
+        r2 = RespuestaBinaria(respuesta = 1)
+        r3 = RespuestaBinaria(respuesta = 0)
+        v2.addRespuestaBinaria(r1)
+        v2.addRespuestaBinaria(r2)
+        v2.addRespuestaBinaria(r3)
         super().setUp()
+
     def tearDown(self):
         super().tearDown()
-        self.vb=None
-    def testExist(self):
-        vb = VotacionBinaria.objects.get(titulo="titulo 1")
-        self.assertEquals(vb.titulo,"titulo 1")
-        self.assertEquals(vb.descripcion,"Descripcion 1")
+        self.v=None
+        self.v2=None
+        self.r1=None
+        self.r2=None
+        self.r3=None
+    # Test Votación Binaria Simple
+    def test_send_telegram_report_b(self):
+        v = VotacionBinaria.objects.get(titulo="Votación Binaria Test 1")
+        message = send_telegram_report_binary(v)
+        self.assertEqual(message.chat.title,"Actualizaciones Decide Huéznar")
+
+    # Test Votación Binaria con Respuestas
+    def test_send_telegram_report_br(self):
+        v = VotacionBinaria.objects.get(titulo="Votación Binaria Test 2")
+        message = send_telegram_report_binary(v)
+        self.assertEqual(message.chat.title,"Actualizaciones Decide Huéznar")
