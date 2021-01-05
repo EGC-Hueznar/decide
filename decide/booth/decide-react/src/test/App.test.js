@@ -122,6 +122,17 @@ describe('Testing App component',() => {
         expect(wrapperLogin.state('error')).toBe(false);
         expect(wrapper.state('user')).toBeDefined();
     });
+})
 
+describe('Testing App methods',() => {
 
+    it('Correct setUser',() => {
+        const wrapper = shallow(<App />)
+
+        const instance = wrapper.instance();
+        expect(wrapper.state('user')).toBe(undefined);
+        instance.setUser('test');
+        expect(wrapper.state('user')).toBe('test');
+
+    });
 })
