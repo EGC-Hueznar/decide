@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { BigInt } from '../crypto/BigInt';
 import { ElGamal } from '../crypto/ElGamal';
-import { Alert, Button, Text, View } from 'react-native';
+import { Button, Text, View } from 'react-native';
 import { postData } from '../utils';
 import config from '../config.json';
 import { StyleSheet} from "react-native";
-import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
+import RadioForm from 'react-native-simple-radio-button';
 
 export default class Voting extends Component {
 
@@ -17,8 +17,9 @@ export default class Voting extends Component {
         },
         voting: null,
         selected: null,
-        options: new Array(),
-        noSelection: false
+        options: [],
+        noSelection: false,
+        error: false,
 
     }
 
@@ -26,8 +27,7 @@ export default class Voting extends Component {
         this.props.setDone(false);
     }
 
-    handleSubmit = (event) => {
-        event.preventDefault();
+    handleSubmit = () => {
         if (!this.state.selected) {
             this.setState({noSelection:true})
         } else {
@@ -57,69 +57,91 @@ export default class Voting extends Component {
                 this.props.resetSelected();
             })
             .catch(error => {
-                alert(`Error: ${error}`);
+                this.setState({ error })
             });
     }
 
-    introduccion = (opt) => {
-        const dict ={};
-        dict['label'] = opt.option;
-        dict['value'] = opt.number;
-        this.state.options.push(dict);
-    }
 
-    options = (voting) => {
-        voting.question.options.map(opt => 
-        this.introduccion(opt))}
+    setOptions = (voting) => {
+        const cleanedOptions = voting.question.options.map(opt => ({
+            label: opt.option,
+            value: opt.number
+        }))
+        this.setState({options: cleanedOptions});
+    }
 
     componentDidMount() {
         this.doneToFalse();
         const { voting } = this.props;
-        this.options(voting);
-        this.setState({options:this.state.options})
+        this.setOptions(voting);
+    }
+
+    updateSelected = (itemValue) => {
+        this.setState({selected: itemValue})
     }
 
     render() {
         const { voting, resetSelected } = this.props;
 
         return <View style={styles.htmlStyle}>
-                <View style={styles.containerStyle}>
-                    <View style={styles.contentStyle}>
-                        <View style={styles.row}>
-                            <View style={styles.clearfix}>
-                                <Text style={styles.textStyle}>{voting.name}</Text>
-                                <Text style={styles.textStyle}>{voting.question.desc}</Text>
-                                <View style={{flex: 1, backgroundColor: 'powderblue'}} />
-                            </View>
-                            <View style={styles.clearfix}>
-                            <RadioForm style={styles.radioStyle}
-                                            radio_props={this.state.options}
-                                            initial={-1}
-                                            formHorizontal={true}
-                                            labelHorizontal={false}
-                                            buttonColor={'#2196f3'}
-                                            animation={true}
-                                            onPress={(itemValue) => this.setState({selected: itemValue})}
-                                            buttonSize={20}
-                                        />
-                            </View>
-                            {this.state.noSelection && <View style={styles.textStyle}>
-                                            <Text style={{fontWeight: 'bold', color:'rgb(192,26,26)', fontFamily: 'calibri', fontSize:'15px'}}>Debe seleccionar una opción</Text>
-                                        </View>}
-                            <View style={styles.clearfix}> 
-                                <View style={styles.button1Style}>
-                                    <Button title="Votar" color="linear-gradient(top, #049cdb, #0064cd)" onPress={this.handleSubmit} />
-                                </View>
-                            </View>
-                            <View style={styles.clearfix}> 
-                                <View style={styles.button2Style}>
-                                    <Button title="Volver" color="linear-gradient(top, #696969, #000000)" onPress={resetSelected} />
-                                </View>
-                            </View>
-                        </View>    
-                    </View>
+        <View style={styles.containerStyle}>
+          <View style={styles.contentStyle}>
+            <View style={styles.row}>
+              <View style={styles.clearfix}>
+                <Text style={styles.textStyle}>{voting.name}</Text>
+                <Text style={styles.textStyle}>{voting.question.desc}</Text>
+                <View style={{ flex: 1, backgroundColor: "powderblue" }} />
+              </View>
+              <View style={styles.clearfix}>
+                <RadioForm
+                  style={styles.radioStyle}
+                  radio_props={this.state.options}
+                  initial={-1}
+                  formHorizontal={true}
+                  labelHorizontal={false}
+                  buttonColor={"#2196f3"}
+                  animation={true}
+                  onPress={(val) => this.updateSelected(val)}
+                  buttonSize={20}
+                />
+              </View>
+              {this.state.noSelection && (
+                <View style={styles.textStyle}>
+                  <Text
+                    style={{
+                      fontWeight: "bold",
+                      color: "rgb(192,26,26)",
+                      fontFamily: "calibri",
+                      fontSize: "15px",
+                    }}
+                  >
+                    Debe seleccionar una opción
+                  </Text>
                 </View>
+              )}
+      
+              <View style={styles.clearfix}>
+                <View style={styles.button1Style}>
+                  <Button
+                    title="Votar"
+                    color="linear-gradient(top, #049cdb, #0064cd)"
+                    onPress={this.handleSubmit}
+                  />
+                </View>
+              </View>
+              <View style={styles.clearfix}>
+                <View style={styles.button2Style}>
+                  <Button
+                    title="Volver"
+                    color="linear-gradient(top, #696969, #000000)"
+                    onPress={resetSelected}
+                  />
+                </View>
+              </View>
+            </View>
+          </View>
         </View>
+      </View>;      
     }
 }
 
