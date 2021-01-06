@@ -31,6 +31,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    width: "100%",
  },
  sections: {
     marginTop: 60,
