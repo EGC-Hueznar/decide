@@ -74,6 +74,16 @@ describe('Test case for testing login',() => {
                 await new Promise(r => setTimeout(r, 250)); 
                 expect(String(ans.data)).toBe(String(correctUser));
         })
+
+
+        it('Incorrect getUser', async () => {
+            const wrapper = shallow(<Login />)                
+            const mockAxios =  new MockAdapter(axios);
+            mockAxios.onPost(config.GETUSER_URL).reply(400);                 
+            await wrapper.instance().getUser()
+            await new Promise(r => setTimeout(r, 250)); 
+            expect(wrapper.state('error')).toBe(true);
+        })
     });
    
 })
