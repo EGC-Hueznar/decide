@@ -4,7 +4,7 @@ import Adapter from 'enzyme-adapter-react-16';
 import 'jsdom-global/register';
 import Voting from '../components/Voting';
 import { RadioButton } from 'react-native-simple-radio-button';
-import { Button } from 'react-native';
+import { Button, TouchableOpacity } from 'react-native';
 import config from '../config.json'
 import axios from 'axios';
 import MockAdapter from "axios-mock-adapter";
@@ -104,7 +104,7 @@ describe('Testing Voting component',() => {
     it('Store vote for non-existent voting', async () => {
         wrapper = mount(<Voting voting={nonExistentVoting} user={user} setDone={setDone} resetSelected={resetSelected} />);
         const radioButtons = wrapper.find(RadioButton);
-        const submitButton = wrapper.find(Button).first();
+        const submitButton = wrapper.find(TouchableOpacity).at(3);
         
         const opt1 = radioButtons.at(0).props();
         opt1.onPress(opt1.obj.value);
@@ -117,7 +117,7 @@ describe('Testing Voting component',() => {
 
     it('Store vote without selecting option', async () => {   
         wrapper = mount(<Voting voting={correctVoting} user={user} setDone={setDone} resetSelected={resetSelected} />);
-        const submitButton = wrapper.find(Button).first();
+        const submitButton = wrapper.find(TouchableOpacity).at(3);
         submitButton.props().onPress();
 
         expect(wrapper.state().noSelection).toBe(true);
@@ -126,7 +126,7 @@ describe('Testing Voting component',() => {
     it('Store valid vote', async () => {      
         wrapper = mount(<Voting voting={correctVoting} user={user} setDone={setDone} resetSelected={resetSelected} />);
         const radioButtons = wrapper.find(RadioButton);
-        const submitButton = wrapper.find(Button).first();
+        const submitButton = wrapper.find(TouchableOpacity).at(3);
         
         const opt1 = radioButtons.at(0).props();
         opt1.onPress(opt1.obj.value);
@@ -140,7 +140,7 @@ describe('Testing Voting component',() => {
     it('Store vote of closed voting', async () => {     
         wrapper = mount(<Voting voting={closedVoting} user={user} setDone={setDone} resetSelected={resetSelected} />);
         const radioButtons = wrapper.find(RadioButton);
-        const submitButton = wrapper.find(Button).first();
+        const submitButton = wrapper.find(TouchableOpacity).at(3);
         
         const opt1 = radioButtons.at(0).props();
         opt1.onPress(opt1.obj.value);
