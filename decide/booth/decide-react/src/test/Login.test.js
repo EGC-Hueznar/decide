@@ -114,3 +114,37 @@ describe('Test case for testing login',() => {
     });
    
 })
+
+describe('Testing Login style',() => {
+    
+
+    it('Correct "Usuario" text style', async () => {
+        wrapper = shallow(<Login/>);
+        wrapperText = wrapper.find(Text).at(0).get(0);
+        expect(wrapperText.props.style).toHaveProperty('fontSize', 24);
+    });
+
+    it('Correct "Contraseña" text style', async () => {
+        wrapper = shallow(<Login/>);
+        wrapperText = wrapper.find(Text).at(1).get(0);
+        expect(wrapperText.props.style).toHaveProperty('fontSize', 24);
+    });
+
+    it('Correct "Usuario" text input style', async () => {
+        wrapper = shallow(<Login/>);
+        wrapperTextInput = wrapper.find(TextInput).at(0).get(0);
+        expect(wrapperTextInput.props.style).toHaveProperty('fontSize', 15);
+    });
+
+    it('Correct "Contraseña" text input style', async () => {
+        wrapper = shallow(<Login/>);
+        wrapperTextInput = wrapper.find(TextInput).at(1).get(0);
+        expect(wrapperTextInput.props.style).toHaveProperty('fontSize', 15);
+    });
+
+    it('Correct "Button" style', async () => {
+        wrapper = shallow(<Login/>);
+        wrapperButton = wrapper.find(Button);
+        expect(wrapperButton.prop('color')).toBe('linear-gradient(top, #049cdb, #0064cd)');
+    });
+})
