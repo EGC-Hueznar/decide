@@ -109,11 +109,51 @@ class SendTelegramVotacionBinariaTest(BaseTestCase):
     # Test Votación Binaria Simple
     def test_send_telegram_report_b(self):
         v = VotacionBinaria.objects.get(titulo="Votación Binaria Test 1")
-        message = send_telegram_report_binary(v)
+        message = send_telegram_report(v)
         self.assertEqual(message.chat.title,"Actualizaciones Decide Huéznar")
 
     # Test Votación Binaria con Respuestas
     def test_send_telegram_report_br(self):
         v = VotacionBinaria.objects.get(titulo="Votación Binaria Test 2")
-        message = send_telegram_report_binary(v)
+        message = send_telegram_report(v)
+        self.assertEqual(message.chat.title,"Actualizaciones Decide Huéznar")
+
+# Tests envíos de reporte Votación Normal
+class SendTelegramVotacionNormalTest(BaseTestCase):
+    def setUp(self):
+        v = Votacion(titulo="Votación Normal Test 1",descripcion="Descripcion 1")
+        v.save()
+        v2 = Votacion(titulo="Votación Normal Test 2", descripcion="Descripcion 2")
+        v2.save()
+        q1  = Pregunta(textoPregunta = "Pregunta Normal 1")
+        q2  = Pregunta(textoPregunta = "Pregunta Normal 2")
+        r1 = Respuesta(respuesta = 2)
+        r2 = Respuesta(respuesta = 10)
+        v.addPregunta(q1)
+        v.addPregunta(q2)
+        q2.addRespuesta(r1)
+        q2.addRespuesta(r2)
+        
+        
+        super().setUp()
+
+    def tearDown(self):
+        super().tearDown()
+        self.v=None
+        self.v2=None
+        self.q1=None
+        self.q2=None
+        self.r1=None
+        self.r2=None
+
+    # Test Votación Normal Simple
+    def test_send_telegram_report_n(self):
+        v = Votacion.objects.get(titulo="Votación Normal Test 1")
+        message = send_telegram_report(v)
+        self.assertEqual(message.chat.title,"Actualizaciones Decide Huéznar")
+
+    # Test Votación Normal con Respuestas
+    def test_send_telegram_report_nr(self):
+        v = Votacion.objects.get(titulo="Votación Normal Test 2")
+        message = send_telegram_report(v)
         self.assertEqual(message.chat.title,"Actualizaciones Decide Huéznar")
