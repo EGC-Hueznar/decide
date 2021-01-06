@@ -1,7 +1,7 @@
 import tweepy
 from voting.models import *
 consumer_key = 'ZXutSjYogRFQ1cGSqBExHdFYQ'
-consumer_secret = 'bOQoMVaIcYUrTzPba0ogudtIZi6HJZtfTdBaG09EVG60UN6k8Y'
+consumer_secret_key = 'bOQoMVaIcYUrTzPba0ogudtIZi6HJZtfTdBaG09EVG60UN6k8Y'
 access_token = '1346151287306530817-DshaN1ufww133bG0S8KKSRFWpaBn0y'
 access_token_secret = 'vlIKntFymAL3Us2CcnkdbYpa1i2LJ9Q9RwVAt9OFSp668'
 
