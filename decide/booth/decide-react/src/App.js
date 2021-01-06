@@ -2,12 +2,13 @@ import React from 'react';
 import Barra from './components/Barra';
 import Login from './components/Login';
 import Voting from './components/Voting';
-import {StatusBar, FlatList, Text, TouchableOpacity, View, Button, Alert, SafeAreaView} from 'react-native';
+import {StatusBar, FlatList, Text, TouchableOpacity, View, SafeAreaView} from 'react-native';
 import axios from 'axios';
 import config from './config.json';
 import { postData } from './utils';
 import AsyncStorage from '@react-native-community/async-storage'
-import { StyleSheet} from "react-native";
+import * as JSONbig from "json-bigint";
+import { styles } from "./styles";
 
 
 class App extends React.Component {
@@ -62,8 +63,16 @@ class App extends React.Component {
             });
     }
 
-    setUser = (user2) => {
-        this.setState({user:user2});
+    setUser = (user) => {
+        const oldUserValue = this.state.user;
+        this.setState({user});
+        
+        // Actualizar votings
+        if (user && oldUserValue !== user) {
+            this.loadVotings();
+        } else if (!user) {
+            this.setState({votings: []})
+        }
     }
 
     setToken = (token2) =>  {
@@ -84,14 +93,22 @@ class App extends React.Component {
 
     loadVotings = () => {
         this.setDone(false)
-        axios.get(config.VOTING_URL).then(response => {
-            this.setState({votings: response.data});
+        axios.get(`${config.CENSUS_VOTINGS_URL}${this.state.user.id}`).then(response => {
+            const votings = response.data.votings;
+            
+            axios.get(config.VOTING_URL, {
+              transformResponse: res => JSONbig.parse(res)
+            }).then(response => { 
+                this.setState({votings: response.data.filter(v => votings.includes(v.id) 
+                    && v.start_date 
+                    && Date.parse(v.start_date) < Date.now() 
+                    && !v.end_date)});
+            });
         });
 
     }
 
     componentDidMount() {
-        this.loadVotings();   
         this.init();
         this.render();
     }
@@ -103,7 +120,7 @@ class App extends React.Component {
         const statusHeight = StatusBar.currentHeight ? StatusBar.currentHeight : 0;
 
         return(
-            <View>
+            <View style={styles.parent}>
                 <Barra urlLogout={this.state.urlLogout} signup={this.state.signup} setSignup={this.setSignup} token={this.state.token} setToken={this.setToken} setUser={this.setUser} handleSetStorage={this.handleSetStorage}/>
                 
 
@@ -116,22 +133,21 @@ class App extends React.Component {
                                                 <View View style={styles.body}>
                                                     <View View style={styles.container}>
                                                         <View View style={styles.content}>
-                                                          <View>     
+                                                          <Text style={styles.title}>Votaciones disponibles</Text>
                                                             {this.state.done == true &&  <View style={{width: '100%', //Si la votación se ha realizado se muestra la barra verde.
-                                                            backgroundColor: 'rgb(49, 250, 95)',
-                                                            paddingHorizontal: 20,
-                                                            paddingTop: statusHeight + 10,
-                                                            paddingBottom: 10}}>
-                                                                <Text style={{fontWeight:500, fontFamily: 'calibri', fontSize:'16px'}}>Votación enviada!</Text>
+                                                                backgroundColor: '#00D090',
+                                                                paddingHorizontal: 20,
+                                                                paddingTop: 20,
+                                                                paddingBottom: 20,
+                                                                marginBottom: 20}}>
+                                                                    <Text style={{fontSize:16}}>¡Votación enviada!</Text>
                                                             </View>}
-                                                        </View>     
-                                                        <Text style={styles.title}>Votaciones disponibles</Text>
                                                             <SafeAreaView style={styles.containerList}>
                                                                     <FlatList style={styles.item} data={this.state.votings} renderItem={this.render_voting} />
                                                             </SafeAreaView>
-                                                            <View View style={styles.btnprimary}>
-                                                                <Button color="linear-gradient(top, #049cdb, #0064cd)" title="Recargar" onPress={this.loadVotings} />
-                                                            </View>
+                                                            <TouchableOpacity style={styles.btnprimary} onPress={this.onSubmitLogin}>
+                                                                <Text style={{color:"#fff"}}>Recargar</Text>
+                                                            </TouchableOpacity>
                                                         </View>
                                                     </View>
                                                 </View>
@@ -144,117 +160,4 @@ class App extends React.Component {
     }
 }
 
-
-const styles = StyleSheet.create({
-    html: {
-        "marginTop": 0,
-        "marginRight": 0,
-        "marginBottom": 0,
-        "marginLeft": 0,
-        "paddingTop": 0,
-        "paddingRight": 0,
-        "paddingBottom": 0,
-        "paddingLeft": 0
-    },
-    body: {
-        "marginTop": 0,
-        "marginRight": 0,
-        "marginBottom": 0,
-        "marginLeft": 0,
-        "paddingTop": 0,
-        "paddingRight": 0,
-        "paddingBottom": 0,
-        "paddingLeft": 0,
-        "paddingTop": 40,
-        "fontFamily": "\"Helvetica Neue\",Helvetica,Arial,sans-serif",
-        "fontSize": 18,
-        "fontWeight": "normal",
-        "lineHeight": 24
-    },
-    container: {
-        "width": "100%",
-        "minHeight": "100vh",
-        "display": "flex",
-        "flexWrap": "wrap",
-        "justifyContent": "center",
-        "alignItems": "center"
-    },
-    content: {
-        "width": 960,
-        "backgroundColor": "#fff",
-        "borderTopLeftRadius": 10,
-        "borderTopRightRadius": 10,
-        "borderBottomRightRadius": 10,
-        "borderBottomLeftRadius": 10,
-        "overflow": "hidden",
-        "display": "flex",
-        "flexWrap": "wrap",
-        "justifyContent": "space-between",
-        "paddingTop": 50,
-        "paddingRight": 50,
-        "paddingBottom": 50,
-        "paddingLeft": 50
-    },
-    title: {
-        "fontSize": 24,
-        "fontWeight": "bold",
-        "color": "#333333",
-        "lineHeight": 1.2,
-        "textAlign": "center",
-        "width": "100%",
-        "paddingTop": 30,
-        "paddingRight": 30,
-        "paddingBottom": 30,
-        "paddingLeft": 30
-    },
-    btnprimary: {
-        "width": "100%",
-        "display": "flex",
-        "flexWrap": "wrap",
-        "justifyContent": "center",
-        "fontSize": 18,
-        "lineHeight": 1.5,
-        "color": "#fff",
-        "textTransform": "uppercase",
-        "width": "100%",
-        "height": 50,
-        "borderTopLeftRadius": 25,
-        "borderTopRightRadius": 25,
-        "borderBottomRightRadius": 25,
-        "borderBottomLeftRadius": 25,
-        "backgroundColor": "#0064cd",
-        "paddingTop": 0,
-        "paddingRight": 25,
-        "paddingBottom": 0,
-        "paddingLeft": 25,
-        "textShadowOffset": {
-          "width": 0,
-          "height": -1
-        },
-        "textShadowRadius": 0,
-        "textShadowColor": "rgba(0, 0, 0, 0.25)",
-        "borderTopColor": "#0064cd",
-        "borderRightColor": "#0064cd",
-        "borderBottomColor": "#003f81",
-        "borderLeftColor": "#0064cd"
-    },
-    containerList: {
-        flex: 1,
-        paddingTop: 20
-    },
-    sectionHeader: {
-        paddingTop: 2,
-        paddingLeft: 10,
-        paddingRight: 10,
-        paddingBottom: 2,
-        fontSize: 32,
-        backgroundColor: 'rgba(247,247,247,1.0)',
-     },
-    item: {
-        padding: 15,
-        marginVertical: 8,
-        marginHorizontal: 16,
-    }
-    
-});
 export default App;
