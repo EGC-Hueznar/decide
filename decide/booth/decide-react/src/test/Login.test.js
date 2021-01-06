@@ -114,3 +114,13 @@ describe('Test case for testing login',() => {
     });
    
 })
+
+describe('Testing Login style',() => {
+    
+
+    it('Correct "Usuario" text style', async () => {
+        wrapper = shallow(<Login/>);
+        wrapperText = wrapper.find(Text).at(0).get(0);
+        expect(wrapperText.props.style).toHaveProperty('fontSize', 24);
+    });
+})
