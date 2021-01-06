@@ -5,8 +5,136 @@ import Adapter from 'enzyme-adapter-react-16';
 import AsyncStorage from '@react-native-community/async-storage'
 import 'jsdom-global/register';
 import Login from '../components/Login';
-import { Alert, Button, Text, TextInput, View } from 'react-native';
+import { Alert, Button, FlatList, Text, TextInput, View } from 'react-native';
 import Barra from '../components/Barra';
+import axios from 'axios';
+import MockAdapter from "axios-mock-adapter";
+import config from '../config.json'
+import { postData } from '../utils';
+
+// Hide warning
+console.error = () => {}
+
+
+describe('Testing AsyncStorage methods',() => {
+    
+    //Mockeamos las llamadas externas de AsyncStorage
+    jest.mock('@react-native-community/async-storage', () => ({
+        AsyncStorage: {
+            setItem: jest.fn(),
+            getItem: jest.fn(),
+            clear: jest.fn(),
+          }
+    }));
+
+    //Probamos si handleSetStorage llama al metodo setItem de AsyncStorage
+    it('check if setItem in AsyncStorage is called through handleSetStorage', async () => {
+        let wrapper = shallow(<App/>)
+
+        await wrapper.instance().handleSetStorage('testing','testing')
+        
+        expect(AsyncStorage.setItem).toBeCalledWith('testing','testing')
+
+        wrapper.unmount()
+    });
+
+    //Probamos si handleGetStorage llama al metodo setItem de AsyncStorage
+    it('check if getItem in AsyncStorage is called through handleGetStorage', async () => {
+        let wrapper = shallow(<App/>)
+
+        await wrapper.instance().handleGetStorage('testing')
+        
+        expect(AsyncStorage.getItem).toBeCalledWith('testing')
+
+        wrapper.unmount()
+    });
+})
+
+describe('mocking handleGetStorage', () => {
+
+    it('handleGetStorage setted token', async () =>{
+        AsyncStorage.getItem.mockResolvedValueOnce('Valor de prueba para mock')
+        const getItemSpy = jest.spyOn(AsyncStorage, 'getItem')
+        const componentDidMountSpy = jest.spyOn(App.prototype, 'componentDidMount')
+        
+        const wrapper = await shallow(<App/>)
+
+        expect(getItemSpy).toHaveBeenCalled()
+        expect(componentDidMountSpy).toHaveBeenCalledTimes(1)
+        expect(wrapper.state('token')).toBe('Valor de prueba para mock')
+
+        wrapper.unmount()
+    })
+
+    it('handleGetStorage did not set token with null value', async () =>{
+
+        const wrapper1 = await shallow(<App/>)
+
+        //Por defecto está a indefinido
+        expect(wrapper1.state('token')).toBe(undefined)
+
+        wrapper1.unmount()
+
+        AsyncStorage.getItem.mockResolvedValueOnce('')
+        const getItemSpy = jest.spyOn(AsyncStorage, 'getItem')
+        
+        const wrapper2 = await shallow(<App/>)
+
+        expect(getItemSpy).toHaveBeenCalled()
+        expect(wrapper2.state('token')).toBe(undefined)
+
+        wrapper2.unmount()
+    })
+
+})
+
+describe('componentDidMount call other methods',() =>{
+
+    //Comprueba si se llama a componentDidMount al montar App
+    it('componentDidMount called at mounted', () =>{
+
+        const componentDidMountSpy = jest.spyOn(App.prototype, 'componentDidMount')
+
+        let wrapper = mount(<App/>)
+
+        expect(componentDidMountSpy).toBeCalled()
+        
+    })
+
+    //Comprueba si al llamar a componentDidMount ejecuta las funciones que se esperan
+    it('Should call functions during componentDidMount', async () =>{
+        let wrapper = mount(<App/>) 
+
+        const instance = wrapper.instance()
+
+
+        const initSpy = jest.spyOn(instance,'init')
+        const clearStorageSpy = jest.spyOn(instance,'clearStorage')
+        const handleGetSpy = jest.spyOn(instance,'handleGetStorage')
+
+        instance.componentDidMount()
+
+        expect(initSpy).toHaveBeenCalled()
+        expect(clearStorageSpy).toHaveBeenCalled()
+        expect(handleGetSpy).toHaveBeenCalled()
+    })
+
+    //Comprueba que, si no se llama a componentDidMount las funciones no se ejecutan
+    it('Check if expected methods are not called by componentDidMount', async () =>{
+        let wrapper = shallow(<App/>)
+    
+        let instance = wrapper.instance()
+    
+        const initSpy = jest.spyOn(instance,'init')
+        const clearStorageSpy = jest.spyOn(instance,'clearStorage')
+        const handleGetSpy = jest.spyOn(instance,'handleGetStorage')
+        
+        expect(initSpy).toBeCalledTimes(0)
+        expect(clearStorageSpy).toBeCalledTimes(0)
+        expect(handleGetSpy).toBeCalledTimes(0)
+    
+    })
+})
 
 describe('Testing App component',() => {
 
@@ -78,7 +206,7 @@ describe('Testing App component',() => {
         
         wrapperLogin.find(Button).simulate('click')
 
-        await new Promise((r) => setTimeout(r, 1000));
+        await new Promise((r) => setTimeout(r, 2000));
 
         expect(wrapperLogin).toHaveLength(1);
         expect(wrapperUsernameTextInput).toHaveLength(2);
@@ -122,6 +250,136 @@ describe('Testing App component',() => {
         expect(wrapperLogin.state('error')).toBe(false);
         expect(wrapper.state('user')).toBeDefined();
     });
+})
+
+describe('Testing App methods',() => {
+
+    it('Correct setUser',() => {
+        const wrapper = shallow(<App />)
+
+        const instance = wrapper.instance();
+        expect(wrapper.state('user')).toBe(undefined);
+        instance.setUser('test');
+        expect(wrapper.state('user')).toBe('test');
+
+    });
+
+    it('Correct setToken',() => {
+        const wrapper = shallow(<App />)
+
+        const instance = wrapper.instance();
+        expect(wrapper.state('token')).toBe(undefined);
+        instance.setToken('AjhdjahDahdjahdajAj');
+        expect(wrapper.state('token')).toBe('AjhdjahDahdjahdajAj');
+
+    });
+
+    it('Correct setSignup',() => {
+        const wrapper = shallow(<App />)
+
+        const instance = wrapper.instance();
+        expect(wrapper.state('signup')).toBe(true);
+        instance.setSignup(false);
+        expect(wrapper.state('signup')).toBe(false);
+
+    });
+
+    it('Correct setSelectedVoting', () => {
+        const wrapper = shallow(<App />)
+
+        const instance = wrapper.instance();
+        expect(wrapper.state('selectedVoting')).toBe(undefined);
+        instance.setSelectedVoting('qwerty');
+        expect(wrapper.state('selectedVoting')).toBe('qwerty');
+    });
+
+    it('Correct setDone', () => {
+        const wrapper = shallow(<App />);
+
+        const instance = wrapper.instance();
+        expect(wrapper.state('done')).toBe(false);
+        instance.setDone(true);
+        expect(wrapper.state('done')).toBe(true);
+    });
+
+})
+
+describe('Testing App style',() => {
+    
+    
+    it('Correct "Votaciones disponibles" text style', async () => {
+        const correctUser = {
+            id: 1,
+            email: "",
+            first_name: "",
+            last_name: "",
+            username: "decidehueznar",
+            is_staff: true
+        }
+
+        const data = {token: 100}
+        const mockAxios =  new MockAdapter(axios);
+        mockAxios.onPost(config.LOGIN_URL).reply(200, data);
+        mockAxios.onPost(config.GETUSER_URL).reply(200, correctUser);
+
+        wrapper = mount(<App/>);
+        const wrapperLogin = wrapper.find(Login);
+
+        const usernameForm = wrapperLogin.find(TextInput).at(0);
+        usernameForm.props()["onChangeText"]("decidehueznar");
+
+        const passwordForm = wrapperLogin.find(TextInput).at(1);
+        passwordForm.props()["onChangeText"]("decidehueznar");
+
+        wrapperLogin.find(Button).simulate('click')
+        wrapperText = wrapper.find(Text).at(2).get(0);
+        expect(wrapperText.props.style).toHaveProperty('fontSize', 24);
+    });
+
+
+    it('Correct Button style', async () => {
+        const correctUser = {
+            id: 1,
+            email: "",
+            first_name: "",
+            last_name: "",
+            username: "decidehueznar",
+            is_staff: true
+        }
+
+        const data = {token: 100}
+        const mockAxios =  new MockAdapter(axios);
+        mockAxios.onPost(config.LOGIN_URL).reply(200, data);
+        mockAxios.onPost(config.GETUSER_URL).reply(200, correctUser);
+
+        wrapper = mount(<App/>);
+        const wrapperLogin = wrapper.find(Login);
+
+        const usernameForm = wrapperLogin.find(TextInput).at(0);
+        usernameForm.props()["onChangeText"]("decidehueznar");
+
+        const passwordForm = wrapperLogin.find(TextInput).at(1);
+        passwordForm.props()["onChangeText"]("decidehueznar");
+
+        wrapperLogin.find(Button).simulate('click')
+        wrapperButton = wrapper.find(Button);
+        expect(wrapperButton.prop('color')).toBe('linear-gradient(top, #049cdb, #0064cd)');
+    });
+    
+    /*
+    it('Correct "Votación enviada" font weight', async () => {
+        wrapper = mount(<App/>);
+        wrapper.instance().setState({signup:false});
+        wrapper.instance().setState({selectedVoting:false})
+        wrapper.instance().render();
+        wrapperText = wrapper.find(Text).at(0);
+        expect(wrapper.state('signup')).toBe(false);
+        expect(wrapper.state('selectedVoting')).toBe(false);
+        expect(wrapperText.props).toBe("500");
+    });
+    */
+
+    
 
 
 })
