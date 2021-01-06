@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, Button, Text, TextInput, View } from 'react-native';
+import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 import config from '../config.json';
 import { postData } from '../utils';
 import { StyleSheet} from "react-native";
@@ -78,18 +78,18 @@ export default class Login extends Component {
                                                 <TextInput id='password' name="password" hint="password" style={styles.input} secureTextEntry={true} onChangeText={(val) => this.handleChange('password', val)} placeholder="Introduce tu contraseña"></TextInput>
                                             </View>
                                         </View>
-                                        <View style={styles.btnprimary}>
-                                            <Button id='button' color="linear-gradient(top, #049cdb, #0064cd)" onPress={this.onSubmitLogin} title="Login" />
-                                        </View>
+                                        {this.state.error && <View style={{paddingTop:10, paddingBottom:7}}>
+                                        <Text style={{color:'rgb(192,26,26)', fontSize:15}}>El usuario introducido no existe</Text>
+                                        </View>}
+                                        <TouchableOpacity style={styles.btnprimary} onPress={this.onSubmitLogin}>
+                                            <Text style={{color:"#fff"}}>Login</Text>
+                                        </TouchableOpacity>
                                     </View>
                                 </View>
                             </View>
                         </View>
                     </View>
                 </View>
-                {this.state.error && <View style={{paddingTop:10, paddingBottom:7}}>
-                <Text style={{fontWeight: 'bold', color:'rgb(192,26,26)', fontFamily: 'calibri', fontSize:'15px'}}>El usuario introducido no existe</Text>
-                </View>}
             </View>
         );
     }
@@ -97,53 +97,31 @@ export default class Login extends Component {
 
 const styles = StyleSheet.create({
     html: {
-        "marginTop": 0,
-        "marginRight": 0,
-        "marginBottom": 0,
-        "marginLeft": 0,
-        "paddingTop": 0,
-        "paddingRight": 0,
-        "paddingBottom": 0,
-        "paddingLeft": 0
+        margin: 0,
+        padding: 0,
     },
     body: {
-        "marginTop": 0,
-        "marginRight": 0,
-        "marginBottom": 0,
-        "marginLeft": 0,
-        "paddingTop": 0,
-        "paddingRight": 0,
-        "paddingBottom": 0,
-        "paddingLeft": 0,
-        "paddingTop": 40,
-        "fontFamily": "\"Helvetica Neue\",Helvetica,Arial,sans-serif",
-        "fontSize": 18,
-        "fontWeight": "normal",
-        "lineHeight": 24
+        margin: 0,
+        padding: 0,
+        fontFamily: '"Helvetica Neue",Helvetica,Arial,sans-serif',
+        fontSize: 18,
+        fontWeight: 'normal',
+        lineHeight: 24,
+        display: 'flex',
+        alignItems: 'center',
+        alignContent: 'center',
+        backgroundColor: '#fff',
     },
     container: {
-        "width": "100%",
-        "minHeight": "100vh",
-        "display": "flex",
-        "flexWrap": "wrap",
-        "justifyContent": "center",
-        "alignItems": "center"
+        width: '100%',
+        maxWidth: 960,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     content: {
-        "width": 960,
-        "backgroundColor": "#fff",
-        "borderTopLeftRadius": 10,
-        "borderTopRightRadius": 10,
-        "borderBottomRightRadius": 10,
-        "borderBottomLeftRadius": 10,
-        "overflow": "hidden",
-        "display": "flex",
-        "flexWrap": "wrap",
-        "justifyContent": "space-between",
-        "paddingTop": 50,
-        "paddingRight": 50,
-        "paddingBottom": 50,
-        "paddingLeft": 50
+        width: '100%',
+        borderRadius: 10,
+        padding: 25,
     },
     row: {
     },
@@ -151,64 +129,57 @@ const styles = StyleSheet.create({
         "marginBottom": 24,
     },
     input: {
-        "fontSize": 15,
-        "lineHeight": 1,
-        "color": "#666666",
-        "width": "100%",
-        "backgroundColor": "#e6e6e6",
-        "height": 50,
-        "borderTopLeftRadius": 25,
-        "borderTopRightRadius": 25,
-        "borderBottomRightRadius": 25,
-        "borderBottomLeftRadius": 25,
-        "paddingTop": 0,
-        "paddingRight": 30,
-        "paddingBottom": 0,
-        "paddingLeft": 68
+        fontSize: 15,
+        lineHeight: 1,
+        color: '#666666',
+        width: '100%',
+        backgroundColor: '#f1f1f1',
+        height: 50,
+        borderRadius: 25,
+        paddingTop: 0,
+        paddingRight: 30,
+        paddingBottom: 0,
+        paddingLeft: 20,
+        width: '100%',
     },
     btnprimary: {
-        "width": "100%",
-        "display": "flex",
-        "flexWrap": "wrap",
-        "justifyContent": "center",
-        "fontSize": 18,
-        "lineHeight": 1.5,
-        "color": "#fff",
-        "textTransform": "uppercase",
-        "height": 50,
-        "borderTopLeftRadius": 25,
-        "borderTopRightRadius": 25,
-        "borderBottomRightRadius": 25,
-        "borderBottomLeftRadius": 25,
-        "backgroundColor": "#0064cd",
-        "paddingTop": 0,
-        "paddingRight": 25,
-        "paddingBottom": 0,
-        "paddingLeft": 25,
-        "textShadowOffset": {
-          "width": 0,
-          "height": -1
+        width: '100%',
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        fontSize: 18,
+        lineHeight: 1.5,
+        color: '#fff',
+        textTransform: 'uppercase',
+        width: '100%',
+        height: 50,
+        borderRadius: 25,
+        backgroundColor: '#0064cd',
+        paddingTop: 0,
+        paddingRight: 25,
+        paddingBottom: 0,
+        paddingLeft: 25,
+        textShadowOffset: {
+            width: 0,
+            height: -1,
         },
-        "textShadowRadius": 0,
-        "textShadowColor": "rgba(0, 0, 0, 0.25)",
-        "borderTopColor": "#0064cd",
-        "borderRightColor": "#0064cd",
-        "borderBottomColor": "#003f81",
-        "borderLeftColor": "#0064cd"
+        textShadowRadius: 0,
+        textShadowColor: 'rgba(0, 0, 0, 0.25)',
+        borderTopColor: '#0064cd',
+        borderRightColor: '#0064cd',
+        borderBottomColor: '#003f81',
+        borderLeftColor: '#0064cd',
     },
     actions: {
 
     },
     title: {
-        "fontSize": 24,
-        "fontWeight": "bold",
-        "color": "#333333",
-        "lineHeight": 1.2,
-        "textAlign": "center",
-        "width": "100%",
-        "paddingTop": 30,
-        "paddingRight": 30,
-        "paddingBottom": 30,
-        "paddingLeft": 30
-    }
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#000000',
+        lineHeight: 1.2,
+        textAlign: 'center',
+        width: '100%',
+        padding: 30
+    },
   });

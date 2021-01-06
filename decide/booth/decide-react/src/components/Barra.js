@@ -18,15 +18,18 @@ export default class Barra extends Component{
     }
 
     render(){
-
         return(
-            <View style={styles.barraStyle}>
-                <View>
-                    <Text style={styles.titleStyle}>DecideHueznar</Text>
+            <View>
+                {StatusBar.currentHeight && <View style={{height:StatusBar.currentHeight, backgroundColor: '#0040A0'}}></View>}
+                <View style={styles.barraStyle}>
+                    
+                    <View>
+                        <Text style={styles.titleStyle}>DecideHueznar</Text>
+                    </View>
+                    {!this.props.signup && <View>
+                        <Text style={styles.textStyle} onPress={this.logout}>Logout</Text>
+                    </View>}
                 </View>
-                {!this.props.signup && <View>
-                    <Text style={styles.textStyle} onPress={this.logout}>Logout</Text>
-                </View>}
             </View>
         );
     }
@@ -37,23 +40,23 @@ const styles = StyleSheet.create ({
 
     barraStyle: {
         width: '100%',
-        backgroundColor: '#000080',
+        backgroundColor: '#002080',
         justifyContent: 'space-between',
         paddingHorizontal: 20,
         paddingTop: 15,
         paddingBottom: 15,
         display: 'flex',
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     titleStyle: {
         color: 'white',
-        fontSize: 18
+        fontSize: 18,
     },
     textStyle: {
         color: 'white',
-        fontSize: 14
-    }
+        fontSize: 14,
+    },
 
 });
 

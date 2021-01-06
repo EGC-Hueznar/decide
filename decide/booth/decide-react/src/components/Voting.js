@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { BigInt } from '../crypto/BigInt';
 import { ElGamal } from '../crypto/ElGamal';
-import { Button, Text, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import { postData } from '../utils';
 import config from '../config.json';
 import { StyleSheet} from "react-native";
@@ -84,12 +84,13 @@ export default class Voting extends Component {
         const { voting, resetSelected } = this.props;
 
         return <View style={styles.htmlStyle}>
-        <View style={styles.containerStyle}>
-          <View style={styles.contentStyle}>
+        <View View style={styles.body}>
+        <View style={styles.container}>
+          <View style={styles.content}>
             <View style={styles.row}>
               <View style={styles.clearfix}>
-                <Text style={styles.textStyle}>{voting.name}</Text>
-                <Text style={styles.textStyle}>{voting.question.desc}</Text>
+                <Text style={styles.votingStyle}>{voting.name}</Text>
+                <Text style={styles.votingStyle}>{voting.question.desc}</Text>
                 <View style={{ flex: 1, backgroundColor: "powderblue" }} />
               </View>
               <View style={styles.clearfix}>
@@ -109,10 +110,10 @@ export default class Voting extends Component {
                 <View style={styles.textStyle}>
                   <Text
                     style={{
-                      fontWeight: "bold",
-                      color: "rgb(192,26,26)",
-                      fontFamily: "calibri",
-                      fontSize: "15px",
+                      // fontWeight: "bold",
+                      color: "#0000ff",
+                      // fontFamily: "calibri",
+                      fontSize: 15,
                     }}
                   >
                     Debe seleccionar una opción
@@ -121,42 +122,51 @@ export default class Voting extends Component {
               )}
       
               <View style={styles.clearfix}>
-                <View style={styles.button1Style}>
-                  <Button
-                    title="Votar"
-                    color="linear-gradient(top, #049cdb, #0064cd)"
-                    onPress={this.handleSubmit}
-                  />
-                </View>
+                <TouchableOpacity style={styles.button1Style} onPress={this.handleSubmit}>
+                  <Text style={{color:"#fff"}}>Votar</Text>
+                </TouchableOpacity>
               </View>
               <View style={styles.clearfix}>
-                <View style={styles.button2Style}>
-                  <Button
-                    title="Volver"
-                    color="linear-gradient(top, #696969, #000000)"
-                    onPress={resetSelected}
-                  />
-                </View>
+                <TouchableOpacity style={styles.button2Style} onPress={resetSelected}>
+                  <Text style={{color:"#999"}}>Volver a votaciones</Text>
+                </TouchableOpacity>
               </View>
             </View>
           </View>
+        </View>
         </View>
       </View>;      
     }
 }
 
 const styles = StyleSheet.create ({
-    htmlStyle: {
-        marginTop: 0,
-        marginBottom: 0,
-        marginRight: 0,
-        marginLeft: 0,
-        paddingTop: 0,
-        paddingBottom: 0,
-        paddingRight: 0,
-        paddingLeft: 0
-    },
-
+  html: {
+    margin: 0,
+    padding: 0,
+  },
+  body: {
+      margin: 0,
+      padding: 0,
+      fontFamily: '"Helvetica Neue",Helvetica,Arial,sans-serif',
+      fontSize: 18,
+      fontWeight: 'normal',
+      lineHeight: 24,
+      display: 'flex',
+      alignItems: 'center',
+      alignContent: 'center',
+      backgroundColor: '#fff',
+  },
+  container: {
+      width: '100%',
+      maxWidth: 960,
+      justifyContent: 'center',
+      alignItems: 'center',
+  },
+  content: {
+      width: '100%',
+      borderRadius: 10,
+      padding: 25,
+  },
     containerStyle: {
         justifyContent: 'center',
         alignItems: 'center'
@@ -254,4 +264,12 @@ const styles = StyleSheet.create ({
         borderBottomColor: "#000000",
         borderLeftColor: "#000000"
     },
+    votingStyle:{
+      fontSize: 26,
+      lineHeight: 24,
+      paddingTop:10, 
+      paddingBottom:10,
+      justifyContent: 'center',
+      alignSelf: 'center'
+  },
 });
