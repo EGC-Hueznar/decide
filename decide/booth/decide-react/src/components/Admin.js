@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Text, View, StyleSheet, Button } from 'react-native';
 import AdminHome from './AdminHomepage';
 import AdminUsers from './AdminUsers';
+import AdminVotings from './AdminVotings';
 
 export default class Admin extends Component {
 
@@ -20,7 +21,7 @@ export default class Admin extends Component {
              (<AdminHome setSelectedView={this.setSelectedView}/>)
              :
              (this.state.selectedView == "votings" ?
-                (<Button title="Volver al inicio" onPress={() => this.setSelectedView("home")}/>)
+                (<AdminVotings votings={this.props.votings} setSelectedView={this.setSelectedView}/>)
                 :
                 (<AdminUsers setSelectedView={this.setSelectedView} />))
             }
