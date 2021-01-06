@@ -123,4 +123,10 @@ describe('Testing Login style',() => {
         wrapperText = wrapper.find(Text).at(0).get(0);
         expect(wrapperText.props.style).toHaveProperty('fontSize', 24);
     });
+
+    it('Correct "Contraseña" text style', async () => {
+        wrapper = shallow(<Login/>);
+        wrapperText = wrapper.find(Text).at(1).get(0);
+        expect(wrapperText.props.style).toHaveProperty('fontSize', 24);
+    });
 })
