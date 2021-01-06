@@ -214,4 +214,51 @@ describe('Testing App style',() => {
         wrapperText = wrapper.find(Text).at(2).get(0);
         expect(wrapperText.props.style).toHaveProperty('fontSize', 24);
     });
+
+
+    it('Correct Button style', async () => {
+        const correctUser = {
+            id: 1,
+            email: "",
+            first_name: "",
+            last_name: "",
+            username: "decidehueznar",
+            is_staff: true
+        }
+
+        const data = {token: 100}
+        const mockAxios =  new MockAdapter(axios);
+        mockAxios.onPost(config.LOGIN_URL).reply(200, data);
+        mockAxios.onPost(config.GETUSER_URL).reply(200, correctUser);
+
+        wrapper = mount(<App/>);
+        const wrapperLogin = wrapper.find(Login);
+
+        const usernameForm = wrapperLogin.find(TextInput).at(0);
+        usernameForm.props()["onChangeText"]("decidehueznar");
+
+        const passwordForm = wrapperLogin.find(TextInput).at(1);
+        passwordForm.props()["onChangeText"]("decidehueznar");
+
+        wrapperLogin.find(Button).simulate('click')
+        wrapperButton = wrapper.find(Button);
+        expect(wrapperButton.prop('color')).toBe('linear-gradient(top, #049cdb, #0064cd)');
+    });
+    
+    /*
+    it('Correct "Votación enviada" font weight', async () => {
+        wrapper = mount(<App/>);
+        wrapper.instance().setState({signup:false});
+        wrapper.instance().setState({selectedVoting:false})
+        wrapper.instance().render();
+        wrapperText = wrapper.find(Text).at(0);
+        expect(wrapper.state('signup')).toBe(false);
+        expect(wrapper.state('selectedVoting')).toBe(false);
+        expect(wrapperText.props).toBe("500");
+    });
+    */
+
+    
+
+
 })
