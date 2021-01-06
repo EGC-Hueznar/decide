@@ -78,6 +78,11 @@ export default class Login extends Component {
                                             <View>
                                                 <TextInput id='password' name="password" hint="password" style={styles.input} secureTextEntry={true} onChangeText={(val) => this.handleChange('password', val)} placeholder="Introduce tu contraseña"></TextInput>
                                             </View>
+                                            {this.state.error && <View style={{paddingTop:10, paddingBottom:7}}>
+                                                <Text style={{fontWeight: 'bold', color:'rgb(192,26,26)', fontFamily: 'calibri', fontSize:'15px', textAlign:'center'}}>
+                                                El usuario introducido no existe
+                                                </Text>
+                                            </View>}
                                         </View>
                                         {this.state.error && <View style={{paddingTop:10, paddingBottom:7}}>
                                         <Text style={{color:'rgb(192,26,26)', fontSize:15}}>El usuario introducido no existe</Text>
