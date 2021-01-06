@@ -14,44 +14,43 @@ from .telegrambot import *
 class VisualizerView(TemplateView):
     template_name = 'visualizer/visualizer.html'
 
+    #funcion que devuelve diccionario con los objetos que se sumarán al context principal
+    def grafica_votos(self, id):
+
+        voting = get_object_or_404(Voting, pk=id)
+        opcion = []
+        voto = []
+        color = []
+        
+        i = 0 #esta variable nos servirá para definir las dimensiones de los ejes en la gráfica
+
+        if(voting.postproc is not None):
+            for item in voting.postproc:
+                objeto = list(item.items())
+                opcion.append(objeto[2][1]) #se coge el valor de la tupla (option, opcion x), que ocupa la posición 2 en la lista de tuplas
+                voto.append(objeto[0][1]) #se hace lo mismo con la tupla (votos, x)   
+                #generamos el color que tendrá cada objeto en la gráfica de forma aleatoria
+                r = lambda: random.randint(0,255)
+                r = lambda: random.randint(0,255)
+                color.append('#%02X%02X%02X' % (r(),r(),r()))
+                i += 1
+        #opcion = json.dumps(opcion)
+        #voto = json.dumps(voto)
+        #color = json.dumps(color)
+        context = {
+            'opcion':opcion,
+            'voto':voto,
+            'color':color,
+            'i':i
+        }
+        
+        return context
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         vid = kwargs.get('voting_id', 0)
 
-        #funcion que devuelve diccionario con los objetos que se sumarán al context principal
-        def grafica_votos(self, id):
-            voting = get_object_or_404(Voting, pk=vid)
-            opcion = []
-            voto = []
-            color = []
-            #esta variable nos servirá para definir las dimensiones de los ejes en la gráfica
-            i = 0
-        
-            if(voting.postproc is not None):
-                for item in voting.postproc:
-                    objeto = list(item.items())
-                    opcion.append(objeto[2][1]) #se coge el valor de la tupla (option, opcion x), que ocupa la posición 2 en la lista de tuplas
-                    voto.append(objeto[0][1]) #se hace lo mismo con la tupla (votos, x)   
-                    #generamos el color que tendrá cada objeto en la gráfica de forma aleatoria
-                    r = lambda: random.randint(0,255)
-                    r = lambda: random.randint(0,255)
-                    color.append('#%02X%02X%02X' % (r(),r(),r()))
-                    i += 1
-
-                    
-            #opcion = json.dumps(opcion)
-            #voto = json.dumps(voto)
-            #color = json.dumps(color)
-            context = {
-                'opcion':opcion,
-                'voto':voto,
-                'color':color,
-                'i':i
-            }
-            
-            return context
-
-        context_grafica_votos = grafica_votos(self, vid)
+        context_grafica_votos = VisualizerView.grafica_votos(self, vid)
         
         try:
             r = mods.get('voting', params={'id': vid})
@@ -68,6 +67,7 @@ class VisualizerView(TemplateView):
             raise Http404
 
         return context
+
 
 def telegram_report(self, **kwargs):
     voting_id = kwargs.get('voting_id', 0)
