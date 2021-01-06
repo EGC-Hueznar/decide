@@ -1,5 +1,6 @@
 import React from 'react';
-import { shallow, configure, mount } from 'enzyme';
+import { shallow, configure } from 'enzyme';
+import { Button, Text, TextInput } from 'react-native';
 import Login from '../components/Login';
 import Adapter from 'enzyme-adapter-react-16';
 import config from '../config.json';
@@ -130,6 +131,12 @@ describe('Testing Login style',() => {
         expect(wrapperText.props.style).toHaveProperty('fontSize', 24);
     });
 
+    it('Correct "Login" text style', async () => {
+        wrapper = shallow(<Login/>);
+        wrapperText = wrapper.find(Text).at(2);
+        expect(wrapperText.prop('style')).toHaveProperty('color', '#fff');
+    });
+
     it('Correct "Usuario" text input style', async () => {
         wrapper = shallow(<Login/>);
         wrapperTextInput = wrapper.find(TextInput).at(0).get(0);
@@ -144,7 +151,7 @@ describe('Testing Login style',() => {
 
     it('Correct "Button" style', async () => {
         wrapper = shallow(<Login/>);
-        wrapperButton = wrapper.find(Button);
-        expect(wrapperButton.prop('color')).toBe('linear-gradient(top, #049cdb, #0064cd)');
+        wrapperButton = wrapper.find('#button');
+        expect(wrapperButton.prop('style')).toHaveProperty('backgroundColor', '#0064cd');
     });
 })
