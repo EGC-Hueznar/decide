@@ -5,7 +5,7 @@ import Adapter from 'enzyme-adapter-react-16';
 import AsyncStorage from '@react-native-community/async-storage'
 import 'jsdom-global/register';
 import Login from '../components/Login';
-import { Alert, Button, Text, TextInput, View } from 'react-native';
+import { Alert, Button, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Barra from '../components/Barra';
 
 describe('Testing App component',() => {
@@ -56,7 +56,7 @@ describe('Testing App component',() => {
         const wrapperUsernameTextInput = wrapperLogin.find(TextInput);
         const wrapperUsername = wrapperUsernameTextInput.first();
         const wrapperPassword = wrapperUsernameTextInput.at(1);
-        const wrapperWithButton = wrapperLogin.find(Button);
+        const wrapperWithButton = wrapperLogin.find(TouchableOpacity);
 
         expect(wrapperWithButton).toHaveLength(1);
         expect(wrapperWithButton.prop('id')).toBe('button');
@@ -68,7 +68,7 @@ describe('Testing App component',() => {
         const wrapperUsernameTextInput = wrapper.find(TextInput)
         const wrapperUsername = wrapper.find(TextInput).first()
         const wrapperPassword = wrapper.find(TextInput).at(1)
-        const wrapperWithButton = wrapperLogin.find(Button)
+        const wrapperWithButton = wrapperLogin.find(TouchableOpacity)
 
         const usernameForm = wrapperLogin.find(TextInput).at(0);
         usernameForm.props()["onChangeText"]("decidehueznar");
@@ -76,7 +76,7 @@ describe('Testing App component',() => {
         const passwordForm = wrapperLogin.find(TextInput).at(1);
         passwordForm.props()["onChangeText"]("contrasenna_erronea");
         
-        wrapperLogin.find(Button).simulate('click')
+        wrapperLogin.find(TouchableOpacity).simulate('click')
 
         await new Promise((r) => setTimeout(r, 1000));
 
@@ -99,7 +99,7 @@ describe('Testing App component',() => {
         const wrapperUsernameTextInput = wrapper.find(TextInput)
         const wrapperUsername = wrapper.find(TextInput).first()
         const wrapperPassword = wrapper.find(TextInput).at(1)
-        const wrapperWithButton = wrapperLogin.find(Button)
+        const wrapperWithButton = wrapperLogin.find(TouchableOpacity)
 
         const usernameForm = wrapperLogin.find(TextInput).at(0);
         usernameForm.props()["onChangeText"]("decidehueznar");
@@ -107,7 +107,7 @@ describe('Testing App component',() => {
         const passwordForm = wrapperLogin.find(TextInput).at(1);
         passwordForm.props()["onChangeText"]("decidehueznar");
         
-        wrapperLogin.find(Button).simulate('click')
+        wrapperLogin.find(TouchableOpacity).simulate('click')
 
         await new Promise((r) => setTimeout(r, 250));
 

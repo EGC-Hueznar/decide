@@ -81,7 +81,7 @@ export default class Login extends Component {
                                         {this.state.error && <View style={{paddingTop:10, paddingBottom:7}}>
                                         <Text style={{color:'rgb(192,26,26)', fontSize:15}}>El usuario introducido no existe</Text>
                                         </View>}
-                                        <TouchableOpacity style={styles.btnprimary} onPress={this.onSubmitLogin}>
+                                        <TouchableOpacity id="button" style={styles.btnprimary} onPress={this.onSubmitLogin}>
                                             <Text style={{color:"#fff"}}>Login</Text>
                                         </TouchableOpacity>
                                     </View>
