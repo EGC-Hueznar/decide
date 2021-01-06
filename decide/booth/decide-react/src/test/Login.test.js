@@ -103,6 +103,14 @@ describe('Test case for testing login',() => {
                 expect(String(ans.data)).toBe(String(correctUser));
         })
         
+        it('Incorrect submitLogin', async () => {
+            const wrapper = shallow(<Login />)                
+            const mockAxios =  new MockAdapter(axios);
+            mockAxios.onPost(config.LOGIN_URL).reply(400);                 
+            await wrapper.instance().onSubmitLogin()
+            await new Promise(r => setTimeout(r, 250)); 
+            expect(wrapper.state('error')).toBe(true);
+        })
     });
    
 })
