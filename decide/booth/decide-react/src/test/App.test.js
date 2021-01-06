@@ -237,7 +237,7 @@ describe('Testing App component',() => {
         
         wrapperLogin.find(Button).simulate('click')
 
-        await new Promise((r) => setTimeout(r, 250));
+        await new Promise((r) => setTimeout(r, 1000));
 
         expect(wrapperLogin).toHaveLength(1);
         expect(wrapperUsernameTextInput).toHaveLength(2);

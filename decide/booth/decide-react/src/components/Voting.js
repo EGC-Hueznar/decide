@@ -97,8 +97,8 @@ export default class Voting extends Component {
                   style={styles.radioStyle}
                   radio_props={this.state.options}
                   initial={-1}
-                  formHorizontal={true}
-                  labelHorizontal={false}
+                  formHorizontal={false}
+                  labelHorizontal={true}
                   buttonColor={"#2196f3"}
                   animation={true}
                   onPress={(val) => this.updateSelected(val)}
@@ -187,7 +187,7 @@ const styles = StyleSheet.create ({
     },
     radioStyle:{
         justifyContent: 'center',
-        alignSelf: 'center'  
+        alignSelf: 'center'
     },
     row: {
     },
