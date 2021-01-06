@@ -71,6 +71,48 @@ class VisualizerVotingList(TemplateView):
 class VisualizerView(TemplateView):
     template_name = 'visualizer/visualizer.html'
 
+    def get_context_data(self, tipo, voting_id, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if(tipo == 'normal'):
+            context['voting'], self.template_name = self.normal(voting_id)
+        elif(tipo == 'multiple'):
+            context['voting'], self.template_name = self.multiple(voting_id)
+        elif(tipo == 'preferencia'):
+            context['voting'], self.template_name = self.preferencia(voting_id)
+        elif(tipo == 'binaria'):
+            context['voting'], self.template_name = self.binario(voting_id)
+        else:
+            context['tipov'] = 'default'
+            context['lista'] = Voting.objects.all()
+            raise Http404
+        return context
+
+    def normal(self, voting_id):
+        template = 'visualizer/resultnormal.html'
+        context = {}
+        context["lista"] = ""
+        return (context, template)
+
+    def multiple(self, voting_id):
+        template = 'visualizer/resultmul.html'
+        context = {}
+        context["lista"] = ""
+        return (context, template)
+
+    def preferencia(self, voting_id):
+        template = 'visualizer/resultpref.html'
+        context = {}
+        context["lista"] = ""
+        return (context, template)
+
+    def binario(self, voting_id):
+        template = 'visualizer/resultbin.html'
+        context = {}
+        context["lista"] = ""
+        return (context, template)
+
+    #============================================================================================
+
     #funcion que devuelve diccionario con los objetos que se sumarán al context principal
     def grafica_votos(self, id):
 
@@ -103,7 +145,7 @@ class VisualizerView(TemplateView):
         
         return context
 
-    def get_context_data(self, **kwargs):
+    def get_context_dataa(self, **kwargs):
         context = super().get_context_data(**kwargs)
         vid = kwargs.get('voting_id', 0)
 
