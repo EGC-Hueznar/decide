@@ -7,8 +7,8 @@ import axios from 'axios';
 import config from './config.json';
 import { postData } from './utils';
 import AsyncStorage from '@react-native-community/async-storage'
-import { StyleSheet} from "react-native";
 import * as JSONbig from "json-bigint";
+import { styles } from "./styles";
 
 
 class App extends React.Component {
@@ -161,86 +161,4 @@ class App extends React.Component {
     }
 }
 
-
-const styles = StyleSheet.create({
-    html: {
-        margin: 0,
-        padding: 0,
-    },
-    body: {
-        margin: 0,
-        padding: 0,
-        fontFamily: '"Helvetica Neue",Helvetica,Arial,sans-serif',
-        fontSize: 18,
-        fontWeight: 'normal',
-        lineHeight: 24,
-        display: 'flex',
-        alignItems: 'center',
-        alignContent: 'center',
-        backgroundColor: '#fff',
-    },
-    container: {
-        width: '100%',
-        maxWidth: 960,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    content: {
-        width: '100%',
-        borderRadius: 10,
-        padding: 25,
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: '#333',
-        lineHeight: 1.2,
-        textAlign: 'center',
-        width: '100%',
-        padding: 30
-    },
-    btnprimary: {
-        width: '100%',
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'center',
-        fontSize: 18,
-        lineHeight: 1.5,
-        color: '#fff',
-        textTransform: 'uppercase',
-        width: '100%',
-        height: 50,
-        borderRadius: 25,
-        backgroundColor: '#0064cd',
-        paddingTop: 0,
-        paddingRight: 25,
-        paddingBottom: 0,
-        paddingLeft: 25,
-        textShadowOffset: {
-            width: 0,
-            height: -1,
-        },
-        textShadowRadius: 0,
-        textShadowColor: 'rgba(0, 0, 0, 0.25)',
-        borderTopColor: '#0064cd',
-        borderRightColor: '#0064cd',
-        borderBottomColor: '#003f81',
-        borderLeftColor: '#0064cd',
-    },
-    containerList: {
-        flex: 1,
-        paddingTop: 20
-    },
-    sectionHeader: {
-        paddingVertical: 20,
-        paddingHorizontal: 30,
-        fontSize: 20,
-        backgroundColor: "#F1F1F1",
-        borderRadius: 5,
-    },
-    item: {
-        marginBottom: 10,
-    },
-    
-});
 export default App;

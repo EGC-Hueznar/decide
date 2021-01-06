@@ -3,6 +3,7 @@ import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 import config from '../config.json';
 import { postData } from '../utils';
 import { StyleSheet} from "react-native";
+import { styles } from "../styles";
 
 
 export default class Login extends Component {
@@ -94,92 +95,3 @@ export default class Login extends Component {
         );
     }
 }
-
-const styles = StyleSheet.create({
-    html: {
-        margin: 0,
-        padding: 0,
-    },
-    body: {
-        margin: 0,
-        padding: 0,
-        fontFamily: '"Helvetica Neue",Helvetica,Arial,sans-serif',
-        fontSize: 18,
-        fontWeight: 'normal',
-        lineHeight: 24,
-        display: 'flex',
-        alignItems: 'center',
-        alignContent: 'center',
-        backgroundColor: '#fff',
-    },
-    container: {
-        width: '100%',
-        maxWidth: 960,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    content: {
-        width: '100%',
-        borderRadius: 10,
-        padding: 25,
-    },
-    row: {
-    },
-    clearfix: {
-        "marginBottom": 24,
-    },
-    input: {
-        fontSize: 15,
-        lineHeight: 1,
-        color: '#666666',
-        width: '100%',
-        backgroundColor: '#f1f1f1',
-        height: 50,
-        borderRadius: 25,
-        paddingTop: 0,
-        paddingRight: 30,
-        paddingBottom: 0,
-        paddingLeft: 20,
-        width: '100%',
-    },
-    btnprimary: {
-        width: '100%',
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'center',
-        fontSize: 18,
-        lineHeight: 1.5,
-        color: '#fff',
-        textTransform: 'uppercase',
-        width: '100%',
-        height: 50,
-        borderRadius: 25,
-        backgroundColor: '#0064cd',
-        paddingTop: 0,
-        paddingRight: 25,
-        paddingBottom: 0,
-        paddingLeft: 25,
-        textShadowOffset: {
-            width: 0,
-            height: -1,
-        },
-        textShadowRadius: 0,
-        textShadowColor: 'rgba(0, 0, 0, 0.25)',
-        borderTopColor: '#0064cd',
-        borderRightColor: '#0064cd',
-        borderBottomColor: '#003f81',
-        borderLeftColor: '#0064cd',
-    },
-    actions: {
-
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: '#000000',
-        lineHeight: 1.2,
-        textAlign: 'center',
-        width: '100%',
-        padding: 30
-    },
-  });
