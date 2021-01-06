@@ -27,6 +27,8 @@ describe('Testing AsyncStorage methods',() => {
         await wrapper.instance().handleSetStorage('testing','testing')
         
         expect(AsyncStorage.setItem).toBeCalledWith('testing','testing')
+
+        wrapper.unmount()
     });
 
     //Probamos si handleGetStorage llama al metodo setItem de AsyncStorage
@@ -36,6 +38,8 @@ describe('Testing AsyncStorage methods',() => {
         await wrapper.instance().handleGetStorage('testing')
         
         expect(AsyncStorage.getItem).toBeCalledWith('testing')
+
+        wrapper.unmount()
     });
 })
 
@@ -51,7 +55,30 @@ describe('mocking handleGetStorage', () => {
         expect(getItemSpy).toHaveBeenCalled()
         expect(componentDidMountSpy).toHaveBeenCalledTimes(1)
         expect(wrapper.state('token')).toBe('Valor de prueba para mock')
+
+        wrapper.unmount()
     })
+
+    it('handleGetStorage did not set token with null value', async () =>{
+
+        const wrapper1 = await shallow(<App/>)
+
+        //Por defecto está a indefinido
+        expect(wrapper1.state('token')).toBe(undefined)
+
+        wrapper1.unmount()
+
+        AsyncStorage.getItem.mockResolvedValueOnce('')
+        const getItemSpy = jest.spyOn(AsyncStorage, 'getItem')
+        
+        const wrapper2 = await shallow(<App/>)
+
+        expect(getItemSpy).toHaveBeenCalled()
+        expect(wrapper2.state('token')).toBe(undefined)
+
+        wrapper2.unmount()
+    })
+
 })
 
 describe('componentDidMount call other methods',() =>{
