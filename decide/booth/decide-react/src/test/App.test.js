@@ -391,7 +391,7 @@ describe('Testing App style',() => {
         const passwordForm = wrapperLogin.find(TextInput).at(1);
         passwordForm.props()["onChangeText"]("decidehueznar");
 
-        wrapperLogin.find(Button).simulate('click')
+        wrapperLogin.find(TouchableOpacity).simulate('click')
         wrapperText = wrapper.find(Text).at(2).get(0);
         expect(wrapperText.props.style).toHaveProperty('fontSize', 24);
     });
@@ -421,9 +421,9 @@ describe('Testing App style',() => {
         const passwordForm = wrapperLogin.find(TextInput).at(1);
         passwordForm.props()["onChangeText"]("decidehueznar");
 
-        wrapperLogin.find(Button).simulate('click')
-        wrapperButton = wrapper.find(Button);
-        expect(wrapperButton.prop('color')).toBe('linear-gradient(top, #049cdb, #0064cd)');
+        wrapperLogin.find(TouchableOpacity).simulate('click')
+        wrapperButton = wrapper.find(TouchableOpacity);
+        expect(wrapperButton.prop("style").backgroundColor).toBe("#0064cd");
     });
     
     /*
