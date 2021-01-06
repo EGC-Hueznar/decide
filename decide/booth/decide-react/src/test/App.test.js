@@ -21,6 +21,23 @@ describe('componentDidMount call other methods',() =>{
         
     })
 
+    //Comprueba si al llamar a componentDidMount ejecuta las funciones que se esperan
+    it('Should call functions during componentDidMount', async () =>{
+        let wrapper = mount(<App/>) 
+
+        const instance = wrapper.instance()
+
+
+        const initSpy = jest.spyOn(instance,'init')
+        const clearStorageSpy = jest.spyOn(instance,'clearStorage')
+        const handleGetSpy = jest.spyOn(instance,'handleGetStorage')
+
+        instance.componentDidMount()
+
+        expect(initSpy).toHaveBeenCalled()
+        expect(clearStorageSpy).toHaveBeenCalled()
+        expect(handleGetSpy).toHaveBeenCalled()
+    })
 })
 
 describe('Testing App component',() => {
