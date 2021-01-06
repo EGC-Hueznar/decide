@@ -15,7 +15,6 @@ import { postData } from '../utils';
 // Hide warning
 console.error = () => {}
 
-
 describe('Testing AsyncStorage methods',() => {
     
     //Mockeamos las llamadas externas de AsyncStorage
@@ -139,8 +138,41 @@ describe('componentDidMount call other methods',() =>{
 describe('Testing App component',() => {
 
     let wrapper;
-    
     configure({adapter: new Adapter()});
+
+    it('Correct Mock GETUSER', async () => {
+        const correctUser = {
+            id: 1,
+            email: "",
+            first_name: "",
+            last_name: "",
+            username: "decidehueznar",
+            is_staff: true
+        }
+        
+        const data = {}
+        const token = 100;
+        
+        const answer = [200, correctUser]
+        
+        const mockAxios =  new MockAdapter(axios);
+        mockAxios.onPost(config.GETUSER_URL, data).reply(200, correctUser)
+
+        const ans = await postData(config.GETUSER_URL, data, token)
+
+        await new Promise(r => setTimeout(r, 250)); 
+
+        expect(String(ans.data)).toBe(String(correctUser));
+    });
+
+    it('Correct Mock LOGIN', async () => {
+
+        const data = {token: 100}
+        const mockAxios =  new MockAdapter(axios);
+        mockAxios.onPost(config.LOGIN_URL).reply(200, data);
+
+        expect(String(data)).toBe(String({token: 100}))
+    });
 
     it('Correct render Login component', () => {
         wrapper = mount(<App />);
@@ -191,6 +223,20 @@ describe('Testing App component',() => {
     });
 
     it('Full integration Login test Incorrect', async () => {
+        const correctUser = {
+            id: 1,
+            email: "",
+            first_name: "",
+            last_name: "",
+            username: "decidehueznar",
+            is_staff: true
+        }
+        
+        const data = {token: 100}
+        const mockAxios =  new MockAdapter(axios);
+        mockAxios.onPost(config.LOGIN_URL).reply(200, data);
+        mockAxios.onPost(config.GETUSER_URL).reply(400, "Bad Request");
+
         wrapper = mount(<App/>);
         const wrapperLogin = wrapper.find(Login);
         const wrapperUsernameTextInput = wrapper.find(TextInput)
@@ -222,6 +268,20 @@ describe('Testing App component',() => {
     });  
     
     it('Full integration Login test Correct', async () => {
+        const correctUser = {
+            id: 1,
+            email: "",
+            first_name: "",
+            last_name: "",
+            username: "decidehueznar",
+            is_staff: true
+        }
+        
+        const data = {token: 100}
+        const mockAxios =  new MockAdapter(axios);
+        mockAxios.onPost(config.LOGIN_URL).reply(200, data);
+        mockAxios.onPost(config.GETUSER_URL).reply(200, correctUser);
+
         wrapper = mount(<App/>);
         const wrapperLogin = wrapper.find(Login);
         const wrapperUsernameTextInput = wrapper.find(TextInput)

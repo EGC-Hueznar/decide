@@ -35,7 +35,6 @@ export default class Login extends Component {
         const data = {
             token
         };
-        
         postData(config.GETUSER_URL, data, token)
             .then(response => {
                 setUser(response.data);
