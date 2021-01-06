@@ -14,7 +14,7 @@ def send_twitter_report_json(voting):
     post = voting.get('postproc')
 
     tweet = "Votación: " + vot_name +"\n"
-    tweet += vot_question + "\n\t"
+    tweet += vot_question + "\n"
     tweet += "\nResultados: \n"
     for option in post:
         tweet += option.get('option') + " - " + str(option.get('votes')) + " votos \n"
