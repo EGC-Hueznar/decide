@@ -81,8 +81,6 @@ class VisualizerVotesTestCase(BaseTestCase):
         self.login()
         response = self.client.get('/visualizer/', follow=True)
         self.assertEqual(response.status_code,200)
-        vo1 = Votacion.objects.get(titulo = "¿Te gusta EGC?")
-        self.assertEqual(vo1.titulo, "¿Te gusta EGC?")
     def test_visualizer_normal(self):
         self.login()
         response = self.client.get('/visualizer/normal', follow=True)
@@ -91,3 +89,19 @@ class VisualizerVotesTestCase(BaseTestCase):
         self.assertEqual(response.status_code,200)
         vo1 = Votacion.objects.get(titulo = "¿Te gusta EGC?")
         self.assertEqual(vo1.titulo, "¿Te gusta EGC?")
+    def test_visualizer_preferencia(self):
+        self.login()
+        response = self.client.get('/visualizer/preferencia', follow=True)
+        self.assertEqual(response.status_code,200)
+        response = self.client.get('/visualizer/preferencia/{}'.format(self.vp2.id), follow=True)
+        self.assertEqual(response.status_code,200)
+        vp2 = Votacion.objects.get(titulo = "¿Te gusta PGPI?")
+        self.assertEqual(vp2.titulo, "¿Te gusta PGPI?")
+    def test_visualizer_multiple(self):
+        self.login()
+        response = self.client.get('/visualizer/multiple', follow=True)
+        self.assertEqual(response.status_code,200)
+        response = self.client.get('/visualizer/multiple/{}'.format(self.vp3.id), follow=True)
+        self.assertEqual(response.status_code,200)
+        vp3 = Votacion.objects.get(titulo = "¿Te gusta AII?")
+        self.assertEqual(vp3.titulo, "¿Te gusta AII?")
