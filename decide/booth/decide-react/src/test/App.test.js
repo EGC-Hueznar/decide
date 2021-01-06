@@ -7,12 +7,46 @@ import 'jsdom-global/register';
 import Login from '../components/Login';
 import { Alert, Button, Text, TextInput, View } from 'react-native';
 import Barra from '../components/Barra';
+import axios from 'axios';
+import MockAdapter from "axios-mock-adapter";
+import config from '../config.json'
+import { postData } from '../utils';
+
+// Hide warning
+console.error = () => {}
+
+// Mocking
+const correctUser = {
+    id: 1,
+    email: "",
+    first_name: "",
+    last_name: "",
+    username: "decidehueznar",
+    is_staff: true
+}
+
+const data = {}
+
+const token = 100;
+
+const answer = [200, correctUser]
+
+const mockAxios =  new MockAdapter(axios);
+mockAxios.onPost(config.STORE_URL, data, token).reply(answer)
 
 describe('Testing App component',() => {
 
     let wrapper;
-    
     configure({adapter: new Adapter()});
+
+    it('Correct Mock', async () => {
+        const answer1 = [200, correctUser]
+        const ans = postData(config.STORE_URL, data, token)
+
+        await new Promise(r => setTimeout(r, 250)); 
+
+        expect(ans).toBe(answer1);
+    });
 
     it('Correct render Login component', () => {
         wrapper = mount(<App />);

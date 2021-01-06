@@ -53,7 +53,6 @@ class App extends React.Component {
         const data = {
             token
         };
-        
         postData(config.GETUSER_URL, data, token)
             .then(response => {
                 this.setUser(response.data);
