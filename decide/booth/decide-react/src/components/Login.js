@@ -18,13 +18,10 @@ export default class Login extends Component {
 
     onSubmitLogin = () => {
         const { setToken, handleSetStorage } = this.props;
-        console.log("Llega antes del postData")
         postData(config.LOGIN_URL, this.state.form)
             .then(response => {
-                console.log(response)
                handleSetStorage("decide", response.data.token)
                 setToken(response.data.token)
-                console.log("Llega antes del getUser")
                 this.getUser();
             })
             .catch(error => {
@@ -37,7 +34,6 @@ export default class Login extends Component {
         const data = {
             token
         };
-        console.log("Llega antes")
         postData(config.GETUSER_URL, data, token)
             .then(response => {
                 setUser(response.data);
