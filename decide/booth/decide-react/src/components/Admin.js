@@ -20,7 +20,7 @@ export default class Admin extends Component {
              (<AdminHome setSelectedView={this.setSelectedView}/>)
              :
              (this.state.selectedView == "votings" ?
-                (<AdminVotings votings={this.props.votings}/>)
+                (<AdminVotings votings={this.props.votings} setSelectedView={this.setSelectedView}/>)
                 :
                 (<Button title="Volver al inicio" onPress={() => this.setSelectedView("home")}/>))
             }

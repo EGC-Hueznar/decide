@@ -1,86 +1,16 @@
 import React, { Component } from 'react';
-import { BigInt } from '../crypto/BigInt';
-import { ElGamal } from '../crypto/ElGamal';
-import { Alert, Button, Text, View } from 'react-native';
-import { postData } from '../utils';
-import config from '../config.json';
-import { StyleSheet} from "react-native";
+import { Alert, StyleSheet, Button, Text, View } from 'react-native';
 import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
 
 export default class AdminVoting extends Component {
 
     state = {
-        bigpk: {
-            p: BigInt.fromJSONObject(this.props.voting.pub_key.p.toString()),
-            g: BigInt.fromJSONObject(this.props.voting.pub_key.g.toString()),
-            y: BigInt.fromJSONObject(this.props.voting.pub_key.y.toString()),
-        },
-        voting: null,
-        selected: null,
+        voting: undefined,
         options: new Array(),
-        noSelection: false
-
-    }
-
-    doneToFalse =() => {
-        this.props.setDone(false);
-    }
-
-    handleSubmit = (event) => {
-        event.preventDefault();
-        if (!this.state.selected) {
-            this.setState({noSelection:true})
-        } else {
-            const { voting, user } = this.props;
-            const vote = this.encrypt();
-            const data = {
-                vote: {a: vote.alpha.toString(), b: vote.beta.toString()},
-                voting: voting.id,
-                voter: user.id,
-                token: this.props.token
-            };
-            this.send(data);
-        }
-    }
-
-    encrypt = () =>  {
-        const { selected } = this.state;
-        const bigmsg = BigInt.fromJSONObject(selected.toString());
-        const cipher = ElGamal.encrypt(this.state.bigpk, bigmsg);
-        return cipher;
-    }
-
-    send = (data) => {
-        postData(config.STORE_URL, data, this.props.token)
-            .then(response => {
-                this.props.setDone(true)
-                this.props.resetSelected();
-            })
-            .catch(error => {
-                alert(`Error: ${error}`);
-            });
-    }
-
-    introduccion = (opt) => {
-        const dict ={};
-        dict['label'] = opt.option;
-        dict['value'] = opt.number;
-        this.state.options.push(dict);
-    }
-
-    options = (voting) => {
-        voting.question.options.map(opt =>
-        this.introduccion(opt))}
-
-    componentDidMount() {
-        this.doneToFalse();
-        const { voting } = this.props;
-        this.options(voting);
-        this.setState({options:this.state.options})
     }
 
     render() {
-        const { voting, resetSelected } = this.props;
+        const { voting } = this.props;
 
         return <View style={styles.htmlStyle}>
                 <View style={styles.containerStyle}>
@@ -94,26 +24,24 @@ export default class AdminVoting extends Component {
                             <View style={styles.clearfix}>
                             <RadioForm style={styles.radioStyle}
                                             radio_props={this.state.options}
+                                            disabled = {true}
                                             initial={-1}
                                             formHorizontal={true}
                                             labelHorizontal={false}
                                             buttonColor={'#2196f3'}
                                             animation={true}
-                                            onPress={(itemValue) => this.setState({selected: itemValue})}
+                                            onPress={() => {}}
                                             buttonSize={20}
                                         />
                             </View>
-                            {this.state.noSelection && <View style={styles.textStyle}>
-                                            <Text style={{fontWeight: 'bold', color:'rgb(192,26,26)', fontFamily: 'calibri', fontSize:'15px'}}>Debe seleccionar una opción</Text>
-                                        </View>}
                             <View style={styles.clearfix}>
                                 <View style={styles.button1Style}>
-                                    <Button title="Votar" color="linear-gradient(top, #049cdb, #0064cd)" onPress={this.handleSubmit} />
+                                    <Button title="Votar" color="linear-gradient(top, #049cdb, #0064cd)" disabled={true} />
                                 </View>
                             </View>
                             <View style={styles.clearfix}>
                                 <View style={styles.button2Style}>
-                                    <Button title="Volver" color="linear-gradient(top, #696969, #000000)" onPress={resetSelected} />
+                                    <Button title="Volver" color="linear-gradient(top, #696969, #000000)" />
                                 </View>
                             </View>
                         </View>
