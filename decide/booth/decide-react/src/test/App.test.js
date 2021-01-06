@@ -8,6 +8,38 @@ import Login from '../components/Login';
 import { Alert, Button, Text, TextInput, View } from 'react-native';
 import Barra from '../components/Barra';
 
+
+describe('Testing AsyncStorage methods',() => {
+    
+    //Mockeamos las llamadas externas de AsyncStorage
+    jest.mock('@react-native-community/async-storage', () => ({
+        AsyncStorage: {
+            setItem: jest.fn(),
+            getItem: jest.fn(),
+            clear: jest.fn(),
+          }
+        }));
+
+    //Probamos si handleSetStorage llama al metodo setItem de AsyncStorage
+    it('check if setItem in AsyncStorage is called through handleSetStorage', async () => {
+        let wrapper = shallow(<App/>)
+
+        await wrapper.instance().handleSetStorage('testing','testing')
+        
+        expect(AsyncStorage.setItem).toBeCalledWith('testing','testing')
+    });
+
+    //Probamos si handleGetStorage llama al metodo setItem de AsyncStorage
+    it('check if getItem in AsyncStorage is called through handleGetStorage', async () => {
+        let wrapper = shallow(<App/>)
+
+        await wrapper.instance().handleGetStorage('testing')
+        
+        expect(AsyncStorage.getItem).toBeCalledWith('testing')
+    });
+    
+})
+
 describe('componentDidMount call other methods',() =>{
 
     //Comprueba si se llama a componentDidMount al montar App
