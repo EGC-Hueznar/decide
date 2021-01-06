@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'import_export',
     'corsheaders',
     'django_filters',
     'rest_framework',
@@ -106,12 +106,13 @@ WSGI_APPLICATION = 'decide.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
+IMPORT_EXPORT_USE_TRANSACTIONS = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'decide',
-        'USER': 'decide',
-        'PASSWORD': 'decide',
+        'NAME': 'decideEGC',
+        'USER': 'decideEGC',
+        'PASSWORD': 'decideEGC',
         'HOST': 'localhost',
         'PORT': '5432',
     }
