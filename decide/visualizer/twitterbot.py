@@ -11,8 +11,7 @@ def send_twitter_report_json(voting):
     voting_desc = voting.get('desc')
     voting_q = voting.get('question').get('desc')
     voting_start = voting.get('start_date')
-    voting_end = voting.get('end_date')
-    voting_tally = voting.get('tally')
+    voting_end = voting.get('end_date') 
 
     status = "Votación no comenzada"
     if voting_start is not None:     
@@ -53,7 +52,6 @@ def send_twitter_report_voting(voting):
         voting_q = voting.question
         voting_start = voting.start_date
         voting_end = voting.end_date
-        voting_tally = voting.tally
 
         status = "Votación no comenzada"
         if voting_start is not None:     
