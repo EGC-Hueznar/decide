@@ -18,7 +18,7 @@ describe('Testing AsyncStorage methods',() => {
             getItem: jest.fn(),
             clear: jest.fn(),
           }
-        }));
+    }));
 
     //Probamos si handleSetStorage llama al metodo setItem de AsyncStorage
     it('check if setItem in AsyncStorage is called through handleSetStorage', async () => {
@@ -37,7 +37,21 @@ describe('Testing AsyncStorage methods',() => {
         
         expect(AsyncStorage.getItem).toBeCalledWith('testing')
     });
-    
+})
+
+describe('mocking handleGetStorage', () => {
+
+    it('handleGetStorage setted token', async () =>{
+        AsyncStorage.getItem.mockResolvedValueOnce('Valor de prueba para mock')
+        const getItemSpy = jest.spyOn(AsyncStorage, 'getItem')
+        const componentDidMountSpy = jest.spyOn(App.prototype, 'componentDidMount')
+        
+        const wrapper = await shallow(<App/>)
+
+        expect(getItemSpy).toHaveBeenCalled()
+        expect(componentDidMountSpy).toHaveBeenCalledTimes(1)
+        expect(wrapper.state('token')).toBe('Valor de prueba para mock')
+    })
 })
 
 describe('componentDidMount call other methods',() =>{
