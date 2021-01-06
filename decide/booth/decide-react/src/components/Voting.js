@@ -115,6 +115,7 @@ export default class Voting extends Component {
                       color: "#0000ff",
                       // fontFamily: "calibri",
                       fontSize: 15,
+                      textAlign: 'center'
                     }}
                   >
                     Debe seleccionar una opción
@@ -124,12 +125,12 @@ export default class Voting extends Component {
       
               <View style={styles.clearfix}>
                 <TouchableOpacity style={styles.button1Style} onPress={this.handleSubmit}>
-                  <Text style={{color:"#fff"}}>Votar</Text>
+                  <Text style={{color:"#fff", textAlign:'center'}}>Votar</Text>
                 </TouchableOpacity>
               </View>
               <View style={styles.clearfix}>
                 <TouchableOpacity style={styles.button2Style} onPress={resetSelected}>
-                  <Text style={{color:"#999"}}>Volver a votaciones</Text>
+                  <Text style={{color:"#999", textAlign:'center'}}>Volver a votaciones</Text>
                 </TouchableOpacity>
               </View>
             </View>

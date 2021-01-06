@@ -146,7 +146,7 @@ class App extends React.Component {
                                                                     <FlatList style={styles.item} data={this.state.votings} renderItem={this.render_voting} />
                                                             </SafeAreaView>
                                                             <TouchableOpacity style={styles.btnprimary} onPress={this.onSubmitLogin}>
-                                                                <Text style={{color:"#fff"}}>Recargar</Text>
+                                                                <Text style={{color:"#fff", textAlign:'center'}}>Recargar</Text>
                                                             </TouchableOpacity>
                                                         </View>
                                                     </View>
