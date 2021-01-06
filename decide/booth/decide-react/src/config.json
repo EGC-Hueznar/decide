@@ -1,9 +1,10 @@
 {
-    "BASE_URL": "http://localhost:8000",
-    "LOGIN_URL": "http://localhost:8000/authentication/login/",
-    "GETUSER_URL": "http://localhost:8000/authentication/getuser/",
-    "LOGOUT_URL": "http://localhost:8000/authentication/logout/",
-    "STORE_URL": "http://localhost:8000/store/",
-    "VOTING_URL": "http://localhost:8000/voting/",
+    "BASE_URL": "",
+    "LOGIN_URL": "/authentication/login/",
+    "GETUSER_URL": "/authentication/getuser/",
+    "LOGOUT_URL": "/authentication/logout/",
+    "STORE_URL": "/store/",
+    "VOTING_URL": "/voting/",
+    "CENSUS_VOTINGS_URL": "/census/votings/",
     "KEYBITS": 256
 }

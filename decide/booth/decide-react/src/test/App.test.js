@@ -5,7 +5,7 @@ import Adapter from 'enzyme-adapter-react-16';
 import AsyncStorage from '@react-native-community/async-storage'
 import 'jsdom-global/register';
 import Login from '../components/Login';
-import { Alert, Button, FlatList, Text, TextInput, View } from 'react-native';
+import { Alert, Button, FlatList, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Barra from '../components/Barra';
 import axios from 'axios';
 import MockAdapter from "axios-mock-adapter";
@@ -15,11 +15,164 @@ import { postData } from '../utils';
 // Hide warning
 console.error = () => {}
 
+describe('Testing AsyncStorage methods',() => {
+    
+    //Mockeamos las llamadas externas de AsyncStorage
+    jest.mock('@react-native-community/async-storage', () => ({
+        AsyncStorage: {
+            setItem: jest.fn(),
+            getItem: jest.fn(),
+            clear: jest.fn(),
+          }
+    }));
+
+    //Probamos si handleSetStorage llama al metodo setItem de AsyncStorage
+    it('check if setItem in AsyncStorage is called through handleSetStorage', async () => {
+        let wrapper = shallow(<App/>)
+
+        await wrapper.instance().handleSetStorage('testing','testing')
+        
+        expect(AsyncStorage.setItem).toBeCalledWith('testing','testing')
+
+        wrapper.unmount()
+    });
+
+    //Probamos si handleGetStorage llama al metodo setItem de AsyncStorage
+    it('check if getItem in AsyncStorage is called through handleGetStorage', async () => {
+        let wrapper = shallow(<App/>)
+
+        await wrapper.instance().handleGetStorage('testing')
+        
+        expect(AsyncStorage.getItem).toBeCalledWith('testing')
+
+        wrapper.unmount()
+    });
+})
+
+describe('mocking handleGetStorage', () => {
+
+    it('handleGetStorage setted token', async () =>{
+        AsyncStorage.getItem.mockResolvedValueOnce('Valor de prueba para mock')
+        const getItemSpy = jest.spyOn(AsyncStorage, 'getItem')
+        const componentDidMountSpy = jest.spyOn(App.prototype, 'componentDidMount')
+        
+        const wrapper = await shallow(<App/>)
+
+        expect(getItemSpy).toHaveBeenCalled()
+        expect(componentDidMountSpy).toHaveBeenCalledTimes(1)
+        expect(wrapper.state('token')).toBe('Valor de prueba para mock')
+
+        wrapper.unmount()
+    })
+
+    it('handleGetStorage did not set token with null value', async () =>{
+
+        const wrapper1 = await shallow(<App/>)
+
+        //Por defecto está a indefinido
+        expect(wrapper1.state('token')).toBe(undefined)
+
+        wrapper1.unmount()
+
+        AsyncStorage.getItem.mockResolvedValueOnce('')
+        const getItemSpy = jest.spyOn(AsyncStorage, 'getItem')
+        
+        const wrapper2 = await shallow(<App/>)
+
+        expect(getItemSpy).toHaveBeenCalled()
+        expect(wrapper2.state('token')).toBe(undefined)
+
+        wrapper2.unmount()
+    })
+
+})
+
+describe('componentDidMount call other methods',() =>{
+
+    //Comprueba si se llama a componentDidMount al montar App
+    it('componentDidMount called at mounted', () =>{
+
+        const componentDidMountSpy = jest.spyOn(App.prototype, 'componentDidMount')
+
+        let wrapper = mount(<App/>)
+
+        expect(componentDidMountSpy).toBeCalled()
+        
+    })
+
+    //Comprueba si al llamar a componentDidMount ejecuta las funciones que se esperan
+    it('Should call functions during componentDidMount', async () =>{
+        let wrapper = mount(<App/>) 
+
+        const instance = wrapper.instance()
+
+
+        const initSpy = jest.spyOn(instance,'init')
+        const clearStorageSpy = jest.spyOn(instance,'clearStorage')
+        const handleGetSpy = jest.spyOn(instance,'handleGetStorage')
+
+        instance.componentDidMount()
+
+        expect(initSpy).toHaveBeenCalled()
+        expect(clearStorageSpy).toHaveBeenCalled()
+        expect(handleGetSpy).toHaveBeenCalled()
+    })
+
+    //Comprueba que, si no se llama a componentDidMount las funciones no se ejecutan
+    it('Check if expected methods are not called by componentDidMount', async () =>{
+        let wrapper = shallow(<App/>)
+    
+        let instance = wrapper.instance()
+    
+        const initSpy = jest.spyOn(instance,'init')
+        const clearStorageSpy = jest.spyOn(instance,'clearStorage')
+        const handleGetSpy = jest.spyOn(instance,'handleGetStorage')
+        
+        expect(initSpy).toBeCalledTimes(0)
+        expect(clearStorageSpy).toBeCalledTimes(0)
+        expect(handleGetSpy).toBeCalledTimes(0)
+    
+    })
+})
+
 describe('Testing App component',() => {
 
     let wrapper;
-    
     configure({adapter: new Adapter()});
+
+    it('Correct Mock GETUSER', async () => {
+        const correctUser = {
+            id: 1,
+            email: "",
+            first_name: "",
+            last_name: "",
+            username: "decidehueznar",
+            is_staff: true
+        }
+        
+        const data = {}
+        const token = 100;
+        
+        const answer = [200, correctUser]
+        
+        const mockAxios =  new MockAdapter(axios);
+        mockAxios.onPost(config.GETUSER_URL, data).reply(200, correctUser)
+
+        const ans = await postData(config.GETUSER_URL, data, token)
+
+        await new Promise(r => setTimeout(r, 250)); 
+
+        expect(String(ans.data)).toBe(String(correctUser));
+    });
+
+    it('Correct Mock LOGIN', async () => {
+
+        const data = {token: 100}
+        const mockAxios =  new MockAdapter(axios);
+        mockAxios.onPost(config.LOGIN_URL).reply(200, data);
+
+        expect(String(data)).toBe(String({token: 100}))
+    });
 
     it('Correct render Login component', () => {
         wrapper = mount(<App />);
@@ -63,19 +216,33 @@ describe('Testing App component',() => {
         const wrapperUsernameTextInput = wrapperLogin.find(TextInput);
         const wrapperUsername = wrapperUsernameTextInput.first();
         const wrapperPassword = wrapperUsernameTextInput.at(1);
-        const wrapperWithButton = wrapperLogin.find(Button);
+        const wrapperWithButton = wrapperLogin.find(TouchableOpacity);
 
         expect(wrapperWithButton).toHaveLength(1);
         expect(wrapperWithButton.prop('id')).toBe('button');
     });
 
     it('Full integration Login test Incorrect', async () => {
+        const correctUser = {
+            id: 1,
+            email: "",
+            first_name: "",
+            last_name: "",
+            username: "decidehueznar",
+            is_staff: true
+        }
+        
+        const data = {token: 100}
+        const mockAxios =  new MockAdapter(axios);
+        mockAxios.onPost(config.LOGIN_URL).reply(200, data);
+        mockAxios.onPost(config.GETUSER_URL).reply(400, "Bad Request");
+
         wrapper = mount(<App/>);
         const wrapperLogin = wrapper.find(Login);
         const wrapperUsernameTextInput = wrapper.find(TextInput)
         const wrapperUsername = wrapper.find(TextInput).first()
         const wrapperPassword = wrapper.find(TextInput).at(1)
-        const wrapperWithButton = wrapperLogin.find(Button)
+        const wrapperWithButton = wrapperLogin.find(TouchableOpacity)
 
         const usernameForm = wrapperLogin.find(TextInput).at(0);
         usernameForm.props()["onChangeText"]("decidehueznar");
@@ -83,9 +250,9 @@ describe('Testing App component',() => {
         const passwordForm = wrapperLogin.find(TextInput).at(1);
         passwordForm.props()["onChangeText"]("contrasenna_erronea");
         
-        wrapperLogin.find(Button).simulate('click')
+        wrapperLogin.find(TouchableOpacity).simulate('click')
 
-        await new Promise((r) => setTimeout(r, 1000));
+        await new Promise((r) => setTimeout(r, 2000));
 
         expect(wrapperLogin).toHaveLength(1);
         expect(wrapperUsernameTextInput).toHaveLength(2);
@@ -101,12 +268,26 @@ describe('Testing App component',() => {
     });  
     
     it('Full integration Login test Correct', async () => {
+        const correctUser = {
+            id: 1,
+            email: "",
+            first_name: "",
+            last_name: "",
+            username: "decidehueznar",
+            is_staff: true
+        }
+        
+        const data = {token: 100}
+        const mockAxios =  new MockAdapter(axios);
+        mockAxios.onPost(config.LOGIN_URL).reply(200, data);
+        mockAxios.onPost(config.GETUSER_URL).reply(200, correctUser);
+
         wrapper = mount(<App/>);
         const wrapperLogin = wrapper.find(Login);
         const wrapperUsernameTextInput = wrapper.find(TextInput)
         const wrapperUsername = wrapper.find(TextInput).first()
         const wrapperPassword = wrapper.find(TextInput).at(1)
-        const wrapperWithButton = wrapperLogin.find(Button)
+        const wrapperWithButton = wrapperLogin.find(TouchableOpacity)
 
         const usernameForm = wrapperLogin.find(TextInput).at(0);
         usernameForm.props()["onChangeText"]("decidehueznar");
@@ -114,9 +295,9 @@ describe('Testing App component',() => {
         const passwordForm = wrapperLogin.find(TextInput).at(1);
         passwordForm.props()["onChangeText"]("decidehueznar");
         
-        wrapperLogin.find(Button).simulate('click')
+        wrapperLogin.find(TouchableOpacity).simulate('click')
 
-        await new Promise((r) => setTimeout(r, 250));
+        await new Promise((r) => setTimeout(r, 1000));
 
         expect(wrapperLogin).toHaveLength(1);
         expect(wrapperUsernameTextInput).toHaveLength(2);
@@ -210,7 +391,7 @@ describe('Testing App style',() => {
         const passwordForm = wrapperLogin.find(TextInput).at(1);
         passwordForm.props()["onChangeText"]("decidehueznar");
 
-        wrapperLogin.find(Button).simulate('click')
+        wrapperLogin.find(TouchableOpacity).simulate('click')
         wrapperText = wrapper.find(Text).at(2).get(0);
         expect(wrapperText.props.style).toHaveProperty('fontSize', 24);
     });
@@ -240,9 +421,9 @@ describe('Testing App style',() => {
         const passwordForm = wrapperLogin.find(TextInput).at(1);
         passwordForm.props()["onChangeText"]("decidehueznar");
 
-        wrapperLogin.find(Button).simulate('click')
-        wrapperButton = wrapper.find(Button);
-        expect(wrapperButton.prop('color')).toBe('linear-gradient(top, #049cdb, #0064cd)');
+        wrapperLogin.find(TouchableOpacity).simulate('click')
+        wrapperButton = wrapper.find(TouchableOpacity);
+        expect(wrapperButton.prop("style").backgroundColor).toBe("#0064cd");
     });
     
     /*
