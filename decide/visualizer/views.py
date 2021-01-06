@@ -67,8 +67,7 @@ class VisualizerVotingList(TemplateView):
             raise Http404
         return context
 
-
-class VisualizerView(TemplateView):
+class VisualizerVista(TemplateView):
     template_name = 'visualizer/visualizer.html'
 
     def get_context_data(self, tipo, voting_id, **kwargs):
@@ -111,7 +110,11 @@ class VisualizerView(TemplateView):
         context["lista"] = ""
         return (context, template)
 
-    #============================================================================================
+
+#======================================================================================
+
+
+class VisualizerView(TemplateView):
 
     #funcion que devuelve diccionario con los objetos que se sumarán al context principal
     def grafica_votos(self, id):
@@ -145,7 +148,7 @@ class VisualizerView(TemplateView):
         
         return context
 
-    def get_context_dataa(self, **kwargs):
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         vid = kwargs.get('voting_id', 0)
 
