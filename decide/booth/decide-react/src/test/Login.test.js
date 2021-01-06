@@ -3,10 +3,15 @@ import { shallow, configure, mount } from 'enzyme';
 import Login from '../components/Login';
 import Adapter from 'enzyme-adapter-react-16';
 import config from '../config.json';
-import * as myFile from '../utils';
+import {postData} from '../utils';
 import 'jsdom-global/register';
-import { onSubmitLogin } from '../components/Login';
-jest.useFakeTimers()
+import axios from 'axios';
+import MockAdapter from "axios-mock-adapter";
+
+//Hide warning
+console.error = () => {}
+
+
 
 
 describe('Test case for testing login',() => {
@@ -40,5 +45,35 @@ describe('Test case for testing login',() => {
         expect(wrapper.state('form').username).toBe('user');
    })
 
+
+    
+    describe('login', () => {
+        let wrapper;
+        configure({adapter: new Adapter()});
+
+        it('Correct getUser', async () => {
+            const correctUser = {
+                    id: 1,
+                    email: "",
+                    first_name: "",
+                    last_name: "",
+                    username: "decidehueznar",
+                    is_staff: true
+                }
+                
+                const data = {}
+                
+                const token = 100;
+                
+                const answer = [200, correctUser]
+                
+                const mockAxios =  new MockAdapter(axios);
+                mockAxios.onPost(config.GETUSER_URL, data).reply(200, correctUser)
+                const ans = await postData(config.GETUSER_URL, data, token)
+                await new Promise(r => setTimeout(r, 250)); 
+                await new Promise(r => setTimeout(r, 250)); 
+                expect(String(ans.data)).toBe(String(correctUser));
+        })
+    });
    
 })
