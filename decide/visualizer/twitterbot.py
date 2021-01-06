@@ -44,3 +44,37 @@ def send_twitter_report(voting):
         message = send_twitter_report_voting(voting)
     return message
 
+
+# Envío de reporte desde un objeto voting
+def send_twitter_report_voting(voting):
+        voting_id = voting.id
+        voting_name = voting.name
+        voting_desc = voting.desc
+        voting_q = voting.question
+        voting_start = voting.start_date
+        voting_end = voting.end_date
+        voting_tally = voting.tally
+
+        status = "Votación no comenzada"
+        if voting_start is not None:     
+            if voting_end is None:
+                a = str(voting_start).split(" ")[0].split("-")
+                start_date=a[2] + " del " + a[1] + " de " + a[0]
+                status = "Votación en Curso. Comenzada el " + start_date
+            else:
+                a = str(voting_end).split(" ")[0].split("-")
+                end_date=a[2] + " del " + a[1] + " de " + a[0]
+                status = "Votación Finalizada el " + end_date
+
+        options = voting_q.options.all()
+        post = voting.postproc
+
+        text = "REPORTE DE ESTADO VOTING\n\n"
+        text += "Votación: " + str(voting_id) + " - " + voting_name +"\n"
+        text += "Estado: " + status + "\n"
+        text += "Descripción: " + str(voting_desc) + "\n\n"
+        
+        auth = tweepy.OAuthHandler(consumer_key, consumer_secret_key)
+        auth.set_access_token(access_token, access_token_secret)
+        api = tweepy.API(auth)
+        return api.update_status(text)
