@@ -8,6 +8,127 @@ import Login from '../components/Login';
 import { Alert, Button, Text, TextInput, View } from 'react-native';
 import Barra from '../components/Barra';
 
+
+describe('Testing AsyncStorage methods',() => {
+    
+    //Mockeamos las llamadas externas de AsyncStorage
+    jest.mock('@react-native-community/async-storage', () => ({
+        AsyncStorage: {
+            setItem: jest.fn(),
+            getItem: jest.fn(),
+            clear: jest.fn(),
+          }
+    }));
+
+    //Probamos si handleSetStorage llama al metodo setItem de AsyncStorage
+    it('check if setItem in AsyncStorage is called through handleSetStorage', async () => {
+        let wrapper = shallow(<App/>)
+
+        await wrapper.instance().handleSetStorage('testing','testing')
+        
+        expect(AsyncStorage.setItem).toBeCalledWith('testing','testing')
+
+        wrapper.unmount()
+    });
+
+    //Probamos si handleGetStorage llama al metodo setItem de AsyncStorage
+    it('check if getItem in AsyncStorage is called through handleGetStorage', async () => {
+        let wrapper = shallow(<App/>)
+
+        await wrapper.instance().handleGetStorage('testing')
+        
+        expect(AsyncStorage.getItem).toBeCalledWith('testing')
+
+        wrapper.unmount()
+    });
+})
+
+describe('mocking handleGetStorage', () => {
+
+    it('handleGetStorage setted token', async () =>{
+        AsyncStorage.getItem.mockResolvedValueOnce('Valor de prueba para mock')
+        const getItemSpy = jest.spyOn(AsyncStorage, 'getItem')
+        const componentDidMountSpy = jest.spyOn(App.prototype, 'componentDidMount')
+        
+        const wrapper = await shallow(<App/>)
+
+        expect(getItemSpy).toHaveBeenCalled()
+        expect(componentDidMountSpy).toHaveBeenCalledTimes(1)
+        expect(wrapper.state('token')).toBe('Valor de prueba para mock')
+
+        wrapper.unmount()
+    })
+
+    it('handleGetStorage did not set token with null value', async () =>{
+
+        const wrapper1 = await shallow(<App/>)
+
+        //Por defecto está a indefinido
+        expect(wrapper1.state('token')).toBe(undefined)
+
+        wrapper1.unmount()
+
+        AsyncStorage.getItem.mockResolvedValueOnce('')
+        const getItemSpy = jest.spyOn(AsyncStorage, 'getItem')
+        
+        const wrapper2 = await shallow(<App/>)
+
+        expect(getItemSpy).toHaveBeenCalled()
+        expect(wrapper2.state('token')).toBe(undefined)
+
+        wrapper2.unmount()
+    })
+
+})
+
+describe('componentDidMount call other methods',() =>{
+
+    //Comprueba si se llama a componentDidMount al montar App
+    it('componentDidMount called at mounted', () =>{
+
+        const componentDidMountSpy = jest.spyOn(App.prototype, 'componentDidMount')
+
+        let wrapper = mount(<App/>)
+
+        expect(componentDidMountSpy).toBeCalled()
+        
+    })
+
+    //Comprueba si al llamar a componentDidMount ejecuta las funciones que se esperan
+    it('Should call functions during componentDidMount', async () =>{
+        let wrapper = mount(<App/>) 
+
+        const instance = wrapper.instance()
+
+
+        const initSpy = jest.spyOn(instance,'init')
+        const clearStorageSpy = jest.spyOn(instance,'clearStorage')
+        const handleGetSpy = jest.spyOn(instance,'handleGetStorage')
+
+        instance.componentDidMount()
+
+        expect(initSpy).toHaveBeenCalled()
+        expect(clearStorageSpy).toHaveBeenCalled()
+        expect(handleGetSpy).toHaveBeenCalled()
+    })
+
+    //Comprueba que, si no se llama a componentDidMount las funciones no se ejecutan
+    it('Check if expected methods are not called by componentDidMount', async () =>{
+        let wrapper = shallow(<App/>)
+    
+        let instance = wrapper.instance()
+    
+        const initSpy = jest.spyOn(instance,'init')
+        const clearStorageSpy = jest.spyOn(instance,'clearStorage')
+        const handleGetSpy = jest.spyOn(instance,'handleGetStorage')
+        
+        expect(initSpy).toBeCalledTimes(0)
+        expect(clearStorageSpy).toBeCalledTimes(0)
+        expect(handleGetSpy).toBeCalledTimes(0)
+    
+    })
+})
+
 describe('Testing App component',() => {
 
     let wrapper;
@@ -78,7 +199,7 @@ describe('Testing App component',() => {
         
         wrapperLogin.find(Button).simulate('click')
 
-        await new Promise((r) => setTimeout(r, 1000));
+        await new Promise((r) => setTimeout(r, 2000));
 
         expect(wrapperLogin).toHaveLength(1);
         expect(wrapperUsernameTextInput).toHaveLength(2);
