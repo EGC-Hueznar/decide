@@ -8,6 +8,21 @@ import Login from '../components/Login';
 import { Alert, Button, Text, TextInput, View } from 'react-native';
 import Barra from '../components/Barra';
 
+describe('componentDidMount call other methods',() =>{
+
+    //Comprueba si se llama a componentDidMount al montar App
+    it('componentDidMount called at mounted', () =>{
+
+        const componentDidMountSpy = jest.spyOn(App.prototype, 'componentDidMount')
+
+        let wrapper = mount(<App/>)
+
+        expect(componentDidMountSpy).toBeCalled()
+        
+    })
+
+})
+
 describe('Testing App component',() => {
 
     let wrapper;
@@ -78,7 +93,7 @@ describe('Testing App component',() => {
         
         wrapperLogin.find(Button).simulate('click')
 
-        await new Promise((r) => setTimeout(r, 1000));
+        await new Promise((r) => setTimeout(r, 2000));
 
         expect(wrapperLogin).toHaveLength(1);
         expect(wrapperUsernameTextInput).toHaveLength(2);
