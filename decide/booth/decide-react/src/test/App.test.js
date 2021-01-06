@@ -38,6 +38,22 @@ describe('componentDidMount call other methods',() =>{
         expect(clearStorageSpy).toHaveBeenCalled()
         expect(handleGetSpy).toHaveBeenCalled()
     })
+
+    //Comprueba que, si no se llama a componentDidMount las funciones no se ejecutan
+    it('Check if expected methods are not called by componentDidMount', async () =>{
+        let wrapper = shallow(<App/>)
+    
+        let instance = wrapper.instance()
+    
+        const initSpy = jest.spyOn(instance,'init')
+        const clearStorageSpy = jest.spyOn(instance,'clearStorage')
+        const handleGetSpy = jest.spyOn(instance,'handleGetStorage')
+        
+        expect(initSpy).toBeCalledTimes(0)
+        expect(clearStorageSpy).toBeCalledTimes(0)
+        expect(handleGetSpy).toBeCalledTimes(0)
+    
+    })
 })
 
 describe('Testing App component',() => {
