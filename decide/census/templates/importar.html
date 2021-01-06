@@ -1,0 +1,7 @@
+ {% block contenido %}  
+  <form method="post" enctype="multipart/form-data">  
+   {% csrf_token %}  
+   <input type="file" name="xlsfile">  
+   <button type="submit">Subir</button>  
+  </form>  
+ {% endblock %}  
