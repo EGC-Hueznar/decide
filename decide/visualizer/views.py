@@ -27,16 +27,18 @@ class VisualizerView(TemplateView):
             #esta variable nos servirá para definir las dimensiones de los ejes en la gráfica
             i = 0
         
-            for item in voting.postproc:
-                objeto = list(item.items())
-                opcion.append(objeto[2][1]) #se coge el valor de la tupla (option, opcion x), que ocupa la posición 2 en la lista de tuplas
-                voto.append(objeto[0][1]) #se hace lo mismo con la tupla (votos, x)   
-                #generamos el color que tendrá cada objeto en la gráfica de forma aleatoria
-                r = lambda: random.randint(0,255)
-                r = lambda: random.randint(0,255)
-                color.append('#%02X%02X%02X' % (r(),r(),r()))
-                i += 1
-            
+            if(voting.postproc is not None):
+                for item in voting.postproc:
+                    objeto = list(item.items())
+                    opcion.append(objeto[2][1]) #se coge el valor de la tupla (option, opcion x), que ocupa la posición 2 en la lista de tuplas
+                    voto.append(objeto[0][1]) #se hace lo mismo con la tupla (votos, x)   
+                    #generamos el color que tendrá cada objeto en la gráfica de forma aleatoria
+                    r = lambda: random.randint(0,255)
+                    r = lambda: random.randint(0,255)
+                    color.append('#%02X%02X%02X' % (r(),r(),r()))
+                    i += 1
+
+                    
             #opcion = json.dumps(opcion)
             #voto = json.dumps(voto)
             #color = json.dumps(color)
