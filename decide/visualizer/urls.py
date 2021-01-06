@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import VisualizerView, VisualizerVotingList, VisualizerIndex
+from .views import *
+
 
 
 urlpatterns = [
@@ -8,4 +9,5 @@ urlpatterns = [
     path('', VisualizerIndex.as_view()),
     path('<str:tipo>/', VisualizerVotingList.as_view()),
     path('<str:tipo>/<int:voting_id>/', VisualizerView.as_view()),
+    path('<int:voting_id>/telegram_report', telegram_report),
 ]

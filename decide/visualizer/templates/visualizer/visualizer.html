@@ -7,6 +7,11 @@
     <link type="text/css" rel="stylesheet"
          href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
     <link type="text/css" rel="stylesheet" href="{% static "booth/style.css" %}" />
+    <!-- <script src="{% static "js/Chart.js" %}"></script> -->
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -17,33 +22,55 @@
         </b-navbar>
 
         <div class="voting container">
-            <h1>[[ voting.id ]] - [[ voting.name ]]</h1>
+            <h1>{{ voting.id }} - {{ voting.name }}</h1>
+            
+            <br>
+            {% if voting.start_date == null %}
+                <h2>Votación no comenzada</h2>
+            {% elif voting.end_date == null %}
+                <h2>Votación en curso</h2>
+            {% else %}
+                <div>
+                    <h2 class="heading">Resultados:</h2>
 
-            <h2 v-if="!voting.start_date">Votación no comenzada</h2>
-            <h2 v-else-if="!voting.end_date">Votación en curso</h2>
-            <div v-else>
-                <h2 class="heading">Resultados:</h2>
-
-                <table class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>Opción</th>
-                            <th>Puntuación</th>
-                            <th>Votos</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="opt in voting.postproc" :key="opt.number">
-                            <th>[[opt.option]]</th>
-                            <td>[[opt.postproc]]</td>
-                            <td class="text-muted">[[opt.votes]]</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Opción</th>
+                                <th>Puntuación</th>
+                                <th>Votos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for opt in voting.postproc %}
+                                <tr>
+                                    <th><a href="/opcionDetails/{{opt.number}}">{{opt.option}}</a></th>
+                                    <td>{{opt.postproc}}</td>
+                                    <td class="text-muted">{{opt.votes}}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <a href="telegram_report">Compartir votación en Telegram</a>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div id="container"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <figure class="highcharts-figure">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div id="container2"></div>
+                            </div>
+                        </div>
+                    </figure>
+                    
+                </div>
+            {% endif %}
 
         </div>
-        <button>Compartir votación en Telegram</button>
     </div>
 {% endblock %}
 
@@ -63,5 +90,83 @@
             }
         })
     </script>
+    <script type="application/javascript">
+        Highcharts.chart('container', {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: 'Comparación de votos en gráfico de gráfico de barras'
+            },
+            xAxis: {
+                categories: {{opcion|safe}},
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Número de votos'
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b> {point.y:.if} voto(s)</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            series: [{
+                name: 'Votos',
+                showInLegend: false,
+                colorByPoint: true,
+                data: {{voto|safe}}
+
+            }]
+        });
+    </script>
+    <script type="application/javascript">
+        Highcharts.chart('container2', {
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie'
+            },
+            title: {
+                text: 'Comparación de votos en gráfico de sectores'
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            accessibility: {
+                point: {
+                    valueSuffix: '%'
+                }
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                    }
+                }
+            },
+            series: [{
+                name: 'Votos',
+                colorByPoint: true,
+                data: {{voto|safe}}
+            }]
+        });
+    </script>
+
 </body>
 {% endblock %}
