@@ -141,4 +141,10 @@ describe('Testing Login style',() => {
         wrapperTextInput = wrapper.find(TextInput).at(1).get(0);
         expect(wrapperTextInput.props.style).toHaveProperty('fontSize', 15);
     });
+
+    it('Correct "Button" style', async () => {
+        wrapper = shallow(<Login/>);
+        wrapperButton = wrapper.find(Button);
+        expect(wrapperButton.prop('color')).toBe('linear-gradient(top, #049cdb, #0064cd)');
+    });
 })
