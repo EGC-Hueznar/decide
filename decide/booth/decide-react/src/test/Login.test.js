@@ -84,6 +84,25 @@ describe('Test case for testing login',() => {
             await new Promise(r => setTimeout(r, 250)); 
             expect(wrapper.state('error')).toBe(true);
         })
+
+
+        it('Correct submitLogin', async () => {
+            const correctUser = {
+                    token: '100'
+                }
+                
+                const data = {
+                    username: 'decidehueznar',
+                    password: 'decidehueznar'
+                }
+                const mockAxios =  new MockAdapter(axios);
+                mockAxios.onPost(config.LOGIN_URL, data).reply(200, correctUser)
+                const ans = await postData(config.LOGIN_URL, data)
+                await new Promise(r => setTimeout(r, 250)); 
+                await new Promise(r => setTimeout(r, 250)); 
+                expect(String(ans.data)).toBe(String(correctUser));
+        })
+        
     });
    
 })
