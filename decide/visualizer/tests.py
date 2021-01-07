@@ -157,3 +157,61 @@ class SendTelegramVotacionNormalTest(BaseTestCase):
         v = Votacion.objects.get(titulo="Votación Normal Test 2")
         message = send_telegram_report(v)
         self.assertEqual(message.chat.title,"Actualizaciones Decide Huéznar")
+
+# Tests envíos de reporte Votación Preferencia
+class SendTelegramVotacionPreferenciaTest(BaseTestCase):
+    def setUp(self):
+        v = VotacionPreferencia(titulo="Votación Preferencia Test 1",descripcion="Descripcion 1")
+        v.save()
+        v2 = VotacionPreferencia(titulo="Votación Preferencia Test 2", descripcion="Descripcion 2")
+        v2.save()
+        q1  = PreguntaPreferencia(textoPregunta = "Pregunta Preferencia 1")
+        q2  = PreguntaPreferencia(textoPregunta = "Pregunta Preferencia 2")
+        o1 = OpcionRespuesta(nombre_opcion = "Opcion Preferencia 1")
+        o2 = OpcionRespuesta(nombre_opcion = "Opcion Preferencia 2")
+        o3 = OpcionRespuesta(nombre_opcion = "Opcion Preferencia 1")
+        o4 = OpcionRespuesta(nombre_opcion = "Opcion Preferencia 2")
+        r1 = RespuestaPreferencia(orden_preferencia = 2)
+        r2 = RespuestaPreferencia(orden_preferencia = 10)
+        r3 = RespuestaPreferencia(orden_preferencia = 4)
+        r4 = RespuestaPreferencia(orden_preferencia = 9)
+        v.addPreguntaPreferencia(q1)
+        v2.addPreguntaPreferencia(q2)
+        q1.addOpcionRespuesta(o1)
+        q1.addOpcionRespuesta(o2)
+        q2.addOpcionRespuesta(o3)
+        q2.addOpcionRespuesta(o4)
+        o3.addRespuetaPreferencia(r1)
+        o3.addRespuetaPreferencia(r2)
+        o4.addRespuetaPreferencia(r3)
+        o4.addRespuetaPreferencia(r4)
+        
+        
+        super().setUp()
+
+    def tearDown(self):
+        super().tearDown()
+        self.v=None
+        self.v2=None
+        self.q1=None
+        self.q2=None
+        self.o1=None
+        self.o2=None
+        self.o3=None
+        self.o4=None
+        self.r1=None
+        self.r2=None
+        self.r3=None
+        self.r4=None
+
+    # Test Votación Preferencia Simple
+    def test_send_telegram_report_p(self):
+        v = VotacionPreferencia.objects.get(titulo="Votación Preferencia Test 1")
+        message = send_telegram_report(v)
+        self.assertEqual(message.chat.title,"Actualizaciones Decide Huéznar")
+
+    # Test Votación Preferencia con Respuestas
+    def test_send_telegram_report_pr(self):
+        v = VotacionPreferencia.objects.get(titulo="Votación Preferencia Test 2")
+        message = send_telegram_report(v)
+        self.assertEqual(message.chat.title,"Actualizaciones Decide Huéznar")
