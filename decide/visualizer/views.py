@@ -61,9 +61,11 @@ class VisualizerVotingList(TemplateView):
         elif(tipo == 'binaria'):
             context['tipov'] = 'binaria'
             context['lista'] = VotacionBinaria.objects.all()
-        else:
+        elif(tipo == 'default'):
+            self.template_name = "visualizer/listdefault.html"
             context['tipov'] = 'default'
             context['lista'] = Voting.objects.all()
+        else:
             raise Http404
         return context
 
@@ -73,24 +75,29 @@ class VisualizerVista(TemplateView):
     def get_context_data(self, tipo, voting_id, **kwargs):
         context = super().get_context_data(**kwargs)
         if(tipo == 'normal'):
-            context['voting'], self.template_name = self.normal(voting_id)
+            self.template_name = 'visualizer/resultnormal.html'
+            context = self.normal(context, voting_id)
+            print(context)
         elif(tipo == 'multiple'):
-            context['voting'], self.template_name = self.multiple(voting_id)
+            self.template_name = 'visualizer/resultmul.html'
+        #    context['voting'] = self.multiple(voting_id)
         elif(tipo == 'preferencia'):
-            context['voting'], self.template_name = self.preferencia(voting_id)
+            self.template_name = 'visualizer/resultpref.html'
+        #    context['voting'] = self.preferencia(voting_id)
         elif(tipo == 'binaria'):
-            context['voting'], self.template_name = self.binario(voting_id)
+            self.template_name = 'visualizer/resultbin.html'
+        #    context['voting'] = self.binario(voting_id)
         else:
-            context['tipov'] = 'default'
-            context['lista'] = Voting.objects.all()
             raise Http404
         return context
 
-    def normal(self, voting_id):
-        template = 'visualizer/resultnormal.html'
-        context = {}
-        context["lista"] = ""
-        return (context, template)
+    def normal(self, context, voting_id):
+        votacion = Votacion.objects.get(id=voting_id)
+        context['voting'] = votacion
+        preguntas = Pregunta.objects.all().filter(votacion=votacion)
+        context['resultados'] = preguntas
+
+        return context
 
     def multiple(self, voting_id):
         template = 'visualizer/resultmul.html'
