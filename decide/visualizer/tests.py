@@ -3,6 +3,7 @@ from django.test import TestCase
 from base.tests import BaseTestCase
 from voting.tests import *
 from visualizer.telegrambot import *
+import time
 
 # Create your tests here.
 class VisualizerTestCase(BaseTestCase):
@@ -30,12 +31,14 @@ class VisualizerTestCase(BaseTestCase):
         bot = self.create_bot()
         id = -1001318632551
         message = bot.send_message(id,"Test de envío de mensaje de texto")
+        time.sleep(1)
         self.assertEqual(message.chat.title,"Actualizaciones Decide Huéznar")
 
     # Test de envío de reporte de una votación tipo voting a Telegram
     def test_send_telegram_report(self):
         v = VotingTestCase.create_voting(self)
         message = send_telegram_report(v)
+        time.sleep(1)
         self.assertEqual(message.chat.title,"Actualizaciones Decide Huéznar")
 
 class VisualizerContextTestCase(BaseTestCase):
@@ -110,12 +113,14 @@ class SendTelegramVotacionBinariaTest(BaseTestCase):
     def test_send_telegram_report_b(self):
         v = VotacionBinaria.objects.get(titulo="Votación Binaria Test 1")
         message = send_telegram_report(v)
+        time.sleep(1)
         self.assertEqual(message.chat.title,"Actualizaciones Decide Huéznar")
 
     # Test Votación Binaria con Respuestas
     def test_send_telegram_report_br(self):
         v = VotacionBinaria.objects.get(titulo="Votación Binaria Test 2")
         message = send_telegram_report(v)
+        time.sleep(1)
         self.assertEqual(message.chat.title,"Actualizaciones Decide Huéznar")
 
 # Tests envíos de reporte Votación Normal
@@ -150,12 +155,14 @@ class SendTelegramVotacionNormalTest(BaseTestCase):
     def test_send_telegram_report_n(self):
         v = Votacion.objects.get(titulo="Votación Normal Test 1")
         message = send_telegram_report(v)
+        time.sleep(1)
         self.assertEqual(message.chat.title,"Actualizaciones Decide Huéznar")
 
     # Test Votación Normal con Respuestas
     def test_send_telegram_report_nr(self):
         v = Votacion.objects.get(titulo="Votación Normal Test 2")
         message = send_telegram_report(v)
+        time.sleep(1)
         self.assertEqual(message.chat.title,"Actualizaciones Decide Huéznar")
 
 # Tests envíos de reporte Votación Preferencia
@@ -208,12 +215,14 @@ class SendTelegramVotacionPreferenciaTest(BaseTestCase):
     def test_send_telegram_report_p(self):
         v = VotacionPreferencia.objects.get(titulo="Votación Preferencia Test 1")
         message = send_telegram_report(v)
+        time.sleep(1)
         self.assertEqual(message.chat.title,"Actualizaciones Decide Huéznar")
 
     # Test Votación Preferencia con Respuestas
     def test_send_telegram_report_pr(self):
         v = VotacionPreferencia.objects.get(titulo="Votación Preferencia Test 2")
         message = send_telegram_report(v)
+        time.sleep(1)
         self.assertEqual(message.chat.title,"Actualizaciones Decide Huéznar")
 
 # Tests envíos de reporte Votación Múltiple
@@ -254,10 +263,12 @@ class SendTelegramVotacionMultipleTest(BaseTestCase):
     def test_send_telegram_report_m(self):
         v = VotacionMultiple.objects.get(titulo="Votación Multiple Test 1")
         message = send_telegram_report(v)
+        time.sleep(1)
         self.assertEqual(message.chat.title,"Actualizaciones Decide Huéznar")
 
     # Test Votación Multiple con Respuestas
     def test_send_telegram_report_mr(self):
         v = VotacionMultiple.objects.get(titulo="Votación Multiple Test 2")
         message = send_telegram_report(v)
+        time.sleep(1)
         self.assertEqual(message.chat.title,"Actualizaciones Decide Huéznar")
