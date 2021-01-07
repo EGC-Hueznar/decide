@@ -56,6 +56,8 @@ def send_telegram_report(voting):
         message = send_telegram_report_normal(voting)
     elif isinstance(voting,VotacionPreferencia):
         message = send_telegram_report_preferencia(voting)
+    elif isinstance(voting,VotacionMultiple):
+        message = send_telegram_report_mult(voting)
     return message
 # Envío de reporte desde un objeto voting
 def send_telegram_report_voting(voting):
@@ -175,7 +177,6 @@ def send_telegram_report_preferencia(v):
     voting_desc = v.descripcion
     voting_start = v.fecha_inicio
     voting_end = v.fecha_fin
-    print(v)
     voting_questions = v.preguntasPreferencia.all()
     status = "Votación no comenzada"
     if voting_start is not None:     
@@ -199,6 +200,43 @@ def send_telegram_report_preferencia(v):
             question_ans = question.opcionesRespuesta.all()
             for ans in question_ans:
                 text += "- " + ans.nombre_opcion + ": " + str(OpcionRespuesta.Media_Preferencia(ans))+"\n"
+        text += "\n"
+        
+    bot_token = '1415070510:AAE49OJPu4viYNo5Tfov4vzkoIyeNf_JBr4'
+    bot = telegram.Bot(bot_token)
+    id = -1001318632551
+    return bot.send_message(id,text)
+
+# Envío de reporte desde un objeto Votación Multiple
+def send_telegram_report_mult(v):
+    voting_id = v.id
+    voting_title = v.titulo
+    voting_desc = v.descripcion
+    voting_start = v.fecha_inicio
+    voting_end = v.fecha_fin
+    voting_questions = v.preguntasMultiples.all()
+    status = "Votación no comenzada"
+    if voting_start is not None:     
+        if voting_end is None:
+            a = str(voting_start).split(" ")[0].split("-")
+            start_date=a[2] + " del " + a[1] + " de " + a[0]
+            status = "Votación en Curso. Comenzada el " + start_date
+        else:
+            a = str(voting_end).split(" ")[0].split("-")
+            end_date=a[2] + " del " + a[1] + " de " + a[0]
+            status = "Votación Finalizada el " + end_date
+    text = "REPORTE DE ESTADO VOTACIÓN MÚLTIPLE\n\n"
+    text += "Votación: " + str(voting_id) + " - " + voting_title +"\n"
+    text += "Estado: " + status + "\n"
+    text += "Descripción: " + str(voting_desc) + "\n\n"
+    for question in voting_questions:
+        text += question.textoPregunta + "\n"
+        if PreguntaMultiple.Numero_De_Opciones(question) == 0 :
+            text += "No hay opciones para esta pregunta \n"
+        else:
+            question_ans = question.opcionesMultiples.all()
+            for ans in question_ans:
+                text += "- " + ans.nombre_opcion + ": " + str(ans.n_votado)+"\n"
         text += "\n"
         
     bot_token = '1415070510:AAE49OJPu4viYNo5Tfov4vzkoIyeNf_JBr4'
