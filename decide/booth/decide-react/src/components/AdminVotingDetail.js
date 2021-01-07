@@ -1,12 +1,31 @@
 import React, { Component } from 'react';
-import { Alert, StyleSheet, Button, Text, View } from 'react-native';
+import { Alert, StyleSheet, Button, Text, View, SafeAreaView, FlatList } from 'react-native';
 import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
 
 export default class AdminVoting extends Component {
 
     state = {
-        voting: undefined,
         options: new Array(),
+        voters: [
+        {
+            id: 1,
+            first_name: undefined,
+            last_name: undefined,
+            email: undefined,
+        },
+        {
+            id: 2,
+            first_name: "Pedro",
+            last_name: "Gómez",
+            email: "pedro@gmail.com",
+        },
+        {
+            id: 3,
+            first_name: "Luis",
+            last_name: "Pérez",
+            email: undefined,
+        },
+        ],
     }
 
 
@@ -21,6 +40,14 @@ export default class AdminVoting extends Component {
     componentDidMount() {
         this.setOptions(this.props.voting);
     }
+
+
+    render_user = ({item}) => (
+            <View style={styles.item}>
+                <Text style={styles.userName}>{item.first_name ? `${item.first_name} ${item.last_name ? item.last_name : ""}` : `Usuario ${item.id}`}</Text>
+                {item.email && <Text>{item.email}</Text>}
+            </View>
+    );
 
     render() {
         const { voting } = this.props;
@@ -44,6 +71,16 @@ export default class AdminVoting extends Component {
                 <View style={styles.button}>
                     <Button color="linear-gradient(top, #049cdb, #0064cd)" title="Volver al inicio" onPress={() => this.props.setVotingId(undefined)}/>
                 </View>
+                <View style={styles.section}>
+                    <Text style={styles.title}>Censo</Text>
+                    <Text>Aquí puedes ver y gestionar las personas que pueden participar en esta votación.</Text>
+                </View>
+                <SafeAreaView style={styles.list}>
+                    <FlatList data={this.state.voters} renderItem={this.render_user} />
+                </SafeAreaView>
+                <View style={styles.button}>
+                    <Button color="linear-gradient(top, #049cdb, #0064cd)" title="Añadir participante"/>
+                </View>
             </View>
         );
     }
@@ -60,6 +97,24 @@ const styles = StyleSheet.create ({
         fontSize: 30,
         fontWeight: "bold",
         marginBottom: 30,
+    },
+    list: {
+        display: "flex",
+        justifyContent: "flex-start",
+        width: "100%",
+        marginBottom: 60,
+    },
+    item: {
+        marginBottom: 10,
+        marginTop: 10,
+        padding: 8,
+        backgroundColor: "#eeeeee",
+        borderRadius: 4,
+        display: "flex",
+        flexDirection: "row",
+    },
+    userName: {
+        marginRight: "auto",
     },
     text: {
         fontSize: 26,
@@ -82,6 +137,7 @@ const styles = StyleSheet.create ({
         minWidth: 60,
         marginRight: 10,
         marginLeft: 10,
+        marginBottom: 50,
         display: "flex",
         flexWrap: "wrap",
         justifyContent: "center",
@@ -109,6 +165,6 @@ const styles = StyleSheet.create ({
         borderTopColor: "#0064cd",
         borderRightColor: "#0064cd",
         borderBottomColor: "#003f81",
-        borderLeftColor: "#0064cd"
+        borderLeftColor: "#0064cd",
     },
 });
