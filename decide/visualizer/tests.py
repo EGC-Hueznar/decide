@@ -215,3 +215,49 @@ class SendTelegramVotacionPreferenciaTest(BaseTestCase):
         v = VotacionPreferencia.objects.get(titulo="Votación Preferencia Test 2")
         message = send_telegram_report(v)
         self.assertEqual(message.chat.title,"Actualizaciones Decide Huéznar")
+
+# Tests envíos de reporte Votación Múltiple
+class SendTelegramVotacionMultipleTest(BaseTestCase):
+    def setUp(self):
+        v = VotacionMultiple(titulo="Votación Multiple Test 1",descripcion="Descripcion 1")
+        v.save()
+        v2 = VotacionMultiple(titulo="Votación Multiple Test 2", descripcion="Descripcion 2")
+        v2.save()
+        q1  = PreguntaMultiple(textoPregunta = "Pregunta Multiple 1")
+        q2  = PreguntaMultiple(textoPregunta = "Pregunta Multiple 2")
+        o1 = OpcionMultiple(nombre_opcion = "Opcion Multiple 1")
+        o2 = OpcionMultiple(nombre_opcion = "Opcion Multiple 2")
+        o3 = OpcionMultiple(nombre_opcion = "Opcion Multiple 3", n_votado = 3)
+        o4 = OpcionMultiple(nombre_opcion = "Opcion Multiple 4", n_votado= 7)
+        v.addPreguntaMultiple(q1)
+        v2.addPreguntaMultiple(q2)
+        q1.addOpcionMultiple(o1)
+        q1.addOpcionMultiple(o2)
+        q2.addOpcionMultiple(o3)
+        q2.addOpcionMultiple(o4)
+        
+        
+        super().setUp()
+
+    def tearDown(self):
+        super().tearDown()
+        self.v=None
+        self.v2=None
+        self.q1=None
+        self.q2=None
+        self.o1=None
+        self.o2=None
+        self.o3=None
+        self.o4=None
+
+    # Test Votación Multiple Simple
+    def test_send_telegram_report_m(self):
+        v = VotacionMultiple.objects.get(titulo="Votación Multiple Test 1")
+        message = send_telegram_report(v)
+        self.assertEqual(message.chat.title,"Actualizaciones Decide Huéznar")
+
+    # Test Votación Multiple con Respuestas
+    def test_send_telegram_report_mr(self):
+        v = VotacionMultiple.objects.get(titulo="Votación Multiple Test 2")
+        message = send_telegram_report(v)
+        self.assertEqual(message.chat.title,"Actualizaciones Decide Huéznar")
