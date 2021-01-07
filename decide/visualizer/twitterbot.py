@@ -9,10 +9,8 @@ def send_twitter_report_json(voting):
     vot_id = voting.get('id')
     vot_name = voting.get('name')
     vot_question = voting.get('question').get('desc')
-
     options = voting.get('question').get('options')
     post = voting.get('postproc')
-
     tweet = "Votación: " + vot_name +"\n"
     tweet += vot_question + "\n"
     tweet += "\nResultados: \n"
@@ -23,4 +21,3 @@ def send_twitter_report_json(voting):
     auth.set_access_token(access_token, access_token_secret)
     api = tweepy.API(auth)
     return api.update_status(tweet)
-
