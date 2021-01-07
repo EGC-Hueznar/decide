@@ -9,7 +9,9 @@ import random
 
 from base import mods
 import telegram
+import tweepy
 from .telegrambot import *
+from .twitterbot import *
 
 class VisualizerView(TemplateView):
     template_name = 'visualizer/visualizer.html'

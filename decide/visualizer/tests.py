@@ -4,6 +4,7 @@ from django.test import TestCase
 from base.tests import BaseTestCase
 from voting.tests import *
 from visualizer.telegrambot import *
+from visualizer.twitterbot import *
 
 # Create your tests here.
 class VisualizerTestCase(BaseTestCase):
