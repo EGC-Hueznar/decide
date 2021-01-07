@@ -1,4 +1,5 @@
 import telegram
+import tweepy
 from django.test import TestCase
 from base.tests import BaseTestCase
 from voting.tests import *
