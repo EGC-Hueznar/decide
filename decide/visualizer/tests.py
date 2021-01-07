@@ -38,6 +38,51 @@ class VisualizerTestCase(BaseTestCase):
         message = send_telegram_report(v)
         self.assertEqual(message.chat.title,"Actualizaciones Decide Huéznar")
 
+class VisualizerContextTestCase(BaseTestCase):
+
+    def setUp(self):
+        q = Question(desc="¿Que es el arte?")
+        q.save()
+
+        opt1 = QuestionOption(question=q, option="La expresión de los sentimientos de una persona en una composición artística")
+        opt1.save()
+
+        opt2 = QuestionOption(question=q, option="Morirte de frio")
+        opt2.save()
+
+        self.v = Voting(name="El arte", question=q)
+        self.v.do_postproc()
+
+        super().setUp()
+
+    def tearDown(self):
+        self.v=None
+
+        super().tearDown()
+  
+    # Test método get_context_data de visualizer/views.py
+    def test_context_data_API(self):
+
+        self.login()
+        data = {
+            'name':'Example',
+            'desc':'Descriçao',
+            'question':'La caca',
+            'question_opt':['se come', 'se bebe', 'se echa por el culo']
+        }
+    #Creación de la votación
+        response = self.client.post('/voting/', data, format='json')
+        self.assertEquals(response.status_code,201)
+
+        v = Voting.objects.get(name="Example")
+    #Comprobación que la página se crea
+        response = self.client.get('/visualizer/{}/'.format(v.id))
+        self.assertEquals(response.status_code,200)
+        self.assertTemplateUsed('visualizer/visualizer.html')
+
+
+        # self.asser
+
 
 # Tests envíos de reporte Votación Binaria
 class SendTelegramVotacionBinariaTest(BaseTestCase):
