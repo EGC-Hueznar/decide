@@ -116,6 +116,8 @@ class VisualizerVista(TemplateView):
 
 class VisualizerView(TemplateView):
 
+    template_name = 'visualizer/visualizer.html'
+
     #funcion que devuelve diccionario con los objetos que se sumarán al context principal
     def grafica_votos(self, id):
 
