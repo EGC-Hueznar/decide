@@ -124,6 +124,7 @@ class VisualizerView(TemplateView):
         voting = get_object_or_404(Voting, pk=id)
         opcion = []
         voto = []
+        puntuacion = []
         color = []
         
         i = 0 #esta variable nos servirá para definir las dimensiones de los ejes en la gráfica
@@ -132,7 +133,8 @@ class VisualizerView(TemplateView):
             for item in voting.postproc:
                 objeto = list(item.items())
                 opcion.append(objeto[2][1]) #se coge el valor de la tupla (option, opcion x), que ocupa la posición 2 en la lista de tuplas
-                voto.append(objeto[0][1]) #se hace lo mismo con la tupla (votos, x)   
+                voto.append(objeto[0][1]) #se hace lo mismo con la tupla (votos, x)
+                puntuacion.append(objeto[3][1])
                 #generamos el color que tendrá cada objeto en la gráfica de forma aleatoria
                 r = lambda: random.randint(0,255)
                 r = lambda: random.randint(0,255)
@@ -145,6 +147,7 @@ class VisualizerView(TemplateView):
             'opcion':opcion,
             'voto':voto,
             'color':color,
+            'puntuacion':puntuacion,
             'i':i
         }
         
