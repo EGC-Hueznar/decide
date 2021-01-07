@@ -157,3 +157,14 @@ class SendTelegramVotacionNormalTest(BaseTestCase):
         v = Votacion.objects.get(titulo="Votación Normal Test 2")
         message = send_telegram_report(v)
         self.assertEqual(message.chat.title,"Actualizaciones Decide Huéznar")
+    
+    # Test de creación de Twitter
+    def test_create_twitter(self):
+        consumer_key = 'ZXutSjYogRFQ1cGSqBExHdFYQ'
+        consumer_secret_key = 'bOQoMVaIcYUrTzPba0ogudtIZi6HJZtfTdBaG09EVG60UN6k8Y'
+        access_token = '1346151287306530817-DshaN1ufww133bG0S8KKSRFWpaBn0y'
+        access_token_secret = 'vlIKntFymAL3Us2CcnkdbYpa1i2LJ9Q9RwVAt9OFSp668'
+        auth = tweepy.OAuthHandler(consumer_key, consumer_secret_key)
+        auth.set_access_token(access_token, access_token_secret)
+        api = tweepy.API(auth)
+        return api
