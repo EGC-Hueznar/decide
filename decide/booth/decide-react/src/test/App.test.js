@@ -11,6 +11,7 @@ import axios from 'axios';
 import MockAdapter from "axios-mock-adapter";
 import config from '../config.json'
 import { postData } from '../utils';
+import { light } from "../styles";
 
 // Hide warning
 console.error = () => {}
@@ -422,7 +423,7 @@ describe('Testing App style',() => {
         passwordForm.props()["onChangeText"]("decidehueznar");
 
         wrapperLogin.find(TouchableOpacity).simulate('click')
-        wrapperButton = wrapper.find(TouchableOpacity);
+        wrapperButton = wrapper.find(TouchableOpacity).at(1);
         expect(wrapperButton.prop("style").backgroundColor).toBe("#0064cd");
     });
     

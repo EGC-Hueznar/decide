@@ -3,8 +3,6 @@ import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 import config from '../config.json';
 import { postData } from '../utils';
 import { StyleSheet} from "react-native";
-import { styles } from "../styles";
-
 
 export default class Login extends Component {
 
@@ -56,6 +54,9 @@ export default class Login extends Component {
     }
 
     render() {
+        
+        const {styles} = this.props;
+
         return (
             <View>
                 <View style={styles.html}>
