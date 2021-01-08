@@ -215,8 +215,6 @@ const light = StyleSheet.create({
         textAlign: 'center'
     },
 
-    labelColor: 'black',
-
     parent: { }
 });
 
@@ -261,7 +259,7 @@ const dark = {
     },
 
     state: {
-        color: "white",
+        color: 'white',
         fontSize: 15,
         textAlign: 'center'
     },
