@@ -85,7 +85,7 @@ class VisualizerVista(TemplateView):
             context = self.preferencia(context, voting_id)
         elif(tipo == 'binaria'):
             self.template_name = 'visualizer/resultbin.html'
-            context = self.binario(voting_id)
+            context = self.binario(context, voting_id)
         else:
             raise Http404
         return context
@@ -122,11 +122,14 @@ class VisualizerVista(TemplateView):
 
         return context
 
-    def binario(self, voting_id):
-        template = 'visualizer/resultbin.html'
-        context = {}
-        context["lista"] = ""
-        return (context, template)
+    def binario(self, context, voting_id):
+        votacion = VotacionBinaria.objects.get(id=voting_id)
+        trues = (votacion.Numero_De_Trues())
+        falses = (votacion.Numero_De_Falses())
+        context['voting'] = votacion
+        context['porcentajesi'] = float("{:.4f}".format(trues/(trues + falses)))*100
+        context['porcentajeno'] = float("{:.4f}".format(falses/(trues + falses)))*100
+        return context
 
 
 #======================================================================================
