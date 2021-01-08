@@ -77,13 +77,12 @@ class VisualizerVista(TemplateView):
         if(tipo == 'normal'):
             self.template_name = 'visualizer/resultnormal.html'
             context = self.normal(context, voting_id)
-            print(context)
         elif(tipo == 'multiple'):
             self.template_name = 'visualizer/resultmul.html'
         #    context['voting'] = self.multiple(voting_id)
         elif(tipo == 'preferencia'):
             self.template_name = 'visualizer/resultpref.html'
-        #    context['voting'] = self.preferencia(voting_id)
+            context = self.preferencia(context, voting_id)
         elif(tipo == 'binaria'):
             self.template_name = 'visualizer/resultbin.html'
         #    context['voting'] = self.binario(voting_id)
@@ -105,11 +104,17 @@ class VisualizerVista(TemplateView):
         context["lista"] = ""
         return (context, template)
 
-    def preferencia(self, voting_id):
-        template = 'visualizer/resultpref.html'
-        context = {}
-        context["lista"] = ""
-        return (context, template)
+    def preferencia(self, context, voting_id):
+        votacion = VotacionPreferencia.objects.get(id=voting_id)
+        context['voting'] = votacion
+        pre = PreguntaPreferencia.objects.all().filter(votacionPreferencia=votacion)
+        preguntas = {}
+        for p in pre:
+            opciones = OpcionRespuesta.objects.all().filter(preguntaPreferencia=p)
+            preguntas[p] = opciones
+        context['resultados'] = preguntas
+
+        return context
 
     def binario(self, voting_id):
         template = 'visualizer/resultbin.html'
