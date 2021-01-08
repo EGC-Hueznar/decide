@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-const styles = StyleSheet.create({
+const light = StyleSheet.create({
     html: {
         margin: 0,
         padding: 0,
@@ -15,7 +15,6 @@ const styles = StyleSheet.create({
         display: 'flex',
         alignItems: 'center',
         alignContent: 'center',
-        backgroundColor: '#fff',
     },
     container: {
         width: '100%',
@@ -205,7 +204,69 @@ const styles = StyleSheet.create({
         borderBottomColor: "#000000",
         borderLeftColor: "#000000"
     },
-    parent: {}
+    containerMode: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    state: {
+        color: "#0000ff",
+        fontSize: 15,
+        textAlign: 'center'
+    },
+
+    labelColor: 'black',
+
+    parent: { }
 });
 
-export { styles };
+const dark = {
+    ...light,
+    body: {
+        margin: 0,
+        padding: 0,
+        fontFamily: '"Helvetica Neue",Helvetica,Arial,sans-serif',
+        fontSize: 18,
+        fontWeight: 'normal',
+        lineHeight: 24,
+        display: 'flex',
+        alignItems: 'center',
+        alignContent: 'center',
+        backgroundColor: '#1f1f1f',
+    },
+
+    parent: {
+        backgroundColor: '#1f1f1f',
+        height: '100%',
+    },
+
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: 'white',
+        lineHeight: 1.2,
+        textAlign: 'center',
+        width: '100%',
+        padding: 30,
+    },
+
+    votingStyle:{
+        fontSize: 26,
+        lineHeight: 24,
+        paddingTop:10, 
+        paddingBottom:10,
+        justifyContent: 'center',
+        alignSelf: 'center',
+        color: 'white',
+    },
+
+    state: {
+        color: "white",
+        fontSize: 15,
+        textAlign: 'center'
+    },
+
+    labelColor: 'white'
+}
+
+export { light, dark };

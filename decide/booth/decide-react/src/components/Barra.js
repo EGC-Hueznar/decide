@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
-import { StatusBar, Text, View } from 'react-native';
+import { StatusBar, View, Text, TouchableOpacity } from 'react-native';
 import { postData } from '../utils';
 import config from '../config.json';
-import { styles } from "../styles";
 
 export default class Barra extends Component{
 
@@ -18,6 +17,9 @@ export default class Barra extends Component{
     }
 
     render(){
+
+        const {styles} = this.props;
+
         return(
             <View>
                 {StatusBar.currentHeight && <View style={{height:StatusBar.currentHeight, backgroundColor: '#0040A0'}}></View>}
@@ -26,6 +28,7 @@ export default class Barra extends Component{
                     <View>
                         <Text style={styles.titleStyle}>DecideHueznar</Text>
                     </View>
+                    <TouchableOpacity onPress={this.props.toggleTheme}><Text style={{color:'white'}}>Cambiar tema</Text></TouchableOpacity>
                     {!this.props.signup && <View>
                         <Text style={styles.textStyle} onPress={this.logout}>Logout</Text>
                     </View>}
