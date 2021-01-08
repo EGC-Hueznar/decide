@@ -17,14 +17,66 @@
 {% block content %}
     <div id="app-visualizer">
         <!-- Navbar -->
-        <b-navbar type="dark" variant="secondary">
-            <b-navbar-brand tag="h1">Decide</b-navbar-brand>
-        </b-navbar>
-
-        <h1>Votacion multiples</h1>
+        <nav class="navbar navbar-dark bg-secondary navbar-expand">
+            <h1 class="navbar-brand">Decide</h1>
+        </nav>
 
         <div class="voting container">
-            <h1>{{ voting.id }} - {{ voting.name }}</h1>
+            <h1>Votacion multiple</h1>
+            <h1>{{ voting.id }} - {{ voting.titulo }}</h1>
+            <br>
+
+            {% if voting.fecha_inicio == null %}
+                <h2>Votación no comenzada</h2>
+            {% elif voting.fecha_fin == null %}
+                <h2>Votación en curso</h2>
+            {% else %}
+
+                <div>
+                    <h2 class="heading">Resultados:</h2>
+
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Pregunta</th>
+                                <th>Opcion</th>
+                                <th>Puntuación</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for pregunta, opcion in resultados.items %}
+                        {% for op in opcion %}
+                        <tr>
+                            {% if forloop.first %}
+                            <th rowspan="{{opcion | length}}"><a href="/opcionDetails/{{opt.number}}">{{pregunta.textoPregunta}}</a></th>
+                            {% endif %}
+                            <td>{{op.nombre_opcion}}</td>
+                            <td>{{op.n_votado}}</td>
+                        </tr>
+                        {% endfor %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <a href="telegram_report">Compartir votación en Telegram</a>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div id="container"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <figure class="highcharts-figure">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div id="container2"></div>
+                            </div>
+                        </div>
+                    </figure>
+
+                </div>
+
+            {% endif %}
+
         </div>
     </div>
 {% endblock %}

@@ -17,19 +17,20 @@
 {% block content %}
     <div id="app-visualizer">
         <!-- Navbar -->
-        <b-navbar type="dark" variant="secondary">
-            <b-navbar-brand tag="h1">Decide</b-navbar-brand>
-        </b-navbar>
+        <nav class="navbar navbar-dark bg-secondary navbar-expand">
+            <h1 class="navbar-brand">Decide</h1>
+        </nav>
 
         <div class="voting container">
             <h1>Votacion por preferencia</h1>
-            <h1>{{ voting.id }} - {{ voting.name }}</h1>
+            <h1>{{ voting.id }} - {{ voting.titulo }}</h1>
             <br>
 
             {% if voting.fecha_inicio == null %}
                 <h2>Votación no comenzada</h2>
             {% elif voting.fecha_fin == null %}
                 <h2>Votación en curso</h2>
+            {% else %}
 
                 <div>
                     <h2 class="heading">Resultados:</h2>
@@ -39,7 +40,7 @@
                             <tr>
                                 <th>Pregunta</th>
                                 <th>Opcion</th>
-                                <th>Puntuacio</th>
+                                <th>Puntuación</th>
                                 <th>Respuesta</th>
                             </tr>
                         </thead>

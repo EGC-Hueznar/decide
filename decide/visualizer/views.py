@@ -41,7 +41,7 @@ class VisualizerIndex(TemplateView):
         context['cantFin'] = Voting.objects.filter(end_date__isnull=False).count()
         context['cantPend'] = context['cantidad'] - context['cantProx'] - context['cantFin']
 
-        context["total"] = context["cantBin"] + context["cantPref"] + context["cantMult"] + context["cantNorm"]
+        context["total"] = context["cantBin"] + context["cantPref"] + context["cantMult"] + context["cantNorm"] + context["cantidad"]
         return context
 
 class VisualizerVotingList(TemplateView):
@@ -79,13 +79,13 @@ class VisualizerVista(TemplateView):
             context = self.normal(context, voting_id)
         elif(tipo == 'multiple'):
             self.template_name = 'visualizer/resultmul.html'
-        #    context['voting'] = self.multiple(voting_id)
+            context = self.multiple(context, voting_id)
         elif(tipo == 'preferencia'):
             self.template_name = 'visualizer/resultpref.html'
             context = self.preferencia(context, voting_id)
         elif(tipo == 'binaria'):
             self.template_name = 'visualizer/resultbin.html'
-        #    context['voting'] = self.binario(voting_id)
+            context = self.binario(voting_id)
         else:
             raise Http404
         return context
@@ -98,11 +98,17 @@ class VisualizerVista(TemplateView):
 
         return context
 
-    def multiple(self, voting_id):
-        template = 'visualizer/resultmul.html'
-        context = {}
-        context["lista"] = ""
-        return (context, template)
+    def multiple(self, context, voting_id):
+        votacion = VotacionMultiple.objects.get(id=voting_id)
+        context['voting'] = votacion
+        pre = PreguntaMultiple.objects.all().filter(votacionMultiple=votacion)
+        preguntas = {}
+        for p in pre:
+            opciones = OpcionMultiple.objects.all().filter(preguntaMultiple=p)
+            preguntas[p] = opciones
+        context['resultados'] = preguntas
+
+        return context
 
     def preferencia(self, context, voting_id):
         votacion = VotacionPreferencia.objects.get(id=voting_id)
