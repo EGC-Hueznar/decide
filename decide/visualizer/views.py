@@ -127,8 +127,12 @@ class VisualizerVista(TemplateView):
         trues = (votacion.Numero_De_Trues())
         falses = (votacion.Numero_De_Falses())
         context['voting'] = votacion
-        context['porcentajesi'] = float("{:.4f}".format(trues/(trues + falses)))*100
-        context['porcentajeno'] = float("{:.4f}".format(falses/(trues + falses)))*100
+        if ((trues + falses) != 0):
+            context['porcentajesi'] = float("{:.4f}".format(trues/(trues + falses)))*100
+            context['porcentajeno'] = float("{:.4f}".format(falses/(trues + falses)))*100
+        else:
+            context['porcentajesi'] = 0
+            context['porcentajeno'] = 0
         return context
 
 
