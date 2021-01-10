@@ -14,7 +14,9 @@ module.exports = {
         //Usuario
         try {
 
-            //TODO: Comprobar que el usuario ya esta registrado
+            //TODO: Comprobar que el usuario ya esta registrado. 
+            //TODO: Cancelar conexión con bot.
+            //TODO: Si escribes un comando en mitad del proceso de login, cortar conexión o salga mensaje
 
             msg.author.send('**Introduzca su usuario:**')
             msg.author.createDM().then(dmchannel => {
