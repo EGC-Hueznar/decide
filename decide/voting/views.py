@@ -9,7 +9,74 @@ from .models import Question, QuestionOption, Voting
 from .serializers import SimpleVotingSerializer, VotingSerializer
 from base.perms import UserIsStaff
 from base.models import Auth
+from voting.models import *
+from django.http import HttpResponse
+import json
+from django.core import serializers
 
+def  getVotacionBinariaById(request,id):
+    v = VotacionBinaria.objects.filter(id=id).first().toJson()
+    v = json.dumps(v)
+    return HttpResponse(v, content_type='application/json')
+
+def getAllVotacionesBinarias(request):
+    votaciones = VotacionBinaria.objects.all()
+    res = {}
+    listaVotaciones = []
+    for v in votaciones:
+        js = v.toJson()
+        listaVotaciones.append(js)
+    res['votaciones'] = listaVotaciones
+    res = json.dumps(res)
+    return HttpResponse(res, content_type='application/json')
+
+def  getVotacionById(request,id):
+    v = Votacion.objects.filter(id=id).first().toJson()
+    v = json.dumps(v)
+    return HttpResponse(v, content_type='application/json')
+
+def getAllVotaciones(request):
+    votaciones = Votacion.objects.all()
+    res = {}
+    listaVotaciones = []
+    for v in votaciones:
+        js = v.toJson()
+        listaVotaciones.append(js)
+    res['votaciones'] = listaVotaciones
+    res = json.dumps(res)
+    return HttpResponse(res, content_type='application/json')
+
+def  getVotacionMultipleById(request,id):
+    v = VotacionMultiple.objects.filter(id=id).first().toJson()
+    v = json.dumps(v)
+    return HttpResponse(v, content_type='application/json')
+
+def getAllVotacionesMultiples(request):
+    votaciones = VotacionMultiple.objects.all()
+    res = {}
+    listaVotaciones = []
+    for v in votaciones:
+        js = v.toJson()
+        listaVotaciones.append(js)
+    res['votaciones'] = listaVotaciones
+    res = json.dumps(res)
+    return HttpResponse(res, content_type='application/json')
+
+def  getVotacionPreferenciaById(request,id):
+    v = VotacionPreferencia.objects.filter(id=id).first().toJson()
+    v = json.dumps(v)
+    return HttpResponse(v, content_type='application/json')
+
+def getAllVotacionesPreferencia(request):
+    votaciones = VotacionPreferencia.objects.all()
+    res = {}
+    listaVotaciones = []
+    for v in votaciones:
+        js = v.toJson()
+        listaVotaciones.append(js)
+    res['votaciones'] = listaVotaciones
+    res = json.dumps(res)
+    return HttpResponse(res, content_type='application/json')
 
 class VotingView(generics.ListCreateAPIView):
     queryset = Voting.objects.all()
