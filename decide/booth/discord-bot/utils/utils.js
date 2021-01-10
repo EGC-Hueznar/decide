@@ -1,3 +1,4 @@
+const axios = require('axios')
 const fs = require('fs')
 
 const storeData = (userId, data) => {
@@ -48,6 +49,48 @@ const cleanData = (userId) => {
   }
 }
 
+const axiosPost = (url, data, token=undefined) => {
+  const headers = {
+      'content-type': 'application/json',
+  };
+  if (token) {
+      headers['Authorization'] = 'Token ' + token;
+  }
+  const options = {headers};
+  return axios.post(url, data, options)
+      .then(response => {
+          if (response.status === 200) { 
+              return response;
+          } else {
+              return Promise.reject(response.statusText);
+          }
+      });
+};
+
+const axiosGet = (url, data=undefined) => {
+  if(data){
+      return axios.get(url,data)
+      .then(response => {
+          if (response.status === 200){
+              return response
+          }else {
+              return Promise.reject(response.statusText)
+          }
+      })
+  }else{
+      return axios.get(url)
+      .then(response => {
+          if (response.status === 200){
+              return response
+          }else {
+              return Promise.reject(response.statusText)
+          }
+      })
+  }
+}
+
 exports.storeData = storeData
 exports.getDataFromUser = getDataFromUser
 exports.cleanData = cleanData
+exports.axiosPost = axiosPost
+exports.axiosGet = axiosGet
