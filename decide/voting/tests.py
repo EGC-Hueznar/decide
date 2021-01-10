@@ -144,6 +144,42 @@ class testPostProcBinarias(BaseTestCase):
         self.assertEquals(vbJson["Numero de respuetas a Sí"], vb.Numero_De_Trues())
         self.assertEquals(vbJson["Numero de respuetas a No"], vb.Numero_De_Falses())
 
+class testToJsonbinarias(BaseTestCase):
+    def setUp(self):
+        vb1 = VotacionBinaria(titulo="titulo 1", descripcion="Descripcion 1",fecha_inicio=timezone.now(),fecha_fin=timezone.now())
+        vb1.save()
+
+        rb1 = RespuestaBinaria(respuesta=1)
+        rb2 = RespuestaBinaria(respuesta=1)
+        rb3 = RespuestaBinaria(respuesta=1)
+        rb4 = RespuestaBinaria(respuesta=0)
+
+        vb1.addRespuestaBinaria(rb1)
+        vb1.addRespuestaBinaria(rb2)
+        vb1.addRespuestaBinaria(rb3)
+        vb1.addRespuestaBinaria(rb4)
+        super().setUp()
+
+    def tearDown(self):
+        super().tearDown()
+        self.vb1 = None
+        self.rb1 = None
+        self.rb2 = None
+        self.rb3 = None
+        self.rb4 = None
+
+    def testToJson(self):
+        vb = VotacionBinaria.objects.get(titulo="titulo 1")
+        vbJson = vb.toJson()
+        self.assertEquals(vbJson["titulo"], vb.titulo)
+        self.assertEquals(vbJson["descripcion"],vb.descripcion)
+        self.assertEquals(vbJson["fecha_inicio"], str(vb.fecha_inicio))
+        self.assertEquals(vbJson["fecha_fin"], str(vb.fecha_fin))
+        respuestas = vb.respuestasBinarias.all()
+        respuestasJson = vbJson['respuestas']
+        for r,rj in zip(respuestas,respuestasJson):
+            self.assertEquals(r.id,rj['id'])
+            self.assertEquals(r.respuesta, rj['respuesta'])
 #TEST VOTACIONES PREFERENCIAS
 class GuardaVotacionPreferenciaTest(BaseTestCase):
     def setUp(self):
@@ -383,6 +419,54 @@ class testPostProcPreferencia(BaseTestCase):
                 self.assertEquals(o.Media_Preferencia(), oj['Media de Preferencia de la opcion: '])
                 self.assertEquals(str(o.Respuestas_Opcion()), oj['Votos dados a la opcion: '])
 
+class testToJsonPreferencia(BaseTestCase):
+    def setUp(self):
+        vp = VotacionPreferencia(titulo="preferencia 1",descripcion="descripcion 1")
+        vp.save()
+        pp = PreguntaPreferencia(textoPregunta ="Texto 1")
+        vp.addPreguntaPreferencia(pp)
+        opr = OpcionRespuesta(nombre_opcion = "Opcion 1")
+        pp.addOpcionRespuesta(opr)
+        opr2 = OpcionRespuesta(nombre_opcion="Opcion 2")
+        pp.addOpcionRespuesta(opr2)
+        rp = RespuestaPreferencia(orden_preferencia=1)
+        opr.addRespuetaPreferencia(rp)
+        rp2 = RespuestaPreferencia(orden_preferencia=2)
+        opr.addRespuetaPreferencia(rp2)
+        rp3 = RespuestaPreferencia(orden_preferencia=1)
+        opr2.addRespuetaPreferencia(rp3)
+        super().setUp()
+    def tearDown(self):
+        super().tearDown()
+        self.vp=None
+        self.pp=None
+        self.opr=None
+        self.rp=None
+    def testJson(self):
+        vp = VotacionPreferencia.objects.get(titulo="preferencia 1")
+        vpJson = vp.toJson()
+        self.assertEquals(vpJson["titulo"], vp.titulo)
+        self.assertEquals(vpJson["descripcion"], vp.descripcion)
+        self.assertEquals(vpJson["fecha_inicio"], str(vp.fecha_inicio))
+        self.assertEquals(vpJson["fecha_fin"], str(vp.fecha_fin))
+
+        preguntas = vp.preguntasPreferencia.all()
+        preguntasJson = vpJson["preguntas"]
+
+        for p,pj in zip(preguntas,preguntasJson):
+            self.assertEquals(p.id, pj['id'])
+            self.assertEquals(p.textoPregunta, pj['pregunta'])
+            opciones = p.opcionesRespuesta.all()
+            opcionesJson = pj["opciones"]
+            for o,oj in zip(opciones,opcionesJson):
+                self.assertEquals(o.id,oj["id"])
+                self.assertEquals(o.nombre_opcion, oj["nombre_opcion"])
+                respuestas = o.respuestasPreferencia.all()
+                respuestasJson = oj["respuestas"]
+                for r,rj in zip(respuestas,respuestasJson):
+                    self.assertEquals(r.id, rj["id"])
+                    self.assertEquals(r.orden_preferencia, rj["orden_preferencia"])
+
 #TEST VOTACIONES NORMALES
 
 class GuardaVotacionTest(BaseTestCase):
@@ -554,6 +638,43 @@ class testPostProcNormales(BaseTestCase):
             self.assertEquals(p.Media_De_Las_Respuestas(), pj['Respuesta Media'])
             self.assertEquals(p.Respuesta_Maxima(), pj['Respuesta Maxima'])
             self.assertEquals(p.Respuesta_Minima(), pj['Respuesta Minima'])
+
+class testJsonNormales(BaseTestCase):
+    def setUp(self):
+        v = Votacion(titulo="votacion 1",descripcion="descripcion 1",fecha_inicio=timezone.now(),fecha_fin=timezone.now())
+        v.save()
+        p = Pregunta(textoPregunta ="Texto 1")
+        v.addPregunta(p)
+        r1 = Respuesta(respuesta = 7)
+        p.addRespuesta(r1)
+        r2 = Respuesta(respuesta=5)
+        p.addRespuesta(r2)
+        super().setUp()
+    def tearDown(self):
+        super().tearDown()
+        self.v=None
+        self.p=None
+        self.r1=None
+        self.r2=None
+    def testJson(self):
+        v = Votacion.objects.get(titulo="votacion 1")
+        vJson = v.toJson()
+        self.assertEquals(vJson["titulo"], v.titulo)
+        self.assertEquals(vJson["descripcion"], v.descripcion)
+        self.assertEquals(vJson["fecha_inicio"], str(v.fecha_inicio))
+        self.assertEquals(vJson["fecha_fin"], str(v.fecha_fin))
+
+        preguntasJson = vJson["preguntas"]
+        preguntas = v.preguntas.all()
+
+        for p,pj in zip(preguntas,preguntasJson):
+           self.assertEquals(p.id,pj['id'])
+           self.assertEquals(p.textoPregunta, pj['pregunta'])
+           respuestas = p.respuestas.all()
+           respuestasJson = pj["respuestas"]
+           for r,rj in zip(respuestas,respuestasJson):
+               self.assertEquals(r.id, rj['id'])
+               self.assertEquals(r.respuesta, rj['respuesta'])
 
 #TEST VOTACIONES MULTIPLES
 class GuardaVotacionMultipleTest(BaseTestCase):
@@ -801,6 +922,46 @@ class testPostProcMultiple(BaseTestCase):
             for o,oj in zip(opciones,opcionesJson):
                 self.assertEquals(o.n_votado, oj['Numero de veces que se ha votado '+o.nombre_opcion])
 
+class testJsonMultiple(BaseTestCase):
+    def setUp(self):
+        vm = VotacionMultiple(titulo="votacion 1",descripcion="descripcion 1",fecha_inicio=timezone.now(),fecha_fin=timezone.now())
+        vm.save()
+        pm = PreguntaMultiple(textoPregunta ="Texto 1")
+        vm.addPreguntaMultiple(pm)
+        pm2 = PreguntaMultiple(textoPregunta="Texto 2")
+        vm.addPreguntaMultiple(pm2)
+        om1 = OpcionMultiple(nombre_opcion = "Opcion 1",n_votado=0)
+        pm.addOpcionMultiple(om1)
+        om2 = OpcionMultiple(nombre_opcion="Opcion 2", n_votado=3)
+        pm.addOpcionMultiple(om2)
+        om3 = OpcionMultiple(nombre_opcion="Opcion3", n_votado=7)
+        pm2.addOpcionMultiple(om3)
+        super().setUp()
+    def tearDown(self):
+        super().tearDown()
+        self.vm=None
+        self.pm=None
+        self.om1=None
+    def testPostProc(self):
+        vm = VotacionMultiple.objects.get(titulo="votacion 1")
+        vmJson = vm.toJson()
+        self.assertEquals(vmJson["titulo"], vm.titulo)
+        self.assertEquals(vmJson["descripcion"], vm.descripcion)
+        self.assertEquals(vmJson["fecha_inicio"], str(vm.fecha_inicio))
+        self.assertEquals(vmJson["fecha_fin"], str(vm.fecha_fin))
+
+        preguntas = vm.preguntasMultiples.all()
+        preguntasJson = vmJson["preguntas"]
+
+        for p,pj in zip(preguntas,preguntasJson):
+            self.assertEquals(p.id, pj['id'])
+            self.assertEquals(p.textoPregunta,pj['pregunta'])
+            opciones = p.opcionesMultiples.all()
+            opcionesJson = pj['opciones']
+            for o,oj in zip(opciones,opcionesJson):
+                self.assertEquals(o.id, oj['id'])
+                self.assertEquals(o.nombre_opcion, oj['opcion'])
+                self.assertEquals(o.n_votado, oj['n_votado'])
 # class VotingTestCase(BaseTestCase):
 #
 #     def setUp(self):
