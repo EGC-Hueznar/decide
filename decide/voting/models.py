@@ -45,7 +45,19 @@ class VotacionBinaria(models.Model):
             respuestas.append({'id': r.id, 'respuesta': r.respuesta})
         res['respuestas'] = respuestas
         return res
-        
+
+    def doPostProc(self):
+        si = self.Numero_De_Trues()
+        no = self.Numero_De_Falses()
+        respuestasJson = {
+            'titulo': self.titulo,
+            'descripcion': self.descripcion,
+            'Inicio de la votacion': str(self.fecha_inicio),
+            'Cierre de la votacion': str(self.fecha_fin),
+            'Numero de respuetas a Sí': si,
+            'Numero de respuetas a No': no,
+        }
+        return respuestasJson
 
 #MODELO DE RESPUESTA BINARIA
 class RespuestaBinaria(models.Model):
@@ -91,6 +103,22 @@ class Votacion(models.Model):
             preguntas.append({'id': p.id, 'pregunta': p.textoPregunta, 'respuestas': respuestas})
         res['preguntas'] = preguntas
         return res
+
+    def doPostProc(self):
+        respuestasJson = {
+            'titulo': self.titulo,
+            'descripcion': self.descripcion,
+            'Inicio de la votacion': str(self.fecha_inicio),
+            'Cierre de la votacion': str(self.fecha_fin),
+        }
+        listaPreguntas = []
+        for p in self.preguntas.all():
+            listaPreguntas.append({'Pregunta': p.textoPregunta,
+                                   'Respuesta Media': p.Media_De_Las_Respuestas(),
+                                   'Respuesta Maxima': p.Respuesta_Maxima(),
+                                   'Respuesta Minima': p.Respuesta_Minima()})
+        respuestasJson["preguntas"] = listaPreguntas
+        return respuestasJson
 
 #MODELO DE PREGUNTAS
 class Pregunta(models.Model):
@@ -170,6 +198,24 @@ class VotacionMultiple(models.Model):
             preguntasMultiples.append({'id': p.id, 'pregunta': p.textoPregunta, 'opciones': opcionesMultiple})
         res['preguntas'] = preguntasMultiples
         return res
+
+    def doPostProc(self):
+        respuestasJson = {
+            'titulo': self.titulo,
+            'descripcion': self.descripcion,
+            'Inicio de la votacion': str(self.fecha_inicio),
+            'Cierre de la votacion': str(self.fecha_fin),
+        }
+        listaPreguntas = []
+        for p in self.preguntasMultiples.all():
+            listaRespuestas = []
+            for r in p.opcionesMultiples.all():
+                listaRespuestas.append({"Numero de veces que se ha votado " + r.nombre_opcion: r.n_votado})
+            listaPreguntas.append({'Pregunta': p.textoPregunta,
+                                   'Resultados de las opciones': listaRespuestas})
+        respuestasJson["preguntas"] = listaPreguntas
+        return respuestasJson
+
       # DEVUELVE EL NÚMERO DE PREGUNTAS QUE TIENE ASOCIDADA UNA VOTACION MULTIPLE
     def Numero_De_Preguntas_Multiple(self):
         return PreguntaMultiple.objects.filter(votacionMultiple_id=self.id).count()
@@ -260,6 +306,24 @@ class VotacionPreferencia(models.Model):
             preguntasPreferencia.append({'id': p.id, 'pregunta': p.textoPregunta, 'opciones': opcionesRespuesta})
         res['preguntas'] = preguntasPreferencia
         return res
+
+    def doPostProc(self):
+        respuestasJson = {
+            'titulo': self.titulo,
+            'descripcion': self.descripcion,
+            'Inicio de la votacion': str(self.fecha_inicio),
+            'Cierre de la votacion': str(self.fecha_fin),
+        }
+        listaPreguntas = []
+        for p in self.preguntasPreferencia.all():
+            listaRespuestas = []
+            for r in p.opcionesRespuesta.all():
+                listaRespuestas.append({"Media de Preferencia de la opcion: ": r.Media_Preferencia(),
+                                        "Votos dados a la opcion: ": str(r.Respuestas_Opcion())})
+            listaPreguntas.append({'Pregunta': p.textoPregunta,
+                                   'Resultados de las opciones': listaRespuestas})
+        respuestasJson["preguntas"] = listaPreguntas
+        return respuestasJson
 
     # DEVUELVE EL NÚMERO DE PREGUNTAS QUE TIENE ASOCIDADA UNA VOTACION DE PREFERENCIA
     def Numero_De_Preguntas_Preferencia(self):
