@@ -1,5 +1,6 @@
-const { MessageCollector, DMChannel } = require("discord.js");
-//const utils = require('../utils/utils.js')
+const { MessageCollector, DMChannel, MessageEmbed } = require("discord.js");
+const utils = require('../utils/utils.js')
+const urls = require('../utils/urls.json')
 
 module.exports = {
     name: '!login',
@@ -8,31 +9,33 @@ module.exports = {
         
         var user = ""
         var pass = ""
+        var token = ""
 
         //Usuario
         try {
-            msg.author.send('Introduzca su usuario')
+
+            //TODO: Comprobar que el usuario ya esta registrado
+
+            msg.author.send('**Introduzca su usuario:**')
             msg.author.createDM().then(dmchannel => {
                 const collectorUser = new MessageCollector(dmchannel, m => m.author.id === msg.author.id, {time:25000})    
 
                 var i = 0
 
                 collectorUser.on('collect', msgUser => {
-                    
+
                     if(msgUser.content) {
                         user = msgUser.content
                         i+=1
                     }
-                    
-                    console.log(user)
 
                     if (i === 1) {
-                        msg.author.send('Usuario recibido')
+                        msg.author.send('Usuario recibido :white_check_mark:')
                     }
                     collectorUser.stop()
 
                     //Contraseña
-                    msg.author.send('Introduzca su contraseña');
+                    msg.author.send('**Introduzca su contraseña:**');
                     
                     const collectorPass = new MessageCollector(dmchannel, m => m.author.id === msg.author.id, {time:25000})    
         
@@ -42,30 +45,47 @@ module.exports = {
                             pass = msgPass.content
                             i+=1
                         }
-                        
-                        console.log(pass)
         
                         if (i === 2) {
-                            msg.author.send('Contraseña recibida')
+                            msg.author.send('Contraseña recibida :white_check_mark:')
                             i+=1
                         }        
                         collectorPass.stop()
 
                         if(i === 3) {
-                            msg.author.send('Datos introducidos correctamente')
+                            msg.author.send('Comprobando... :hourglass_flowing_sand:')
                         }
                     })
+
                     collectorPass.on('end', () => {
-                        msg.author.send('Tiempo expirado. Conexión cerrada')
+
+                        utils.axiosPost(urls.BASE_URL + urls.LOGIN_URL, {username:user, password:pass}).then( response => {
+                            
+                            token = response.data.token
+                            console.log('Token -> ' + token)
+
+                            utils.storeData(msg.author.id, {token:token})
+                        
+                            utils.axiosPost(urls.BASE_URL + urls.GETUSER_URL, {token:token}, token).then( response => {
+                                
+                                const userData = utils.getDataFromUser(msg.author.id)
+                                utils.storeData(msg.author.id, {...userData, decideUser:response.data})
+
+                                msg.author.send('Enhorabuena! Se ha registrado correctamente :sunglasses:')
+
+                            }).catch(error => msg.author.send('Error al intentar encontrar al usuario :pleading_face:'))
+
+                        }).catch(error => msg.author.send('Error en las credenciales :pleading_face:'))
                     })
-                })
-                collectorUser.on('end', () => {
-                    msg.author.send('Tiempo expirado. Conexión cerrada')
+
                 })
             })
-
-        } catch {
-            channel.send('Prueba a logearte de nuevo')
+            
+        } catch(error) {
+            
+            console.log(error)
+            
+            msg.author.send('Prueba a logearte de nuevo')
         }
     },
 };
