@@ -26,7 +26,7 @@ def votacionBinariaATxt(id):
 def downloadVotacionBinaria(request,id):
     res = votacionBinariaATxt(id)
     response = HttpResponse(res, content_type='application/text charset=utf-8')
-    response['Content-Disposition'] = 'attachment; filename="Votacion Binaria.txt "'
+    response['Content-Disposition'] = 'attachment; filename="Votacion Binaria.txt"'
     return response
 
 def downloadAllVotacionBinaria(request):

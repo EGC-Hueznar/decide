@@ -291,7 +291,7 @@ class VotacionPreferencia(models.Model):
 
     def toJson(self):
         res = {'titulo': self.titulo,
-               'descripción': str(self.descripcion),
+               'descripcion': str(self.descripcion),
                'fecha_inicio': str(self.fecha_inicio),
                'fecha_fin': str(self.fecha_fin)}
         preguntasPreferencia = []
@@ -398,8 +398,6 @@ class OpcionRespuesta(models.Model):
 
         for key in result:
             result[key] = str(result[key]) + " veces"
-
-        print(result)
         return sorted(result.items())
 
 class RespuestaPreferencia(models.Model):

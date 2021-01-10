@@ -56,7 +56,7 @@ def vistaMultipleAll(request):
 def vistaPreferencia(request,id):
     v =  VotacionPreferencia.objects.filter(id=id).first().doPostProc()
     v = json.dumps(v)
-    return HttpResponse(v, content_type='application/json')*
+    return HttpResponse(v, content_type='application/json')
 
 def vistaPreferenciaAll(request):
     votaciones = VotacionPreferencia.objects.all()
