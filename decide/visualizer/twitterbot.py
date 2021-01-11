@@ -27,6 +27,8 @@ def send_twitter_report(voting):
         message = send_twitter_report_voting(voting)
     elif isinstance(voting,VotacionBinaria):
         message = send_twitter_report_binary(voting)
+    elif isinstance(voting,Votacion):
+        message = send_twitter_report_normal(voting)
     return message
 
 def send_twitter_report_voting(voting):
@@ -60,6 +62,28 @@ def send_twitter_report_binary(v):
     tweet += "\nResultados: \n"
     tweet += "Sí: " +str(VotacionBinaria.Numero_De_Trues(v)) + "\n"
     tweet += "No: " +str(VotacionBinaria.Numero_De_Falses(v)) + "\n"
+
+    auth = tweepy.OAuthHandler(consumer_key, consumer_secret_key)
+    auth.set_access_token(access_token, access_token_secret)
+    api = tweepy.API(auth)
+    return api.update_status(tweet)
+
+def send_twitter_report_normal(v):
+    voting_id = v.id
+    voting_title = v.titulo
+    voting_desc = v.descripcion
+    voting_questions = v.preguntas.all()
+    
+    tweet = "Votación: " + voting_title +"\n"
+    tweet  += "Descripción: " + str(voting_desc) + "\n"
+    for question in voting_questions:
+        tweet  += question.textoPregunta + "\n"
+        if Pregunta.Respuesta_Minima(question) == "None":
+            tweet  += "No hay respuestas a esta pregunta \n"
+        else:
+            tweet  += "Respuesta más baja: " + str(Pregunta.Respuesta_Minima(question)) + "\n"
+            tweet  += "Respuesta más alta: " + str(Pregunta.Respuesta_Maxima(question)) + "\n"
+            tweet  += "Calificación Media: " + str(Pregunta.Media_De_Las_Respuestas(question)) + "\n\n"
 
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret_key)
     auth.set_access_token(access_token, access_token_secret)
