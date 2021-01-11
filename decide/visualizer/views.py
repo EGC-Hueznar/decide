@@ -53,7 +53,7 @@ class VisualizerVotingList(TemplateView):
             context['tipov'] = 'normal'
             context['lista'] = Votacion.objects.all()
         elif(tipo == 'multiple'):
-            context['tipov'] = 'lista'
+            context['tipov'] = 'multiple'
             context['lista'] = VotacionMultiple.objects.all()
         elif(tipo == 'preferencia'):
             context['tipov'] = 'preferencia'
