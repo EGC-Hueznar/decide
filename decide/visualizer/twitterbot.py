@@ -30,7 +30,9 @@ def send_twitter_report(voting):
     elif isinstance(voting,Votacion):
         message = send_twitter_report_normal(voting)
     elif isinstance(voting,VotacionPreferencia):
-        message = send_twitter_report_preferencia(voting)    
+        message = send_twitter_report_preferencia(voting)   
+    elif isinstance(voting,VotacionMultiple):
+        message = send_twitter_report_mult(voting)     
     return message
 
 def send_twitter_report_voting(voting):
@@ -109,6 +111,29 @@ def send_twitter_report_preferencia(v):
             for ans in question_ans:
                 tweet += "- " + ans.nombre_opcion + ": " + str(OpcionRespuesta.Media_Preferencia(ans))+"\n"
     tweet += "\n"
+
+    auth = tweepy.OAuthHandler(consumer_key, consumer_secret_key)
+    auth.set_access_token(access_token, access_token_secret)
+    api = tweepy.API(auth)
+    return api.update_status(tweet)
+
+def send_twitter_report_mult(v):
+    voting_id = v.id
+    voting_title = v.titulo
+    voting_desc = v.descripcion
+    voting_questions = v.preguntasMultiples.all()
+   
+    tweet = "Votación: " + voting_title +"\n"
+    tweet += "Descripción: " + str(voting_desc) + "\n"
+    for question in voting_questions:
+        tweet += question.textoPregunta + "\n"
+        if PreguntaMultiple.Numero_De_Opciones(question) == 0 :
+            tweet += "Sin opciones\n"
+        else:
+            question_ans = question.opcionesMultiples.all()
+            for ans in question_ans:
+                tweet += ans.nombre_opcion + ": " + str(ans.n_votado)+"\n"
+        tweet += "\n"
 
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret_key)
     auth.set_access_token(access_token, access_token_secret)
