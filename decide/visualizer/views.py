@@ -43,7 +43,7 @@ class VisualizerIndex(TemplateView):
         context['cantFin'] = Voting.objects.filter(end_date__isnull=False).count()
         context['cantPend'] = context['cantidad'] - context['cantProx'] - context['cantFin']
 
-        context["total"] = context["cantBin"] + context["cantPref"] + context["cantMult"] + context["cantNorm"]
+        context["total"] = context["cantBin"] + context["cantPref"] + context["cantMult"] + context["cantNorm"] + context["cantidad"]
         return context
 
 class VisualizerVotingList(TemplateView):
@@ -63,9 +63,11 @@ class VisualizerVotingList(TemplateView):
         elif(tipo == 'binaria'):
             context['tipov'] = 'binaria'
             context['lista'] = VotacionBinaria.objects.all()
-        else:
+        elif(tipo == 'default'):
+            self.template_name = "visualizer/listdefault.html"
             context['tipov'] = 'default'
             context['lista'] = Voting.objects.all()
+        else:
             raise Http404
         return context
 
@@ -75,42 +77,65 @@ class VisualizerVista(TemplateView):
     def get_context_data(self, tipo, voting_id, **kwargs):
         context = super().get_context_data(**kwargs)
         if(tipo == 'normal'):
-            context['voting'], self.template_name = self.normal(voting_id)
+            self.template_name = 'visualizer/resultnormal.html'
+            context = self.normal(context, voting_id)
         elif(tipo == 'multiple'):
-            context['voting'], self.template_name = self.multiple(voting_id)
+            self.template_name = 'visualizer/resultmul.html'
+            context = self.multiple(context, voting_id)
         elif(tipo == 'preferencia'):
-            context['voting'], self.template_name = self.preferencia(voting_id)
+            self.template_name = 'visualizer/resultpref.html'
+            context = self.preferencia(context, voting_id)
         elif(tipo == 'binaria'):
-            context['voting'], self.template_name = self.binario(voting_id)
+            self.template_name = 'visualizer/resultbin.html'
+            context = self.binario(context, voting_id)
         else:
-            context['tipov'] = 'default'
-            context['lista'] = Voting.objects.all()
             raise Http404
         return context
 
-    def normal(self, voting_id):
-        template = 'visualizer/resultnormal.html'
-        context = {}
-        context["lista"] = ""
-        return (context, template)
+    def normal(self, context, voting_id):
+        votacion = Votacion.objects.get(id=voting_id)
+        context['voting'] = votacion
+        preguntas = Pregunta.objects.all().filter(votacion=votacion)
+        context['resultados'] = preguntas
 
-    def multiple(self, voting_id):
-        template = 'visualizer/resultmul.html'
-        context = {}
-        context["lista"] = ""
-        return (context, template)
+        return context
 
-    def preferencia(self, voting_id):
-        template = 'visualizer/resultpref.html'
-        context = {}
-        context["lista"] = ""
-        return (context, template)
+    def multiple(self, context, voting_id):
+        votacion = VotacionMultiple.objects.get(id=voting_id)
+        context['voting'] = votacion
+        pre = PreguntaMultiple.objects.all().filter(votacionMultiple=votacion)
+        preguntas = {}
+        for p in pre:
+            opciones = OpcionMultiple.objects.all().filter(preguntaMultiple=p)
+            preguntas[p] = opciones
+        context['resultados'] = preguntas
 
-    def binario(self, voting_id):
-        template = 'visualizer/resultbin.html'
-        context = {}
-        context["lista"] = ""
-        return (context, template)
+        return context
+
+    def preferencia(self, context, voting_id):
+        votacion = VotacionPreferencia.objects.get(id=voting_id)
+        context['voting'] = votacion
+        pre = PreguntaPreferencia.objects.all().filter(votacionPreferencia=votacion)
+        preguntas = {}
+        for p in pre:
+            opciones = OpcionRespuesta.objects.all().filter(preguntaPreferencia=p)
+            preguntas[p] = opciones
+        context['resultados'] = preguntas
+
+        return context
+
+    def binario(self, context, voting_id):
+        votacion = VotacionBinaria.objects.get(id=voting_id)
+        trues = (votacion.Numero_De_Trues())
+        falses = (votacion.Numero_De_Falses())
+        context['voting'] = votacion
+        if ((trues + falses) != 0):
+            context['porcentajesi'] = float("{:.4f}".format(trues/(trues + falses)))*100
+            context['porcentajeno'] = float("{:.4f}".format(falses/(trues + falses)))*100
+        else:
+            context['porcentajesi'] = 0
+            context['porcentajeno'] = 0
+        return context
 
 
 #======================================================================================
