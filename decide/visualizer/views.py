@@ -1,17 +1,146 @@
 import json
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView
 from django.conf import settings
 from django.http import Http404
+from base import mods
+from django.shortcuts import render
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
-from voting.models import Voting
+from voting.models import *
 import random
 
-from base import mods
 import telegram
 from .telegrambot import *
 
+class VisualizerIndex(TemplateView):
+    template_name = 'visualizer/index.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['cantNorm'] = Votacion.objects.count()
+        context['cantNProx'] = Votacion.objects.filter(fecha_inicio__isnull=True).count()
+        context['cantNFin'] = Votacion.objects.filter(fecha_fin__isnull=False).count()
+        context['cantNPend'] = context['cantNorm'] - context['cantNProx'] - context['cantNFin']
+
+        context['cantPref'] = VotacionPreferencia.objects.count()
+        context['cantPProx'] = VotacionPreferencia.objects.filter(fecha_inicio__isnull=True).count()
+        context['cantPFin'] = VotacionPreferencia.objects.filter(fecha_fin__isnull=False).count()
+        context['cantPPend'] = context['cantPref']  - context['cantPProx'] - context['cantPFin']
+
+        context['cantMult'] = VotacionMultiple.objects.count()
+        context['cantMProx'] = VotacionMultiple.objects.filter(fecha_inicio__isnull=True).count()
+        context['cantMFin'] = VotacionMultiple.objects.filter(fecha_fin__isnull=False).count()
+        context['cantMPend'] = context['cantMult'] - context['cantMProx'] - context['cantMFin']
+
+        context['cantBin'] = VotacionBinaria.objects.count()
+        context['cantBProx'] = VotacionBinaria.objects.filter(fecha_inicio__isnull=True).count()
+        context['cantBFin'] = VotacionBinaria.objects.filter(fecha_fin__isnull=False).count()
+        context['cantBPend'] = context['cantBin'] - context['cantBProx'] - context['cantBFin']
+
+        context['cantidad'] = Voting.objects.count()
+        context['cantProx'] = Voting.objects.filter(start_date__isnull=True).count()
+        context['cantFin'] = Voting.objects.filter(end_date__isnull=False).count()
+        context['cantPend'] = context['cantidad'] - context['cantProx'] - context['cantFin']
+
+        context["total"] = context["cantBin"] + context["cantPref"] + context["cantMult"] + context["cantNorm"] + context["cantidad"]
+        return context
+
+class VisualizerVotingList(TemplateView):
+    template_name = 'visualizer/list.html'
+
+    def get_context_data(self,tipo,**kwargs):
+        context = super().get_context_data(**kwargs)
+        if(tipo == 'normal'):
+            context['tipov'] = 'normal'
+            context['lista'] = Votacion.objects.all()
+        elif(tipo == 'multiple'):
+            context['tipov'] = 'lista'
+            context['lista'] = VotacionMultiple.objects.all()
+        elif(tipo == 'preferencia'):
+            context['tipov'] = 'preferencia'
+            context['lista'] = VotacionPreferencia.objects.all()
+        elif(tipo == 'binaria'):
+            context['tipov'] = 'binaria'
+            context['lista'] = VotacionBinaria.objects.all()
+        elif(tipo == 'default'):
+            self.template_name = "visualizer/listdefault.html"
+            context['tipov'] = 'default'
+            context['lista'] = Voting.objects.all()
+        else:
+            raise Http404
+        return context
+
+class VisualizerVista(TemplateView):
+    template_name = 'visualizer/visualizer.html'
+
+    def get_context_data(self, tipo, voting_id, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if(tipo == 'normal'):
+            self.template_name = 'visualizer/resultnormal.html'
+            context = self.normal(context, voting_id)
+        elif(tipo == 'multiple'):
+            self.template_name = 'visualizer/resultmul.html'
+            context = self.multiple(context, voting_id)
+        elif(tipo == 'preferencia'):
+            self.template_name = 'visualizer/resultpref.html'
+            context = self.preferencia(context, voting_id)
+        elif(tipo == 'binaria'):
+            self.template_name = 'visualizer/resultbin.html'
+            context = self.binario(context, voting_id)
+        else:
+            raise Http404
+        return context
+
+    def normal(self, context, voting_id):
+        votacion = Votacion.objects.get(id=voting_id)
+        context['voting'] = votacion
+        preguntas = Pregunta.objects.all().filter(votacion=votacion)
+        context['resultados'] = preguntas
+
+        return context
+
+    def multiple(self, context, voting_id):
+        votacion = VotacionMultiple.objects.get(id=voting_id)
+        context['voting'] = votacion
+        pre = PreguntaMultiple.objects.all().filter(votacionMultiple=votacion)
+        preguntas = {}
+        for p in pre:
+            opciones = OpcionMultiple.objects.all().filter(preguntaMultiple=p)
+            preguntas[p] = opciones
+        context['resultados'] = preguntas
+
+        return context
+
+    def preferencia(self, context, voting_id):
+        votacion = VotacionPreferencia.objects.get(id=voting_id)
+        context['voting'] = votacion
+        pre = PreguntaPreferencia.objects.all().filter(votacionPreferencia=votacion)
+        preguntas = {}
+        for p in pre:
+            opciones = OpcionRespuesta.objects.all().filter(preguntaPreferencia=p)
+            preguntas[p] = opciones
+        context['resultados'] = preguntas
+
+        return context
+
+    def binario(self, context, voting_id):
+        votacion = VotacionBinaria.objects.get(id=voting_id)
+        trues = (votacion.Numero_De_Trues())
+        falses = (votacion.Numero_De_Falses())
+        context['voting'] = votacion
+        if ((trues + falses) != 0):
+            context['porcentajesi'] = float("{:.4f}".format(trues/(trues + falses)))*100
+            context['porcentajeno'] = float("{:.4f}".format(falses/(trues + falses)))*100
+        else:
+            context['porcentajesi'] = 0
+            context['porcentajeno'] = 0
+        return context
+
+
+#======================================================================================
+
+
 class VisualizerView(TemplateView):
+
     template_name = 'visualizer/visualizer.html'
 
     #funcion que devuelve diccionario con los objetos que se sumarán al context principal
