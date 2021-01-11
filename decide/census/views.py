@@ -14,11 +14,7 @@ from rest_framework.status import (
 from base.perms import UserIsStaff
 from .models import Census
 from tablib import Dataset
-from import_export import resources
-
-class CensusResource(resources.ModelResource):
-    class Meta:
-        model = Census
+from .resources import CensusResource
 
 def importar(request):
     # template = loader.get_template('export/importar.html')
