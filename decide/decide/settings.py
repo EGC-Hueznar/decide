@@ -37,13 +37,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     'corsheaders',
     'django_filters',
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_swagger',
     'gateway',
+    'import_export',
 ]
 
 REST_FRAMEWORK = {
@@ -105,16 +105,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'decide.wsgi.application'
 
-
+IMPORT_EXPORT_USE_TRANSACTIONS = True
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
+
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'decide',
-        'USER': 'decide',
-        'PASSWORD': 'decide',
+        'NAME': 'decideEGC',
+        'USER': 'decideEGC',
+        'PASSWORD': 'decideEGC',
         'HOST': 'localhost',
         'PORT': '5432',
     }

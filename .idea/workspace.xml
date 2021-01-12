@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="39a6d140-52f1-4598-a7fc-e019b833d33c" name="Default Changelist" comment="CE-014: added census to voting detail layout">
+      <change beforePath="$PROJECT_DIR$/decide/booth/decide-react/src/components/AdminVotingDetail.js" beforeDir="false" afterPath="$PROJECT_DIR$/decide/booth/decide-react/src/components/AdminVotingDetail.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/decide/booth/decide-react/src/components/AdminVotingsList.js" beforeDir="false" afterPath="$PROJECT_DIR$/decide/booth/decide-react/src/components/AdminVotingsList.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/decide/booth/decide-react/src/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/decide/booth/decide-react/src/config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/decide/census/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/decide/census/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/decide/census/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/decide/census/views.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager">
+    <option name="groupingKeys">
+      <option value="directory" />
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="ca/develop" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1mZg0AHllNanD5vbaTHG4nnze9B" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="Git.Branch.Popup.ShowAllRemotes" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/decide/booth/decide-react/src/components" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/decide/booth/decide-react/src/components" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="39a6d140-52f1-4598-a7fc-e019b833d33c" name="Default Changelist" comment="" />
+      <created>1609706301773</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1609706301773</updated>
+    </task>
+    <task id="LOCAL-00001" summary="featÇ: installation requirements update">
+      <created>1609707126002</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1609707126002</updated>
+    </task>
+    <task id="LOCAL-00002" summary="feat: installation requirements update">
+      <created>1609707214081</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1609707214081</updated>
+    </task>
+    <task id="LOCAL-00003" summary="feat: created a react project for the census front-end">
+      <created>1609778179426</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1609778179426</updated>
+    </task>
+    <task id="LOCAL-00004" summary="feat(Admin) created Admin component">
+      <created>1609883742819</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1609883742819</updated>
+    </task>
+    <task id="LOCAL-00005" summary="CE-014: made Admin.js a router">
+      <created>1609964943650</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1609964943650</updated>
+    </task>
+    <task id="LOCAL-00006" summary="CE-014: created users list component">
+      <created>1609971999891</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1609971999891</updated>
+    </task>
+    <task id="LOCAL-00007" summary="CE-014: refactor and restyled admin votings views">
+      <created>1609974795051</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1609974795051</updated>
+    </task>
+    <task id="LOCAL-00008" summary="CE-014: added census to voting detail layout">
+      <created>1610034986861</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1610034986861</updated>
+    </task>
+    <task id="LOCAL-00009" summary="feat: temporary commit">
+      <created>1610483230390</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1610483230390</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
+    <servers />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.js" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="featÇ: installation requirements update" />
+    <MESSAGE value="feat: installation requirements update" />
+    <MESSAGE value="feat: created a react project for the census front-end" />
+    <MESSAGE value="feat(Admin) created Admin component" />
+    <MESSAGE value="CE-014: made Admin.js a router" />
+    <MESSAGE value="CE-014: created users list component" />
+    <MESSAGE value="CE-014: refactor and restyled admin votings views" />
+    <MESSAGE value="CE-014: added census to voting detail layout" />
+    <MESSAGE value="feat: temporary commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: temporary commit" />
+  </component>
+</project>
