@@ -23,6 +23,8 @@
 
         <div class="voting container">
             <h1>Votacion binaria</h1>
+            <a href="telegram_report">Compartir votación en Telegram</a>
+            <a href="twitter_report">Compartir votación en Twitter</a>
             <h1>{{ voting.id }} - {{ voting.titulo }}</h1>
 
             {% if voting.fecha_inicio == null %}
@@ -58,7 +60,6 @@
                         </tr>
                     </tbody>
                 </table>
-                <a href="telegram_report">Compartir votación en Telegram</a>
                 <!-- GRAFICAS DE VOTOS -->
                 <div>
                     <table style="margin: auto;" class="table table-striped">
@@ -96,6 +97,9 @@
                         </div>
                     </figure>
                 </div>
+        
+               
+        
 
                 <!-- GRAFICAS DE PUNTUACIONES -->
                 <div id="graficasDePuntuaciones" style="display:none;">

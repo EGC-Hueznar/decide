@@ -55,7 +55,7 @@ class VisualizerVotingList(TemplateView):
             context['tipov'] = 'normal'
             context['lista'] = Votacion.objects.all()
         elif(tipo == 'multiple'):
-            context['tipov'] = 'lista'
+            context['tipov'] = 'multiple'
             context['lista'] = VotacionMultiple.objects.all()
         elif(tipo == 'preferencia'):
             context['tipov'] = 'preferencia'
@@ -97,7 +97,43 @@ class VisualizerVista(TemplateView):
         context['voting'] = votacion
         preguntas = Pregunta.objects.all().filter(votacion=votacion)
         context['resultados'] = preguntas
-
+        respuestasMax = []
+        respuestasMin = []
+        respuestasMedia = []
+        textos = []
+        dataPieMax = []
+        dataPieMin = []
+        dataPieMedia = []
+        for pregunta in preguntas:
+            textos.append(str(pregunta))
+            respuestasMax.append(int(pregunta.Respuesta_Maxima()))
+            respuestasMin.append(int(pregunta.Respuesta_Minima()))
+            respuestasMedia.append(int(pregunta.Media_De_Las_Respuestas()))
+            #Datos para la grafica de sectores de las puntuaciones máximas
+            dataMax = {
+                'name': str(pregunta),
+                'y': int(pregunta.Respuesta_Maxima())
+            }
+            dataPieMax.append(dataMax)
+            #Datos para la grafica de sectores de las puntuaciones mínimas
+            dataMin = {
+                'name': str(pregunta),
+                'y': int(pregunta.Respuesta_Minima())
+            }
+            dataPieMin.append(dataMin)
+            #Datos para la grafica de sectores de las medias de las puntuaciones
+            dataMedia = {
+                'name': str(pregunta),
+                'y': int(pregunta.Media_De_Las_Respuestas())
+            }
+            dataPieMedia.append(dataMedia)
+        context['respuestasMax'] = respuestasMax
+        context['respuestasMin'] = respuestasMin
+        context['respuestasMedia'] = respuestasMedia
+        context['textos'] = textos
+        context['dataMin'] = dataPieMin
+        context['dataMax'] = dataPieMax
+        context['dataMedia'] = dataPieMedia
         return context
 
     def multiple(self, context, voting_id):
@@ -122,12 +158,26 @@ class VisualizerVista(TemplateView):
         votacion = VotacionPreferencia.objects.get(id=voting_id)
         context['voting'] = votacion
         pre = PreguntaPreferencia.objects.all().filter(votacionPreferencia=votacion)
+        context['preguntas'] = pre
         preguntas = {}
+        mediaPreferencia = []
+        options = []
+        dataPie = []
         for p in pre:
             opciones = OpcionRespuesta.objects.all().filter(preguntaPreferencia=p)
             preguntas[p] = opciones
+            for o in opciones:
+                mediaPreferencia.append(o.Media_Preferencia())
+                options.append(str(o))
+                data = {
+                    'name': str(o),
+                    'y': o.Media_Preferencia()
+                }
+                dataPie.append(data)
         context['resultados'] = preguntas
-
+        context['medias'] = mediaPreferencia
+        context['options'] = options
+        context['data'] = dataPie
         return context
 
     def binario(self, context, voting_id):
@@ -159,6 +209,8 @@ class VisualizerView(TemplateView):
         voto = []
         puntuacion = []
         color = []
+        dataPieVotos = []
+        dataPiePuntuaciones = []
         
         i = 0 #esta variable nos servirá para definir las dimensiones de los ejes en la gráfica
 
@@ -173,6 +225,18 @@ class VisualizerView(TemplateView):
                 r = lambda: random.randint(0,255)
                 color.append('#%02X%02X%02X' % (r(),r(),r()))
                 i += 1
+                #Datos para el gráfico de sectores
+                dataVoto = {
+                    'name': objeto[2][1],
+                    'y': objeto[0][1]
+                }
+                dataPieVotos.append(dataVoto)
+
+                dataPuntuaciones = {
+                    'name': objeto[2][1],
+                    'y': objeto[3][1]
+                }
+                dataPiePuntuaciones.append(dataPuntuaciones)
         #opcion = json.dumps(opcion)
         #voto = json.dumps(voto)
         #color = json.dumps(color)
@@ -181,7 +245,9 @@ class VisualizerView(TemplateView):
             'voto':voto,
             'color':color,
             'puntuacion':puntuacion,
-            'i':i
+            'i':i,
+            'dataVotos':dataPieVotos,
+            'dataPuntuaciones':dataPiePuntuaciones
         }
         
         return context
@@ -210,19 +276,43 @@ class VisualizerView(TemplateView):
 
 
 def telegram_report(self, **kwargs):
+    voting_type = kwargs.get('tipo', 0)
     voting_id = kwargs.get('voting_id', 0)
-    r = mods.get('voting', params={'id': voting_id})
-    voting = r[0]
+    print(mods)
+    if voting_type == "binaria":
+        voting = VotacionBinaria.objects.get(id=voting_id)
+    elif voting_type == 0:
+        voting = Voting.objects.get(id=voting_id)
+    elif voting_type == "normal":
+        voting = Votacion.objects.get(id=voting_id)
+    elif voting_type == "preferencia":
+        voting = VotacionPreferencia.objects.get(id=voting_id)
+    elif voting_type == "multiple":
+        voting = VotacionMultiple.objects.get(id=voting_id)
 
-    send_telegram_report_json(voting)
-
-    return redirect('/visualizer/'+str(voting_id)+'/')
+    send_telegram_report(voting)
+    if voting_type == 0:
+        return redirect('/visualizer/'+str(voting_id)+'/')
+    else:
+        return redirect('/visualizer/'+str(voting_type)+'/'+str(voting_id)+'/')
 
 def twitter_report(self, **kwargs):
+    voting_type = kwargs.get('tipo', 0)
     voting_id = kwargs.get('voting_id', 0)
-    r = mods.get('voting', params={'id': voting_id})
-    voting = r[0]
+    print(mods)
+    if voting_type == "binaria":
+        voting = VotacionBinaria.objects.get(id=voting_id)
+    elif voting_type == 0:
+        voting = Voting.objects.get(id=voting_id)
+    elif voting_type == "normal":
+        voting = Votacion.objects.get(id=voting_id)
+    elif voting_type == "preferencia":
+        voting = VotacionPreferencia.objects.get(id=voting_id)
+    elif voting_type == "multiple":
+        voting = VotacionMultiple.objects.get(id=voting_id)
 
-    send_twitter_report_json(voting)
-
-    return redirect('/visualizer/'+str(voting_id)+'/')
+    send_twitter_report(voting)
+    if voting_type == 0:
+        return redirect('/visualizer/'+str(voting_id)+'/')
+    else:
+        return redirect('/visualizer/'+str(voting_type)+'/'+str(voting_id)+'/')
