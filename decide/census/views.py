@@ -13,6 +13,7 @@ from rest_framework.status import (
 from base.perms import UserIsStaff
 from .models import Census
 from voting.serializers import VotingSerializer
+from authentication.serializers import UserSerializer
 
 
 class CensusCreate(generics.ListCreateAPIView):
@@ -58,3 +59,11 @@ class ListVotingsByVoter(generics.ListCreateAPIView):
     def get(self, request, voter_id, *args, **kwargs):
         votings = [c.voting_id for c in Census.objects.filter(voter_id=voter_id)]
         return Response({"votings": votings})
+
+
+class ListVotersByVoting(generics.ListCreateAPIView):
+    serializer_class = VotingSerializer
+
+    def get(self, request, voting_id, *args, **kwargs):
+        voters = [c.voter_id for c in Census.objects.filter(voting_id=voting_id)]
+        return Response({"voters": voters})
