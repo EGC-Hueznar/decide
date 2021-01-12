@@ -87,36 +87,55 @@ class VisualizerVotesTestCase(BaseTestCase):
         self.login()
         response = self.client.get('/visualizer/', follow=True)
         self.assertEqual(response.status_code,200)
+        self.assertTemplateUsed('visualizer/index.html')
+    def test_visualizer_default(self):
+        self.login()
+        response = self.client.get('/visualizer/default', follow=True)
+        self.assertEqual(response.status_code,200)
+        self.assertTemplateUsed('visualizer/listdefault.html')
+        response = self.client.get('/visualizer/{}'.format(self.v1.id), follow=True)
+        self.assertEqual(response.status_code,200)
+        self.assertTemplateUsed('visualizer/visualizer.html')
+        v1 = Voting.objects.get(name = "¿Te gusta EGC?")
+        self.assertEqual(v1.name, "¿Te gusta EGC?")
     def test_visualizer_normal(self):
         self.login()
         response = self.client.get('/visualizer/normal', follow=True)
         self.assertEqual(response.status_code,200)
+        self.assertTemplateUsed('visualizer/list.html')
         response = self.client.get('/visualizer/normal/{}'.format(self.vo1.id), follow=True)
         self.assertEqual(response.status_code,200)
+        self.assertTemplateUsed('visualizer/resultnormal.html')
         vo1 = Votacion.objects.get(titulo = "¿Te gusta EGC?")
         self.assertEqual(vo1.titulo, "¿Te gusta EGC?")
     def test_visualizer_preferencia(self):
         self.login()
         response = self.client.get('/visualizer/preferencia', follow=True)
         self.assertEqual(response.status_code,200)
+        self.assertTemplateUsed('visualizer/list.html')
         response = self.client.get('/visualizer/preferencia/{}'.format(self.vp2.id), follow=True)
         self.assertEqual(response.status_code,200)
+        self.assertTemplateUsed('visualizer/resultpref.html')
         vp2 = Votacion.objects.get(titulo = "¿Te gusta PGPI?")
         self.assertEqual(vp2.titulo, "¿Te gusta PGPI?")
     def test_visualizer_multiple(self):
         self.login()
         response = self.client.get('/visualizer/multiple', follow=True)
         self.assertEqual(response.status_code,200)
+        self.assertTemplateUsed('visualizer/list.html')
         response = self.client.get('/visualizer/multiple/{}'.format(self.vm3.id), follow=True)
         self.assertEqual(response.status_code,200)
+        self.assertTemplateUsed('visualizer/resultmul.html')
         vm3 = Votacion.objects.get(titulo = "¿Te gusta AII?")
         self.assertEqual(vm3.titulo, "¿Te gusta AII?")
     def test_visualizer_binaria(self):
         self.login()
         response = self.client.get('/visualizer/binaria', follow=True)
         self.assertEqual(response.status_code,200)
+        self.assertTemplateUsed('visualizer/list.html')
         response = self.client.get('/visualizer/binaria/{}'.format(self.vb2.id), follow=True)
         self.assertEqual(response.status_code,200)
+        self.assertTemplateUsed('visualizer/resultbin.html')
         vb2 = VotacionBinaria.objects.get(titulo = "¿Te gusta PGPI?")
         self.assertEqual(vb2.titulo, "¿Te gusta PGPI?")
 
@@ -130,7 +149,7 @@ class VisualizerTestCase(BaseTestCase):
         super().tearDown()
 
     # Método para crear el objeto bot
-    def create_bot(self):    
+    def create_bot(self):
         bot_token = '1415070510:AAE49OJPu4viYNo5Tfov4vzkoIyeNf_JBr4'
         bot = telegram.Bot(bot_token)
         return bot
@@ -177,7 +196,7 @@ class VisualizerContextTestCase(BaseTestCase):
         self.v=None
 
         super().tearDown()
-  
+
     # Test método get_context_data de visualizer/views.py
     def test_context_data_API(self):
 
@@ -253,8 +272,8 @@ class SendTelegramVotacionNormalTest(BaseTestCase):
         v.addPregunta(q2)
         q2.addRespuesta(r1)
         q2.addRespuesta(r2)
-        
-        
+
+
         super().setUp()
 
     def tearDown(self):

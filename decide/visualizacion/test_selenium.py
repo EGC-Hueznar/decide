@@ -135,3 +135,14 @@ class TestVisualizerIndex(StaticLiveServerTestCase):
         self.driver.find_element_by_link_text(self.vb2.titulo).click()
         time.sleep(3)
         self.assertEqual(self.driver.current_url, "{}/visualizer/binaria/{}/".format(self.live_server_url, self.vb2.id))
+
+    def test_visualizerIndexDefault(self):
+        self.driver.get(f'{self.live_server_url}/visualizer/')
+        time.sleep(3)
+        self.driver.find_element_by_css_selector("tr:nth-child(5) .btn").click()
+        time.sleep(3)
+        self.assertEqual(self.driver.current_url, "{}/visualizer/default/".format(self.live_server_url))
+        time.sleep(3)
+        self.driver.find_element_by_link_text(self.v2.name).click()
+        time.sleep(3)
+        self.assertEqual(self.driver.current_url, "{}/visualizer/{}/".format(self.live_server_url, self.v2.id))
