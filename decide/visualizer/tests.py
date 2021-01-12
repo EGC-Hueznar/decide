@@ -263,7 +263,6 @@ class GraficasVotacionBinaria(BaseTestCase):
     #Comprobación que la página se crea
         response = self.client.get('/visualizer/binaria/{}/'.format(v.id))
         self.assertEquals(response.status_code,200)
-        self.assertInHTML(needle='<div id="container4">', haystack='<figure id="graficatartapuntuacion">')
 
 
 
