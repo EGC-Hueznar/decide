@@ -101,15 +101,39 @@ class VisualizerVista(TemplateView):
         respuestasMin = []
         respuestasMedia = []
         textos = []
+        dataPieMax = []
+        dataPieMin = []
+        dataPieMedia = []
         for pregunta in preguntas:
             textos.append(str(pregunta))
             respuestasMax.append(int(pregunta.Respuesta_Maxima()))
             respuestasMin.append(int(pregunta.Respuesta_Minima()))
             respuestasMedia.append(int(pregunta.Media_De_Las_Respuestas()))
+            #Datos para la grafica de sectores de las puntuaciones máximas
+            dataMax = {
+                'name': str(pregunta),
+                'y': int(pregunta.Respuesta_Maxima())
+            }
+            dataPieMax.append(dataMax)
+            #Datos para la grafica de sectores de las puntuaciones mínimas
+            dataMin = {
+                'name': str(pregunta),
+                'y': int(pregunta.Respuesta_Minima())
+            }
+            dataPieMin.append(dataMin)
+            #Datos para la grafica de sectores de las medias de las puntuaciones
+            dataMedia = {
+                'name': str(pregunta),
+                'y': int(pregunta.Media_De_Las_Respuestas())
+            }
+            dataPieMedia.append(dataMedia)
         context['respuestasMax'] = respuestasMax
         context['respuestasMin'] = respuestasMin
         context['respuestasMedia'] = respuestasMedia
         context['textos'] = textos
+        context['dataMin'] = dataPieMin
+        context['dataMax'] = dataPieMax
+        context['dataMedia'] = dataPieMedia
         return context
 
     def multiple(self, context, voting_id):
