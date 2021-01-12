@@ -116,7 +116,6 @@ class VisualizerVista(TemplateView):
         context['resultados'] = preguntas
         context['opciones_graf'] = opciones_graf 
         context['resultados_graf'] = resultados_graf
-        print(context)
         return context
 
     def preferencia(self, context, voting_id):
