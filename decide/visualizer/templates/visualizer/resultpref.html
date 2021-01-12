@@ -90,3 +90,83 @@
         </div>
     </div>
 {% endblock %}
+
+{% block extrabody %}
+    <script type="application/javascript">
+        Highcharts.chart('container', {
+            chart: {
+                type: 'bar'
+            },
+            title: {
+                text: 'Comparación de <b>puntuaciones</b> en gráfico de barras'
+            },
+            xAxis: {
+                categories: {{options|safe}},
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Puntos'
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b> {point.y:.if} punto(s)</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        enabled: true
+                    }
+                }
+            },
+            series: [{
+                name: 'Puntuación media',
+                showInLegend: false,
+                colorByPoint: true,
+                data: {{medias|safe}}
+            }]
+        });
+    </script>
+    <script type="application/javascript">
+        Highcharts.chart('container2', {
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie'
+            },
+            title: {
+                text: 'Comparación de <b>puntuaciones</b> en gráfico de sectores'
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            accessibility: {
+                point: {
+                    valueSuffix: '%'
+                }
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                    }
+                }
+            },
+            series: [{
+                name: 'Puntuación',
+                colorByPoint: true,
+                data: {{data|safe}}
+            }]
+        });
+    </script>
+{% endblock %}
