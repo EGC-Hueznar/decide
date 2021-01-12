@@ -128,12 +128,26 @@ class VisualizerVista(TemplateView):
         votacion = VotacionPreferencia.objects.get(id=voting_id)
         context['voting'] = votacion
         pre = PreguntaPreferencia.objects.all().filter(votacionPreferencia=votacion)
+        context['preguntas'] = pre
         preguntas = {}
+        mediaPreferencia = []
+        options = []
+        dataPie = []
         for p in pre:
             opciones = OpcionRespuesta.objects.all().filter(preguntaPreferencia=p)
             preguntas[p] = opciones
+            for o in opciones:
+                mediaPreferencia.append(o.Media_Preferencia())
+                options.append(str(o))
+                data = {
+                    'name': str(o),
+                    'y': o.Media_Preferencia()
+                }
+                dataPie.append(data)
         context['resultados'] = preguntas
-
+        context['medias'] = mediaPreferencia
+        context['options'] = options
+        context['data'] = dataPie
         return context
 
     def binario(self, context, voting_id):
