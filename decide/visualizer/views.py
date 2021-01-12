@@ -203,6 +203,8 @@ class VisualizerView(TemplateView):
         voto = []
         puntuacion = []
         color = []
+        dataPieVotos = []
+        dataPiePuntuaciones = []
         
         i = 0 #esta variable nos servirá para definir las dimensiones de los ejes en la gráfica
 
@@ -217,6 +219,18 @@ class VisualizerView(TemplateView):
                 r = lambda: random.randint(0,255)
                 color.append('#%02X%02X%02X' % (r(),r(),r()))
                 i += 1
+                #Datos para el gráfico de sectores
+                dataVoto = {
+                    'name': objeto[2][1],
+                    'y': objeto[0][1]
+                }
+                dataPieVotos.append(dataVoto)
+
+                dataPuntuaciones = {
+                    'name': objeto[2][1],
+                    'y': objeto[3][1]
+                }
+                dataPiePuntuaciones.append(dataPuntuaciones)
         #opcion = json.dumps(opcion)
         #voto = json.dumps(voto)
         #color = json.dumps(color)
@@ -225,7 +239,9 @@ class VisualizerView(TemplateView):
             'voto':voto,
             'color':color,
             'puntuacion':puntuacion,
-            'i':i
+            'i':i,
+            'dataVotos':dataPieVotos,
+            'dataPuntuaciones':dataPiePuntuaciones
         }
         
         return context
