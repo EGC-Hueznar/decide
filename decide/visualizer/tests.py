@@ -185,8 +185,8 @@ class VisualizerContextTestCase(BaseTestCase):
         data = {
             'name':'Example',
             'desc':'Descriçao',
-            'question':'La caca',
-            'question_opt':['se come', 'se bebe', 'se echa por el culo']
+            'question':'El cola-cao',
+            'question_opt':['se come', 'se bebe', 'se echa en el retrete']
         }
     #Creación de la votación
         response = self.client.post('/voting/', data, format='json')
@@ -198,11 +198,57 @@ class VisualizerContextTestCase(BaseTestCase):
         self.assertEquals(response.status_code,200)
         self.assertTemplateUsed('visualizer/visualizer.html')
 
+class GraficasVotacionBinaria(BaseTestCase):
 
-        # self.asser
+    def setUp(self):
+        #Creamos la votacion
+        votacion = VotacionBinaria(titulo='titulo binario test',descripcion='desc binario test')
+        votacion.save()
+        votacion2 = VotacionBinaria(titulo="titulo binario test 2", descripcion="desc binario test 2")
+        votacion2.save()
+
+        #creamos las respuestas
+        r1  = RespuestaBinaria(respuesta = 1)
+        r2  = RespuestaBinaria(respuesta = 0)
+        r3 = RespuestaBinaria(respuesta = 1)
+        r4 = RespuestaBinaria(respuesta = 0)
+        r5 = RespuestaBinaria(respuesta = 1)
+        r6 = RespuestaBinaria(respuesta = 0)
 
 
-# Tests envíos de reporte Votación Binaria
+        votacion2.addRespuestaBinaria(r1)
+        votacion2.addRespuestaBinaria(r2)
+        votacion2.addRespuestaBinaria(r3)
+        votacion2.addRespuestaBinaria(r4)
+        votacion2.addRespuestaBinaria(r5)
+        votacion2.addRespuestaBinaria(r6)
+
+
+        super().setUp()
+
+    def tearDown(self):
+        super().tearDown()
+        self.v=None
+        self.v2=None
+        self.r1=None
+        self.r2=None
+        self.r3=None
+        self.r4=None
+        self.r5=None
+        self.r6=None
+        self.r7=None
+
+    def test_resultbin_template(self):
+        v = VotacionBinaria.objects.get(titulo="titulo binario test 2")
+
+    #Comprobación que la página se crea
+        response = self.client.get('/visualizer/binaria/{}/'.format(v.id))
+        self.assertEquals(response.status_code,200)
+        self.assertInHTML(needle='<div id="container4">', haystack='<figure id="graficatartapuntuacion">')
+
+
+
+#Tests envíos de reporte Votación Binaria
 class SendTelegramVotacionBinariaTest(BaseTestCase):
     def setUp(self):
         v = VotacionBinaria(titulo="Votación Binaria Test 1",descripcion="Descripcion 1")
