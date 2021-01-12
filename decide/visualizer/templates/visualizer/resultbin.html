@@ -23,6 +23,7 @@
 
         <div class="voting container">
             <h1>Votacion binaria</h1>
+            <a href="telegram_report">Compartir votación en Telegram</a>
             <h1>{{ voting.id }} - {{ voting.titulo }}</h1>
 
             {% if voting.fecha_inicio == null %}
@@ -58,7 +59,7 @@
                         </tr>
                     </tbody>
                 </table>
-                <a href="telegram_report">Compartir votación en Telegram</a>
+                
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-lg-12">
