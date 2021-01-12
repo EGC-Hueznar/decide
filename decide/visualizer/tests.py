@@ -1,3 +1,5 @@
+import telegram
+import tweepy
 from django.contrib.auth.models import User
 from django.test import TestCase
 from base.tests import BaseTestCase
@@ -385,3 +387,16 @@ class SendTelegramVotacionMultipleTest(BaseTestCase):
         message = send_telegram_report(v)
         time.sleep(1)
         self.assertEqual(message.chat.title,"Actualizaciones Decide Huéznar")
+
+class SendTwitterVotacion():
+    # Test de creación de Twitter
+    def test_send_twitter(self):
+        consumer_key = 'ZXutSjYogRFQ1cGSqBExHdFYQ'
+        consumer_secret_key = 'bOQoMVaIcYUrTzPba0ogudtIZi6HJZtfTdBaG09EVG60UN6k8Y'
+        access_token = '1346151287306530817-DshaN1ufww133bG0S8KKSRFWpaBn0y'
+        access_token_secret = 'vlIKntFymAL3Us2CcnkdbYpa1i2LJ9Q9RwVAt9OFSp668'
+        auth = tweepy.OAuthHandler(consumer_key, consumer_secret_key)
+        auth.set_access_token(access_token, access_token_secret)
+        api = tweepy.API(auth)
+        return api
+        

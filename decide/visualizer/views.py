@@ -10,7 +10,9 @@ from voting.models import *
 import random
 
 import telegram
+import tweepy
 from .telegrambot import *
+from .twitterbot import *
 
 class VisualizerIndex(TemplateView):
     template_name = 'visualizer/index.html'
@@ -149,6 +151,7 @@ class VisualizerView(TemplateView):
         voting = get_object_or_404(Voting, pk=id)
         opcion = []
         voto = []
+        puntuacion = []
         color = []
         
         i = 0 #esta variable nos servirá para definir las dimensiones de los ejes en la gráfica
@@ -157,7 +160,8 @@ class VisualizerView(TemplateView):
             for item in voting.postproc:
                 objeto = list(item.items())
                 opcion.append(objeto[2][1]) #se coge el valor de la tupla (option, opcion x), que ocupa la posición 2 en la lista de tuplas
-                voto.append(objeto[0][1]) #se hace lo mismo con la tupla (votos, x)   
+                voto.append(objeto[0][1]) #se hace lo mismo con la tupla (votos, x)
+                puntuacion.append(objeto[3][1])
                 #generamos el color que tendrá cada objeto en la gráfica de forma aleatoria
                 r = lambda: random.randint(0,255)
                 r = lambda: random.randint(0,255)
@@ -170,6 +174,7 @@ class VisualizerView(TemplateView):
             'opcion':opcion,
             'voto':voto,
             'color':color,
+            'puntuacion':puntuacion,
             'i':i
         }
         
@@ -219,5 +224,11 @@ def telegram_report(self, **kwargs):
     else:
         return redirect('/visualizer/'+str(voting_type)+'/'+str(voting_id)+'/')
 
+def twitter_report(self, **kwargs):
+    voting_id = kwargs.get('voting_id', 0)
+    r = mods.get('voting', params={'id': voting_id})
+    voting = r[0]
 
-   
+    send_twitter_report_json(voting)
+
+    return redirect('/visualizer/'+str(voting_id)+'/')
