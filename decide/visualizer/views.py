@@ -97,7 +97,19 @@ class VisualizerVista(TemplateView):
         context['voting'] = votacion
         preguntas = Pregunta.objects.all().filter(votacion=votacion)
         context['resultados'] = preguntas
-
+        respuestasMax = []
+        respuestasMin = []
+        respuestasMedia = []
+        textos = []
+        for pregunta in preguntas:
+            textos.append(str(pregunta))
+            respuestasMax.append(int(pregunta.Respuesta_Maxima()))
+            respuestasMin.append(int(pregunta.Respuesta_Minima()))
+            respuestasMedia.append(int(pregunta.Media_De_Las_Respuestas()))
+        context['respuestasMax'] = respuestasMax
+        context['respuestasMin'] = respuestasMin
+        context['respuestasMedia'] = respuestasMedia
+        context['textos'] = textos
         return context
 
     def multiple(self, context, voting_id):

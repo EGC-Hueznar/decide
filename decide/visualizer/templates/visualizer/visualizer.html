@@ -17,9 +17,9 @@
 {% block content %}
     <div id="app-visualizer">
         <!-- Navbar -->
-        <b-navbar type="dark" variant="secondary">
-            <b-navbar-brand tag="h1">Decide</b-navbar-brand>
-        </b-navbar>
+        <nav class="navbar navbar-dark bg-secondary navbar-expand">
+            <h1 class="navbar-brand">Decide</h1>
+        </nav>
 
         <div class="voting container">
             <h1>{{ voting.id }} - {{ voting.name }}</h1>
@@ -145,7 +145,6 @@
             document.getElementById("graficasDeVotos").style.display = "none";
             document.getElementById("botonMostrarPuntuaciones").style.color = "#4858e1";
             document.getElementById("botonMostrarVotos").style.color = "#5b5858";
-            document.getElementById("enseñarBarraPuntuacion").checked = !document.getElementById("enseñarBarraPuntuacion").checked;
         }
         function mostrarVotos() {
 		    document.getElementById("graficasDePuntuaciones").style.display = "none";
