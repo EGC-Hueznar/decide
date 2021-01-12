@@ -105,11 +105,18 @@ class VisualizerVista(TemplateView):
         context['voting'] = votacion
         pre = PreguntaMultiple.objects.all().filter(votacionMultiple=votacion)
         preguntas = {}
+        opciones_graf = []
+        resultados_graf = []
         for p in pre:
             opciones = OpcionMultiple.objects.all().filter(preguntaMultiple=p)
             preguntas[p] = opciones
+            for o in opciones:
+               opciones_graf.append(o.nombre_opcion)
+               resultados_graf.append(o.n_votado)
         context['resultados'] = preguntas
-
+        context['opciones_graf'] = opciones_graf 
+        context['resultados_graf'] = resultados_graf
+        print(context)
         return context
 
     def preferencia(self, context, voting_id):
