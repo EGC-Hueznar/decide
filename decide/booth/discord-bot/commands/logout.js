@@ -27,7 +27,7 @@ module.exports = {
                 msg.author.send(':grimacing: Prueba a logearte antes')
             }
         }catch {
-            msg.author.send('Error al cerrar sesión')
+            msg.author.send(':x: Error al cerrar sesión')
         }
     }
 }
