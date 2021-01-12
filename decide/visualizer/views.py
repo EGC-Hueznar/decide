@@ -297,10 +297,22 @@ def telegram_report(self, **kwargs):
         return redirect('/visualizer/'+str(voting_type)+'/'+str(voting_id)+'/')
 
 def twitter_report(self, **kwargs):
+    voting_type = kwargs.get('tipo', 0)
     voting_id = kwargs.get('voting_id', 0)
-    r = mods.get('voting', params={'id': voting_id})
-    voting = r[0]
+    print(mods)
+    if voting_type == "binaria":
+        voting = VotacionBinaria.objects.get(id=voting_id)
+    elif voting_type == 0:
+        voting = Voting.objects.get(id=voting_id)
+    elif voting_type == "normal":
+        voting = Votacion.objects.get(id=voting_id)
+    elif voting_type == "preferencia":
+        voting = VotacionPreferencia.objects.get(id=voting_id)
+    elif voting_type == "multiple":
+        voting = VotacionMultiple.objects.get(id=voting_id)
 
-    send_twitter_report_json(voting)
-
-    return redirect('/visualizer/'+str(voting_id)+'/')
+    send_twitter_report(voting)
+    if voting_type == 0:
+        return redirect('/visualizer/'+str(voting_id)+'/')
+    else:
+        return redirect('/visualizer/'+str(voting_type)+'/'+str(voting_id)+'/')

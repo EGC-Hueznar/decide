@@ -12,4 +12,5 @@ urlpatterns = [
     path('<int:voting_id>/telegram_report', telegram_report),
     path('<str:tipo>/<int:voting_id>/telegram_report', telegram_report),
     path('<int:voting_id>/twitter_report', twitter_report),
+    path('<str:tipo>/<int:voting_id>/twitter_report', twitter_report),
 ]
