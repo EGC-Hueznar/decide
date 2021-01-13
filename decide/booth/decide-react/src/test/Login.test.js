@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow, configure } from 'enzyme';
-import { Button, Text, TextInput } from 'react-native';
+import { View, Text, TextInput } from 'react-native';
 import Login from '../components/Login';
 import Adapter from 'enzyme-adapter-react-16';
 import config from '../config.json';
@@ -8,7 +8,7 @@ import {postData} from '../utils';
 import 'jsdom-global/register';
 import axios from 'axios';
 import MockAdapter from "axios-mock-adapter";
-import { light } from "../styles";
+import { light, dark } from "../styles";
 
 //Hide warning
 console.error = () => {}
@@ -120,16 +120,28 @@ describe('Test case for testing login',() => {
 describe('Testing Login style',() => {
     
 
-    it('Correct "Usuario" text style', async () => {
+    it('Correct "Usuario" text ligth style', async () => {
         wrapper = shallow(<Login styles={light}/>);
         wrapperText = wrapper.find(Text).at(0).get(0);
         expect(wrapperText.props.style).toHaveProperty('fontSize', 24);
     });
 
-    it('Correct "Contraseña" text style', async () => {
+    it('Correct "Contraseña" text ligth style', async () => {
         wrapper = shallow(<Login styles={light}/>);
         wrapperText = wrapper.find(Text).at(1).get(0);
         expect(wrapperText.props.style).toHaveProperty('fontSize', 24);
+    });
+
+    it('Correct "Usuario" text dark style', async () => {
+        wrapper = shallow(<Login styles={dark}/>);
+        wrapperText = wrapper.find(Text).at(0).get(0);
+        expect(wrapperText.props.style).toHaveProperty('color', 'white');
+    });
+
+    it('Correct "Contraseña" text dark style', async () => {
+        wrapper = shallow(<Login styles={dark}/>);
+        wrapperText = wrapper.find(Text).at(1).get(0);
+        expect(wrapperText.props.style).toHaveProperty('color', 'white');
     });
 
     it('Correct "Login" text style', async () => {
@@ -154,5 +166,11 @@ describe('Testing Login style',() => {
         wrapper = shallow(<Login styles={light}/>);
         wrapperButton = wrapper.find('#button');
         expect(wrapperButton.prop('style')).toHaveProperty('backgroundColor', '#0064cd');
+    });
+
+    it('Correct dark background style', async () => {
+        wrapper = shallow(<Login styles={dark}/>);
+        wrapperButton = wrapper.find(View).at(2);
+        expect(wrapperButton.prop('style')).toHaveProperty('backgroundColor', '#1f1f1f');
     });
 })
