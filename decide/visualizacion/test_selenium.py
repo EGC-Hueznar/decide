@@ -12,9 +12,10 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 import time
 
-from voting.models import Voting, Question, VotacionBinaria, VotacionPreferencia, VotacionMultiple, Votacion
+from voting.models import *
 
 from census.models import Census
+
 class TestVisualizerIndex(StaticLiveServerTestCase):
     def setUp(self):
         q = Question(desc = "Aquí tiene su pregunta: ")
@@ -146,3 +147,44 @@ class TestVisualizerIndex(StaticLiveServerTestCase):
         self.driver.find_element_by_link_text(self.v2.name).click()
         time.sleep(3)
         self.assertEqual(self.driver.current_url, "{}/visualizer/{}/".format(self.live_server_url, self.v2.id))
+
+class TestBinaryGraphs(StaticLiveServerTestCase):
+    def setUp(self):
+        #creamos la votacion        
+        self.votacion = VotacionBinaria(titulo='titulo binario test',descripcion='desc binario test',fecha_inicio=datetime.datetime(2020, 7, 5), fecha_fin=datetime.datetime(2020, 7, 6))
+        self.votacion.save()
+        self.votacion2 = VotacionBinaria(titulo="titulo binario test 2", descripcion="desc binario test 2",fecha_inicio=datetime.datetime(2020, 7, 5), fecha_fin=datetime.datetime(2020, 7, 6))
+        self.votacion2.save()
+        #creamos la pregunta
+        q = Question(desc = "Aquí tiene su pregunta: ")
+        q.save()
+        #creamos las respuestas
+        r1  = RespuestaBinaria(respuesta = 1)
+        r2  = RespuestaBinaria(respuesta = 0)
+        r3 = RespuestaBinaria(respuesta = 1)
+
+        self.votacion.addRespuestaBinaria(r1)
+        self.votacion.addRespuestaBinaria(r2)
+        self.votacion.addRespuestaBinaria(r3)
+
+
+        #creamos el web driver
+        options = webdriver.ChromeOptions()
+        self.driver = webdriver.Chrome(options=options)
+        super().setUp()
+  
+    def tearDown(self):
+        self.driver.quit()
+        self.votacion2=None
+        self.votacion=None
+        super().tearDown()
+        
+    def test_bin(self):
+        self.driver.get(f'{self.live_server_url}/visualizer/binaria')
+        time.sleep(2)
+        self.driver.find_element(By.XPATH, "//div[@id=\'app-visualizer\']/div/table/tbody/tr/th/a").click()
+        time.sleep(2)
+        self.driver.find_element(By.ID, "container")
+        self.driver.find_element(By.ID, "container2")
+        self.driver.find_element(By.ID, "container3")
+        self.driver.find_element(By.ID, "container4")
