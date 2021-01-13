@@ -4,10 +4,11 @@ import Adapter from 'enzyme-adapter-react-16';
 import 'jsdom-global/register';
 import Voting from '../components/Voting';
 import { RadioButton } from 'react-native-simple-radio-button';
-import { Button, TouchableOpacity } from 'react-native';
+import { Button, TouchableOpacity, Text } from 'react-native';
 import config from '../config.json'
 import axios from 'axios';
 import MockAdapter from "axios-mock-adapter";
+import { light, dark } from "../styles";
 
 // Hide warning
 console.error = () => {}
@@ -71,21 +72,21 @@ describe('Testing Voting component',() => {
     configure({adapter: new Adapter()});
 
     it('Render voting component', () => {
-        wrapper = mount(<Voting voting={correctVoting} user={user} setDone={setDone} resetSelected={resetSelected} />);
+        wrapper = mount(<Voting styles={light} voting={correctVoting} user={user} setDone={setDone} resetSelected={resetSelected} />);
         const wrapperVoting = wrapper.find(Voting);
 
         expect(wrapperVoting).toHaveLength(1);
     });
 
     it('Render questions', async () => {
-        wrapper = mount(<Voting voting={correctVoting} user={user} setDone={setDone} resetSelected={resetSelected} />);
+        wrapper = mount(<Voting styles={light} voting={correctVoting} user={user} setDone={setDone} resetSelected={resetSelected} />);
         const radioButtons = wrapper.find(RadioButton);
         
         expect(radioButtons).toHaveLength(3);
     });
 
     it('Correct change question select state', () => {
-        wrapper = mount(<Voting voting={correctVoting} user={user} setDone={setDone} resetSelected={resetSelected} />);
+        wrapper = mount(<Voting styles={light} voting={correctVoting} user={user} setDone={setDone} resetSelected={resetSelected} />);
         const radioButtons = wrapper.find(RadioButton);
 
         const opt1 = radioButtons.at(0).props();
@@ -102,7 +103,7 @@ describe('Testing Voting component',() => {
     });
 
     it('Store vote for non-existent voting', async () => {
-        wrapper = mount(<Voting voting={nonExistentVoting} user={user} setDone={setDone} resetSelected={resetSelected} />);
+        wrapper = mount(<Voting styles={light} voting={nonExistentVoting} user={user} setDone={setDone} resetSelected={resetSelected} />);
         const radioButtons = wrapper.find(RadioButton);
         const submitButton = wrapper.find(TouchableOpacity).at(3);
         
@@ -116,7 +117,7 @@ describe('Testing Voting component',() => {
     });
 
     it('Store vote without selecting option', async () => {   
-        wrapper = mount(<Voting voting={correctVoting} user={user} setDone={setDone} resetSelected={resetSelected} />);
+        wrapper = mount(<Voting styles={light} voting={correctVoting} user={user} setDone={setDone} resetSelected={resetSelected} />);
         const submitButton = wrapper.find(TouchableOpacity).at(3);
         submitButton.props().onPress();
 
@@ -124,7 +125,7 @@ describe('Testing Voting component',() => {
     });
 
     it('Store valid vote', async () => {      
-        wrapper = mount(<Voting voting={correctVoting} user={user} setDone={setDone} resetSelected={resetSelected} />);
+        wrapper = mount(<Voting styles={light} voting={correctVoting} user={user} setDone={setDone} resetSelected={resetSelected} />);
         const radioButtons = wrapper.find(RadioButton);
         const submitButton = wrapper.find(TouchableOpacity).at(3);
         
@@ -138,7 +139,7 @@ describe('Testing Voting component',() => {
     });
 
     it('Store vote of closed voting', async () => {     
-        wrapper = mount(<Voting voting={closedVoting} user={user} setDone={setDone} resetSelected={resetSelected} />);
+        wrapper = mount(<Voting styles={light} voting={closedVoting} user={user} setDone={setDone} resetSelected={resetSelected} />);
         const radioButtons = wrapper.find(RadioButton);
         const submitButton = wrapper.find(TouchableOpacity).at(3);
         
@@ -151,6 +152,50 @@ describe('Testing Voting component',() => {
         expect(wrapper.state().error).not.toBe(false);
     });
 
+})
+
+
+describe('Testing style switching',() => {
+
+    let wrapper;
+
+    configure({adapter: new Adapter()});    
+    
+    it('Correct style voting name dark', async () => {
+        wrapper = mount(<Voting styles={dark} voting={correctVoting} user={user} setDone={setDone} resetSelected={resetSelected} />);
+
+        const wrapperText = wrapper.find(Text).at(0);
+
+        expect(wrapperText.prop('style')).toHaveProperty('color', 'white');
+
+    });
+
+    it('Correct style voting name light', async () => {
+        wrapper = mount(<Voting styles={light} voting={correctVoting} user={user} setDone={setDone} resetSelected={resetSelected} />);
+
+        const wrapperText = wrapper.find(Text).at(0);
+
+        expect(wrapperText.prop('style')).not.toHaveProperty('color', 'white');
+
+    });
+
+    it('Correct style description dark', async () => {
+        wrapper = mount(<Voting styles={dark} voting={correctVoting} user={user} setDone={setDone} resetSelected={resetSelected} />);
+
+        const wrapperText = wrapper.find(Text).at(1);
+
+        expect(wrapperText.prop('style')).toHaveProperty('color', 'white');
+
+    });
+
+    it('Correct style description light', async () => {
+        wrapper = mount(<Voting styles={light} voting={correctVoting} user={user} setDone={setDone} resetSelected={resetSelected} />);
+
+        const wrapperText = wrapper.find(Text).at(1);
+
+        expect(wrapperText.prop('style')).not.toHaveProperty('color', 'white');
+
+    });
 
 })
 

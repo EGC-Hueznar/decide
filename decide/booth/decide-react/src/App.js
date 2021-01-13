@@ -8,8 +8,7 @@ import axios from 'axios';
 import config from './config.json';
 import { postData } from './utils';
 import AsyncStorage from '@react-native-community/async-storage'
-import * as JSONbig from "json-bigint";
-import { styles } from "./styles";
+import { light, dark } from "./styles";
 
 
 class App extends React.Component {
@@ -20,7 +19,12 @@ class App extends React.Component {
         token: undefined,
         votings: [],
         signup: true,
-        done:false
+        done:false,
+        styles: 'light'
+    }
+
+    setStyles = () => {
+        this.setState({styles : this.state.styles === 'light' ? 'dark' : 'light'});
     }
 
     init = () => {
@@ -94,12 +98,9 @@ class App extends React.Component {
 
     loadVotings = () => {
         this.setDone(false)
-        axios.get(`${config.CENSUS_VOTINGS_URL}${this.state.user.id}`).then(response => {
+        axios.get(`${config.CENSUS_VOTINGS_URL}${this.state.user.id}/`).then(response => {
             const votings = response.data.votings;
-            
-            axios.get(config.VOTING_URL, {
-              transformResponse: res => JSONbig.parse(res)
-            }).then(response => { 
+            axios.get(config.VOTING_URL).then(response => {
                 this.setState({votings: response.data.filter(v => votings.includes(v.id) 
                     && v.start_date 
                     && Date.parse(v.start_date) < Date.now() 
@@ -114,19 +115,23 @@ class App extends React.Component {
         this.render();
     }
 
-    render_voting = ({item}) => <TouchableOpacity onPress={() => this.setSelectedVoting(item)} disabled={!item.start_date}>
-        <View View style={styles.item}><Text style={styles.sectionHeader}>{item.name}</Text></View></TouchableOpacity>
+    render_voting = ({item}) => {
+        const styles = this.state.styles === 'light' ? light : dark;
+        return <TouchableOpacity onPress={() => this.setSelectedVoting(item)} disabled={!item.start_date}>
+        <View style={styles.item}><Text style={styles.sectionHeader}>{item.name}</Text></View></TouchableOpacity>}
 
     render() {
         const statusHeight = StatusBar.currentHeight ? StatusBar.currentHeight : 0;
 
+        const styles = this.state.styles === 'light' ? light : dark;
+
         return(
             <View style={styles.parent}>
-                <Barra urlLogout={this.state.urlLogout} signup={this.state.signup} setSignup={this.setSignup} token={this.state.token} setToken={this.setToken} setUser={this.setUser} handleSetStorage={this.handleSetStorage}/>
+                <Barra styles={styles} toggleTheme={this.setStyles} urlLogout={this.state.urlLogout} signup={this.state.signup} setSignup={this.setSignup} token={this.state.token} setToken={this.setToken} setUser={this.setUser} handleSetStorage={this.handleSetStorage}/>
                 
 
                                 {this.state.signup ? 
-                                    <Login setUser={this.setUser} setToken={this.setToken} setSignup={this.setSignup} token={this.state.token} handleSetStorage={this.handleSetStorage}/>
+                                    <Login styles={styles} setUser={this.setUser} setToken={this.setToken} setSignup={this.setSignup} token={this.state.token} handleSetStorage={this.handleSetStorage}/>
                                     : 
                                     (this.state.user.is_staff ? (<Admin votings={this.state.votings}/>) : (!this.state.selectedVoting ?
                                         <View>
@@ -154,10 +159,12 @@ class App extends React.Component {
                                                 </View>
                                             </View>
                                         </View> :
-                                        <Voting setDone={this.setDone} voting={this.state.selectedVoting} user={this.state.user} token={this.state.token} resetSelected={() => this.setSelectedVoting(undefined)}/> )
-                                )}
+                                        <Voting styles={styles} setDone={this.setDone} voting={this.state.selectedVoting} user={this.state.user} token={this.state.token} resetSelected={() => this.setSelectedVoting(undefined)}/> )
+                                }
+
   
-            </View>);
+            </View>
+);
     }
 }
 

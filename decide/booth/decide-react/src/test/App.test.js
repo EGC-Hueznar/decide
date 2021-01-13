@@ -11,6 +11,7 @@ import axios from 'axios';
 import MockAdapter from "axios-mock-adapter";
 import config from '../config.json'
 import { postData } from '../utils';
+import { light, dark } from "../styles";
 
 // Hide warning
 console.error = () => {}
@@ -362,6 +363,16 @@ describe('Testing App methods',() => {
         expect(wrapper.state('done')).toBe(true);
     });
 
+
+    it('Correct setStyles', () => {
+        const wrapper = shallow(<App />);
+
+        const instance = wrapper.instance();
+        expect(wrapper.state('styles')).toBe('light');
+        instance.setStyles('dark')
+        expect(wrapper.state('styles')).toBe('dark')
+    })
+
 })
 
 describe('Testing App style',() => {
@@ -422,7 +433,7 @@ describe('Testing App style',() => {
         passwordForm.props()["onChangeText"]("decidehueznar");
 
         wrapperLogin.find(TouchableOpacity).simulate('click')
-        wrapperButton = wrapper.find(TouchableOpacity);
+        wrapperButton = wrapper.find(TouchableOpacity).at(1);
         expect(wrapperButton.prop("style").backgroundColor).toBe("#0064cd");
     });
     
