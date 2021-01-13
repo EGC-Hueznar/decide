@@ -1,14 +1,33 @@
 import React, { Component } from 'react';
-import { Alert, StyleSheet, Button, Text, View, SafeAreaView, FlatList } from 'react-native';
+import { Alert, StyleSheet, Button, Text, View, TouchableOpacity, SafeAreaView, FlatList } from 'react-native';
 import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
 import axios from 'axios';
 import config from '../config.json';
+import AddUserForm from './AddUserForm';
+
 
 export default class AdminVoting extends Component {
 
     state = {
         options: new Array(),
         voters: new Array(),
+        isEditing: false,
+        availableVoters: [
+        {
+        id: 0,
+        first_name: "Andrés",
+        last_name: "Pérez",
+        },
+        {
+        id: 1,
+        first_name: "Paula",
+        last_name: "Vigo",
+        },
+        ],
+    }
+
+    enableEditing = (edit) =>  {
+        this.setState({isEditing: edit});
     }
 
 
@@ -28,7 +47,6 @@ export default class AdminVoting extends Component {
 
     componentDidMount() {
         this.setOptions(this.props.voting);
-        this.loadVoters();
     }
 
 
@@ -43,6 +61,8 @@ export default class AdminVoting extends Component {
         const { voting } = this.props;
 
         return (
+        <View style={styles.content}>
+        {!this.state.isEditing ?
             <View style={styles.content}>
                 <View style={styles.section}>
                     <Text style={styles.title}>{voting.name}</Text>
@@ -69,8 +89,9 @@ export default class AdminVoting extends Component {
                     <FlatList data={this.state.voters} renderItem={this.render_user} />
                 </SafeAreaView>
                 <View style={styles.button}>
-                    <Button color="linear-gradient(top, #049cdb, #0064cd)" title="Añadir participante"/>
+                    <Button color="linear-gradient(top, #049cdb, #0064cd)" title="Añadir participante" onPress={() => this.enableEditing(true)} disabled={this.state.availableVoters.length == 0}/>
                 </View>
+            </View> : <AddUserForm voting={voting} users={this.state.availableVoters} enableEditing={this.enableEditing}/>}
             </View>
         );
     }

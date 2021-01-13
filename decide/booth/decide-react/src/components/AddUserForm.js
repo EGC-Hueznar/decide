@@ -1,24 +1,32 @@
 import React, { Component } from 'react';
-import { Text, View, Button } from 'react-native';
+import { Text, StyleSheet, TouchableOpacity, SafeAreaView, FlatList, View, Button } from 'react-native';
+import RadioForm from 'react-native-simple-radio-button';
 
 export default class AddUserForm extends Component {
 
+    state = {
+        options: new Array(),
+        voterId: undefined,
+    }
 
-    setOptions = (voting) => {
-        const cleanedOptions = voting.question.options.map(opt => ({
-            label: opt.option,
+    setOptions = (voters) => {
+        const cleanedOptions = voters.map(opt => ({
+            label: `${opt.first_name} ${opt.last_name}`,
             value: opt.id
         }))
         this.setState({options: cleanedOptions});
     }
 
-    render_users = ({item}) => (
-        <TouchableOpacity onPress={() => this.props.setUserId(item.id)} disabled={!item.start_date}>
-            <View style={styles.item}>
-                <Text>{item.name}</Text>
-            </View>
-        </TouchableOpacity>
-    );
+    setUserId = (id) => {
+        this.setState({voterId: id});
+        console.log(id);
+    }
+
+    componentDidMount() {
+        const { users } = this.props;
+        this.setOptions(users);
+    }
+
 
     render() {
      return (
@@ -26,17 +34,6 @@ export default class AddUserForm extends Component {
             <View style={styles.content}>
                 <Text style={styles.title}>Añadir participantes</Text>
                 <Text style={styles.subtitle}>Selecciona un nuevo participante: </Text>
-                <SafeAreaView style={styles.list}>
-                        <FlatList data={this.props.users} renderItem={this.render_users} />
-                </SafeAreaView>
-                <View style={styles.sections}>
-                    <View style={styles.button}>
-                        <Button color="linear-gradient(top, #049cdb, #0064cd)" title="Volver al inicio"
-                         onPress={() => this.props.setSelectedView("home")}/>
-                    </View>
-                    <View style={styles.button}>
-                        <Button color="linear-gradient(top, #049cdb, #0064cd)" title="Añadir"/>
-                    </View>
                     <RadioForm
                       style={styles.radioStyle}
                       radio_props={this.state.options}
@@ -45,9 +42,17 @@ export default class AddUserForm extends Component {
                       labelHorizontal={true}
                       buttonColor={"#2196f3"}
                       animation={true}
-                      onPress={(val) => this.updateSelected(val)}
+                      onPress={(val) => this.setUserId(val)}
                       buttonSize={20}
                     />
+                    <View style={styles.sections}>
+                    <View style={styles.button}>
+                        <Button color="linear-gradient(top, #049cdb, #0064cd)" title="Cancelar"
+                         onPress={() => this.props.enableEditing(false)}/>
+                    </View>
+                    <View style={styles.button}>
+                        <Button color="linear-gradient(top, #049cdb, #0064cd)" title="Añadir" disabled={this.state.voterId == undefined}/>
+                    </View>
                 </View>
             </View>
         </View>
@@ -104,30 +109,29 @@ const styles = StyleSheet.create({
     justifyContent: "center"
  },
  button: {
-    minWidth: 60,
-    marginRight: 10,
-    marginLeft: 10,
-    display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    fontSize: 18,
-    lineHeight: 1.5,
-    color: "#fff",
-    textTransform: "uppercase",
     width: "100%",
-    height: 50,
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
-    borderBottomRightRadius: 25,
-    borderBottomLeftRadius: 25,
-    backgroundColor: "#0064cd",
-    paddingTop: 0,
-    paddingRight: 25,
-    paddingBottom: 0,
-    paddingLeft: 25,
-    textShadowOffset: {
-      width: 0,
-      height: -1
+        display: "flex",
+        flexWrap: "wrap",
+        justifyContent: "center",
+        fontSize: 18,
+        lineHeight: 1.5,
+        color: "#fff",
+        textTransform: "uppercase",
+        height: 50,
+        marginRight: 10,
+        marginLeft: 10,
+        borderTopLeftRadius: 25,
+        borderTopRightRadius: 25,
+        borderBottomRightRadius: 25,
+        borderBottomLeftRadius: 25,
+        backgroundColor: "#0064cd",
+        paddingTop: 0,
+        paddingRight: 25,
+        paddingBottom: 0,
+        paddingLeft: 25,
+        textShadowOffset: {
+            width: 0,
+            height: -1
     },
     textShadowRadius: 0,
     textShadowColor: "rgba(0, 0, 0, 0.25)",
