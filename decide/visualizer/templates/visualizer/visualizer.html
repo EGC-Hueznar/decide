@@ -22,8 +22,9 @@
         </nav>
 
         <div class="voting container">
-            <h1>{{ voting.id }} - {{ voting.name }}</h1>
             
+            <h1>{{ voting.id }} - {{ voting.name }}</h1>
+            <a href="telegram_report">Compartir votación en Telegram</a>
             <br>
             {% if voting.start_date == null %}
                 <h2>Votación no comenzada</h2>
@@ -51,7 +52,6 @@
                             {% endfor %}
                         </tbody>
                     </table>
-                    <a href="telegram_report">Compartir votación en Telegram</a>
                     <a href="twitter_report">Compartir votación en Twitter</a>
                     <br>
                     <br>

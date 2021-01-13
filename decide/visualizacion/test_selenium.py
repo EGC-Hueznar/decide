@@ -12,9 +12,10 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 import time
 
-from voting.models import Voting, Question, VotacionBinaria, VotacionPreferencia, VotacionMultiple, Votacion
+from voting.models import *
 
 from census.models import Census
+
 class TestVisualizerIndex(StaticLiveServerTestCase):
     def setUp(self):
         q = Question(desc = "Aquí tiene su pregunta: ")
@@ -136,6 +137,17 @@ class TestVisualizerIndex(StaticLiveServerTestCase):
         time.sleep(3)
         self.assertEqual(self.driver.current_url, "{}/visualizer/binaria/{}/".format(self.live_server_url, self.vb2.id))
 
+    def test_visualizerIndexDefault(self):
+        self.driver.get(f'{self.live_server_url}/visualizer/')
+        time.sleep(3)
+        self.driver.find_element_by_css_selector("tr:nth-child(5) .btn").click()
+        time.sleep(3)
+        self.assertEqual(self.driver.current_url, "{}/visualizer/default/".format(self.live_server_url))
+        time.sleep(3)
+        self.driver.find_element_by_link_text(self.v2.name).click()
+        time.sleep(3)
+        self.assertEqual(self.driver.current_url, "{}/visualizer/{}/".format(self.live_server_url, self.v2.id))
+
 class TestGraficasVotacionNormal(StaticLiveServerTestCase):
     def setUp(self):
         q = Question(desc = "Aquí tiene su pregunta: ")
@@ -255,3 +267,79 @@ class TestGraficasVotacionPreferencia(StaticLiveServerTestCase):
         self.driver.find_element(By.ID, "enseñarBarra").click()
         time.sleep(3)
         self.assertEqual(self.driver.find_element(By.ID, "graficatarta").get_attribute("style"), "display: none;")
+    
+class TestBinaryGraphs(StaticLiveServerTestCase):
+    def setUp(self):
+        #creamos la votacion binaria
+        self.votacion = VotacionBinaria(titulo='titulo binario test',descripcion='desc binario test',fecha_inicio=datetime.datetime(2020, 7, 5), fecha_fin=datetime.datetime(2020, 7, 6))
+        self.votacion.save()
+
+        #creamos el web driver
+        options = webdriver.ChromeOptions()
+        options.headless = True
+        self.driver = webdriver.Chrome(options=options)
+        super().setUp()
+
+    def tearDown(self):
+        self.driver.quit()
+        self.votacion=None
+        super().tearDown()
+
+    def test_binary_votos(self):
+        #accedemos a la vista de votaciones binarias
+        self.driver.get(f'{self.live_server_url}/visualizer/binaria')
+        #accedemos al primer elemento de la tabla
+        self.driver.find_element(By.XPATH, "//div[@id=\'app-visualizer\']/div/table/tbody/tr/th/a").click()
+        #buscamos que estén los div con id=container y id=container2 que contienen las gráficas de votos
+        #esto nos indica que las gráficas se han generado
+        self.driver.find_element(By.ID, "container")
+        self.driver.find_element(By.ID, "container2")
+
+    def test_binary_puntos(self):
+        #accedemos a la vista de votaciones binarias
+        self.driver.get(f'{self.live_server_url}/visualizer/binaria')
+        #accedemos al primer elemento de la tabla
+        self.driver.find_element(By.XPATH, "//div[@id=\'app-visualizer\']/div/table/tbody/tr/th/a").click()
+        #buscamos que estén los div con id=container3 y id=container4 que contienen las gráficas de puntos
+        #esto nos indica que las gráficas se han generado
+        self.driver.find_element(By.ID, "container3")
+        self.driver.find_element(By.ID, "container4")
+
+
+class TestMultiGraphs(StaticLiveServerTestCase):
+    def setUp(self):
+        #creamos la votacion múltiple
+        self.votacion=VotacionMultiple(titulo="titulo multiple test", descripcion="desc multiple test", fecha_inicio=datetime.datetime(2020, 10, 6), fecha_fin=datetime.datetime(2020, 11, 7))
+        self.votacion.save()
+
+        #creamos el web driver
+        options = webdriver.ChromeOptions()
+        options.headless = True
+        self.driver = webdriver.Chrome(options=options)
+        super().setUp()
+
+    def tearDown(self):
+        #vaciamos los campos que hemos utilizado
+        self.driver.quit()
+        self.votacion=None
+        super().tearDown()
+
+    def test_multi_votos(self):
+        #accedemos a la vista de votaciones múltiples
+        self.driver.get(f'{self.live_server_url}/visualizer/multiple')
+        #accedemos al primer elemento de la tabla
+        self.driver.find_element(By.XPATH, "//div[@id=\'app-visualizer\']/div/table/tbody/tr/th/a").click()
+        #buscamos que estén los div con id=container y id=container2 que contienen las gráficas de votos
+        #esto nos indica que las gráficas se han generado
+        self.driver.find_element(By.ID, "container")
+        self.driver.find_element(By.ID, "container2")
+
+    def test_multi_puntos(self):
+        #accedemos a la vista de votaciones múltiples
+        self.driver.get(f'{self.live_server_url}/visualizer/multiple')
+        #accedemos al primer elemento de la tabla
+        self.driver.find_element(By.XPATH, "//div[@id=\'app-visualizer\']/div/table/tbody/tr/th/a").click()
+        #buscamos que estén los div con id=container3 y id=container4 que contienen las gráficas de puntos
+        #esto nos indica que las gráficas se han generado
+        self.driver.find_element(By.ID, "container3")
+        self.driver.find_element(By.ID, "container4")
