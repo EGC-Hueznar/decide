@@ -1,0 +1,10 @@
+{
+    "BASE_URL": "",
+    "LOGIN_URL": "/authentication/login/",
+    "GETUSER_URL": "/authentication/getuser/",
+    "LOGOUT_URL": "/authentication/logout/",
+    "STORE_URL": "/store/",
+    "VOTING_URL": "/voting/",
+    "CENSUS_VOTINGS_URL": "/census/votings/",
+    "KEYBITS": 256
+}
