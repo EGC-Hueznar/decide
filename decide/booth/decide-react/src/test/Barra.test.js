@@ -11,7 +11,8 @@ import MockAdapter from "axios-mock-adapter";
 import { light, dark } from "../styles";
 import { string } from 'joi';
 
-//console.error = () => {}
+//Hide warning
+console.error = () => {}
 
 describe('Testing Barra style',() => {
 
@@ -32,6 +33,13 @@ describe('Testing Barra style',() => {
 
         const wrapperText = wrapper.find(Text).at(1).get(0);
         expect(wrapperText.props.style).toHaveProperty('color', 'white');
+    });
+    
+    it('Correct logout style', async () => {
+        wrapper = mount(<Barra styles={light} />);
+        
+        const wrapperText = wrapper.find(Text).at(2).get(0);
+        expect(wrapperText.props.style).toHaveProperty('fontSize', 14);
     });
 
 })
