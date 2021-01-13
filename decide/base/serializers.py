@@ -10,9 +10,9 @@ class AuthSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class KeySerializer(serializers.HyperlinkedModelSerializer):
-    p = serializers.IntegerField()
-    g = serializers.IntegerField()
-    y = serializers.IntegerField()
+    p = serializers.CharField()
+    g = serializers.CharField()
+    y = serializers.CharField()
 
     class Meta:
         model = Key
