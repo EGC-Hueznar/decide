@@ -1,11 +1,11 @@
-from django.urls import path, include
+from django.urls import path, re_path, include
 from . import views
 from .views import importar
 from census.views import *
 
 
 urlpatterns = [
-    path('', views.CensusCreate.as_view(), name='census_create'),
+    re_path('^(?P<type>votacionBinaria|votacion|votacionPreferencia|votacionMultiple|voting)/$', views.CensusCreate.as_view(), name='census_create'),
     path('<int:voting_id>/', views.CensusDetail.as_view(), name='census_detail'),
     path('import', importar, name='import'),
     #Url correspondiente al formulario de importación de LDAP
