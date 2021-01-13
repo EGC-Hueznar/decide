@@ -15,4 +15,4 @@ class Census(models.Model):
     type = models.CharField(max_length=2, choices=VotingTypes, default='Vo')
 
     class Meta:
-        unique_together = (('voting_id', 'type'),)
+        unique_together = (('voting_id', 'voter_id', 'type'),)

@@ -1,30 +1,13 @@
 import React, { Component } from 'react';
 import { Text, View, StyleSheet, Button, FlatList, SafeAreaView } from 'react-native';
+import axios from 'axios';
+import config from '../config.json';
 
 
 export default class AdminUsers extends Component {
 
     state = {
-        users: [
-        {
-            id: 1,
-            first_name: undefined,
-            last_name: undefined,
-            email: undefined,
-        },
-        {
-            id: 2,
-            first_name: "Pedro",
-            last_name: "Gómez",
-            email: "pedro@gmail.com",
-        },
-        {
-            id: 3,
-            first_name: "Luis",
-            last_name: "Pérez",
-            email: undefined,
-        },
-        ],
+        users: [],
     }
 
     render_user = ({item}) => (
@@ -33,6 +16,16 @@ export default class AdminUsers extends Component {
                 {item.email && <Text>{item.email}</Text>}
             </View>
     );
+
+    loadUsers = () => {
+        axios.get(config.GET_ALL_USERS_URL).then(response => {
+            this.setState({users: response.data});
+        });
+    }
+
+    componentDidMount() {
+        this.loadUsers();
+    }
 
   render() {
      return (

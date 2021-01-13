@@ -7,28 +7,18 @@ import config from '../config.json';
 export default class AdminVoting extends Component {
 
     state = {
-        options: new Array(),
         voters: new Array(),
     }
 
-
-    setOptions = (voting) => {
-        const cleanedOptions = voting.question.options.map(opt => ({
-            label: opt.option,
-            value: opt.number
-        }))
-        this.setState({options: cleanedOptions});
-    }
-
-    loadVoters = () => {
-        axios.get(`${config.VOTING_VOTERS_URL}${this.props.voting.id}`).then(response => {
+    loadVoters = (voting) => {
+        axios.get(`${config.CENSUS_URL}${voting.voting_type}?voting_id=${voting.id}`).then(response => {
+            console.log(response.data);
             this.setState({voters: response.data});
         });
     }
 
     componentDidMount() {
-        this.setOptions(this.props.voting);
-        this.loadVoters();
+        this.loadVoters(this.props.voting);
     }
 
 
@@ -45,21 +35,12 @@ export default class AdminVoting extends Component {
         return (
             <View style={styles.content}>
                 <View style={styles.section}>
-                    <Text style={styles.title}>{voting.name}</Text>
-                    <Text style={styles.text}>{voting.question.desc}</Text>
+                    <Text style={styles.title}>{voting.titulo}</Text>
+                    <Text style={styles.text}>{voting.descripcion} {voting.voting_type}</Text>
+                    <Text style={styles.text}>Fecha: {voting.fecha_inicio.split("+")[0]}</Text>
                 </View>
-                <RadioForm style={styles.options}
-                                radio_props={this.state.options}
-                                formHorizontal={true}
-                                initial={-1}
-                                labelHorizontal={false}
-                                buttonColor={'#2196f3'}
-                                animation={true}
-                                disabled
-                                buttonSize={20}
-                            />
                 <View style={styles.button}>
-                    <Button color="linear-gradient(top, #049cdb, #0064cd)" title="Volver al inicio" onPress={() => this.props.setVotingId(undefined)}/>
+                    <Button color="linear-gradient(top, #049cdb, #0064cd)" title="Volver al inicio" onPress={() => this.props.setSelectedVoting(undefined)}/>
                 </View>
                 <View style={styles.section}>
                     <Text style={styles.title}>Censo</Text>

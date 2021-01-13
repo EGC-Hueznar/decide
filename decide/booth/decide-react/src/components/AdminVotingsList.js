@@ -4,12 +4,13 @@ import {FlatList, Text, TouchableOpacity, View, StyleSheet, Button, SafeAreaView
 export default class AdminVotings extends Component {
 
   render_voting = ({item}) => (
-    <TouchableOpacity onPress={() => this.props.setVotingId(item.id)} disabled={!item.start_date}>
+    <TouchableOpacity onPress={() => this.props.setSelectedVoting(item)} disabled={!item.fecha_inicio}>
         <View style={styles.item}>
-            <Text>{item.name}</Text>
+            <Text>{item.titulo}</Text>
         </View>
     </TouchableOpacity>
   );
+
 
   render() {
      return (
@@ -20,7 +21,16 @@ export default class AdminVotings extends Component {
                 Para obtener información más detallada sobre una votación o gestionarla, solo tines que hacer click en
                 el nombre de la misma. </Text>
                 <SafeAreaView style={styles.list}>
-                        <FlatList data={this.props.votings} renderItem={this.render_voting} />
+                        <FlatList data={this.props.normalVotings} renderItem={this.render_voting} />
+                </SafeAreaView>
+                <SafeAreaView style={styles.list}>
+                        <FlatList data={this.props.binaryVotings} renderItem={this.render_voting} />
+                </SafeAreaView>
+                <SafeAreaView style={styles.list}>
+                        <FlatList data={this.props.multipleVotings} renderItem={this.render_voting} />
+                </SafeAreaView>
+                <SafeAreaView style={styles.list}>
+                        <FlatList data={this.props.preferenceVotings} renderItem={this.render_voting} />
                 </SafeAreaView>
                 <View style={styles.sections}>
                     <View style={styles.button}>
@@ -59,7 +69,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-start",
     width: "100%",
-    marginBottom: 60,
+    marginBottom: 10,
  },
  title: {
     fontSize: 30,
