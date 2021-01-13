@@ -36,6 +36,6 @@ matrix:
         - npm install jest
       script:
         - npm test
-
+        
 notifications:
   email: false
