@@ -182,3 +182,40 @@ class TestGraficasVotacionNormal(StaticLiveServerTestCase):
         self.driver.find_element(By.ID, "enseñarBarra").click()
         time.sleep(3)
         self.assertEqual(self.driver.find_element(By.ID, "graficatarta").get_attribute("style"), "display: none;")
+
+
+class TestGraficasVotacionPreferencia(StaticLiveServerTestCase):
+    def setUp(self):
+        q = Question(desc = "Aquí tiene su pregunta: ")
+        q.save()
+
+        self.vp1=VotacionPreferencia(id=1, titulo="Viva el Sevilla", fecha_inicio=datetime.datetime(2020, 7, 6), fecha_fin=datetime.datetime(2021, 7, 6))
+        self.vp1.save()
+
+        self.user = User(id = 1, username='Manuel', is_staff=True)
+        self.user.set_password('contraseña')
+        self.user.save()
+        self.c = Census(id=1, voting_id=1, voter_id = 1)
+        self.c.save()
+
+        options = webdriver.ChromeOptions()
+        self.driver = webdriver.Chrome(options=options)
+        super().setUp()
+  
+    def tearDown(self):
+        super().tearDown()
+        self.driver.quit()
+        self.c=None
+        self.user=None
+
+        self.vp1=None
+
+    def test_mostrar_grafico_sectores(self):
+        self.driver.get(f'{self.live_server_url}/visualizer/')
+        self.driver.find_element_by_css_selector("tr:nth-child(2) .btn").click()
+        time.sleep(3)
+        self.driver.find_element_by_link_text(self.vp1.titulo).click()
+        time.sleep(3)
+        self.driver.find_element(By.ID, "enseñarTarta").click()
+        time.sleep(3)
+        self.assertEqual(self.driver.find_element(By.ID, "graficabarras").get_attribute("style"), "display: none;")
