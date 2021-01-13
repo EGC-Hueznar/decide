@@ -85,7 +85,7 @@ def importCensusFromLdapVotacion(request):
         context = {
             'form': form,
         }
-        return render(request, template_name='importCensusLdapVotacion.html', context=context)
+        return render(request, template_name='importarCensusLdapVotacion.html', context=context)
     else:
         messages.add_message(request, messages.ERROR, "permiso denegado")
         return redirect('/admin')
@@ -140,7 +140,7 @@ def importCensusFromLdapBinaria(request):
         context = {
             'form': form,
         }
-        return render(request, template_name='importCensusLdapBinaria.html', context=context)
+        return render(request, template_name='importarCensusLdapBinaria.html', context=context)
     else:
         messages.add_message(request, messages.ERROR, "permiso denegado")
         return redirect('/admin')
@@ -185,7 +185,7 @@ def importCensusFromLdapMultiple(request):
             context = {
                 'form': form,
             }
-            return render(request, template_name='importCensusLdapMultiple.html', context=context)
+            return render(request, template_name='importarCensusLdapMultiple.html', context=context)
         else:
             messages.add_message(request, messages.ERROR, "permiso denegado")
             return redirect('/admin')
@@ -232,7 +232,7 @@ def importCensusFromLdapPreferencia(request):
         context = {
             'form': form,
         }
-        return render(request, template_name='importCensusLdapPreferencia.html', context=context)
+        return render(request, template_name='importarCensusLdapPreferencia.html', context=context)
     else:
         messages.add_message(request, messages.ERROR, "permiso denegado")
         return redirect('/admin')

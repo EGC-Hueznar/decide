@@ -11,6 +11,7 @@ from .ldapMethods import LdapCensus
 from .views import *
 from datetime import datetime
 import pytz
+import time
 
 
 class CensusTestCase(BaseTestCase):
@@ -21,8 +22,12 @@ class CensusTestCase(BaseTestCase):
         self.census.save()
         self.vb = VotacionBinaria(titulo='titulo 1', descripcion='Descripcion1', fecha_inicio=datetime(2021,1,15,9,00, tzinfo=pytz.UTC), fecha_fin=datetime(2021,1,16,9,00, tzinfo=pytz.UTC))
         self.vm = VotacionMultiple(titulo='titulo 1', descripcion='Descripcion1', fecha_inicio=datetime(2021,1,15,9,00, tzinfo=pytz.UTC), fecha_fin=datetime(2021,1,16,9,00, tzinfo=pytz.UTC))
+        self.vo = Votacion(titulo='titulo 1', descripcion='Descripcion1', fecha_inicio=datetime(2021,1,15,9,00, tzinfo=pytz.UTC), fecha_fin=datetime(2021,1,16,9,00, tzinfo=pytz.UTC))
+        self.vp = VotacionPreferencia(titulo='titulo 1', descripcion='Descripcion1', fecha_inicio=datetime(2021,1,15,9,00, tzinfo=pytz.UTC), fecha_fin=datetime(2021,1,16,9,00, tzinfo=pytz.UTC))
         self.vb.save()
         self.vm.save()
+        self.vo.save()
+        self.vp.save()
     def tearDown(self):
         super().tearDown()
         self.census = None
@@ -81,16 +86,75 @@ class CensusTestCase(BaseTestCase):
         response = self.client.delete('/census/{}/'.format(1), data, format='json')
         self.assertEqual(response.status_code, 204)
         self.assertEqual(0, Census.objects.count())
-    
-    #Comprueba si se crea una conexion con la base de datos
-    def test_connection_check(self):
-        connection = LdapCensus().ldapConnectionMethod('ldap.forumsys.com:389','cn=read-only-admin,dc=example,dc=com', 'password')
-        self.assert_(connection is not None)
+
     #Añade censo a una votación binaria que tenga fechas de inicio y fin distintas a null
     #El usuario que añadirá el censo será administrador del sistema
+    def test_ldap_check_votacion_preferencia_pass(self):
+        antes = Census.objects.count()
+        #Guardamos al usuario a introducir que ya esta en el ldap
+        u = User(username='curie')
+        u.set_password('123')
+        u.save()
+
+        admin = User(username='administrado')
+        admin.set_password('1234567asd')
+        admin.is_staff = True
+        admin.save()
+
+        #Hacemos la request
+        
+        self.client.force_login(admin)
+        votacion = VotacionPreferencia.objects.all().filter(fecha_inicio__isnull=False, fecha_fin__isnull=False)[0].id
+        data = {'voting': votacion, 'urlLdap': 'ldap.forumsys.com:389', 'branch': 'ou=chemists,dc=example,dc=com', 'treeSufix': 'cn=read-only-admin,dc=example,dc=com','pwd': 'password'}
+        response = self.client.post('/census/addLDAPcensusPreferencia/', data)
+        despues = Census.objects.count()
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(antes+1,despues)
+
+    def test_ldap_check_votacion_preferencia_get(self):
+        antes = Census.objects.count()
+        #Guardamos al usuario a introducir que ya esta en el ldap
+        u = User(username='curie')
+        u.set_password('123')
+        u.save()
+
+        admin = User(username='administrado')
+        admin.set_password('1234567asd')
+        admin.is_staff = True
+        admin.save()
+
+        #Hacemos la request
+        
+        self.client.force_login(admin)
+        votacion = VotacionPreferencia.objects.all().filter(fecha_inicio__isnull=False, fecha_fin__isnull=False)[0].id
+        response = self.client.get('/census/addLDAPcensusPreferencia/')
+        despues = Census.objects.count()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(antes,despues)
+    def test_ldap_check_votacion_preferencia_wrongLogin(self):
+
+        antes = Census.objects.count()
+        #Guardamos al usuario a introducir que ya esta en el ldap
+        u = User(username='curie')
+        u.set_password('123')
+        u.save()
+
+        admin = User(username='administrado')
+        admin.set_password('1234567asd')
+        admin.is_staff = True
+        admin.save()
+
+        #Hacemos la request
+        
+        self.client.force_login(u)
+        votacion = VotacionPreferencia.objects.all().filter(fecha_inicio__isnull=False, fecha_fin__isnull=False)[0].id
+        data = {'voting': votacion, 'urlLdap': 'ldap.forumsys.com:389', 'branch': 'ou=chemists,dc=example,dc=com', 'treeSufix': 'cn=read-only-admin,dc=example,dc=com','pwd': 'password'}
+        response = self.client.post('/census/addLDAPcensusPreferencia/', data)
+        despues = Census.objects.count()
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(antes,despues)
+   
     def test_ldap_check_votacion_binaria_pass(self):
-
-
         antes = Census.objects.count()
         #Guardamos al usuario a introducir que ya esta en el ldap
         u = User(username='curie')
@@ -111,6 +175,26 @@ class CensusTestCase(BaseTestCase):
         despues = Census.objects.count()
         self.assertEqual(response.status_code, 302)
         self.assertEqual(antes+1,despues)
+    def test_ldap_check_votacion_binaria_get(self):
+        antes = Census.objects.count()
+      
+        u = User(username='curie')
+        u.set_password('123')
+        u.save()
+
+        admin = User(username='administrado')
+        admin.set_password('1234567asd')
+        admin.is_staff = True
+        admin.save()
+
+        #Hacemos la request
+        
+        self.client.force_login(admin)
+        votacion = VotacionBinaria.objects.all().filter(fecha_inicio__isnull=False, fecha_fin__isnull=False)[0].id
+        response = self.client.get('/census/addLDAPcensusBinaria/')
+        despues = Census.objects.count()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(antes,despues)
     #Añade censo a una votación binaria que tenga fechas de inicio y fin distintas a null
     #El usuario que añadirá el censo no será administrador del sistema y por lo tanto se espera que no se añada censo
     def test_ldap_check_votacion_binaria_wrong_login(self):
@@ -186,3 +270,51 @@ class CensusTestCase(BaseTestCase):
         self.client.post('/census/addLDAPcensusMultiple/', data)
         despues = Census.objects.count()
         self.assertEqual(antes,despues)
+    
+    def test_ldap_check_votacion_pass(self):
+
+        antes = Census.objects.count()
+        #Guardamos al usuario a introducir que ya esta en el ldap
+        u = User(username='curie')
+        u.set_password('123')
+        u.save()
+
+        admin = User(username='administrado')
+        admin.set_password('1234567asd')
+        admin.is_staff = True
+        admin.save()
+
+        #Hacemos la request
+        
+        self.client.force_login(admin)
+        votacion = Votacion.objects.all().filter(fecha_inicio__isnull=False, fecha_fin__isnull=False)[0].id
+        data = {'voting': votacion, 'urlLdap': 'ldap.forumsys.com:389', 'branch': 'ou=chemists,dc=example,dc=com', 'treeSufix': 'cn=read-only-admin,dc=example,dc=com','pwd': 'password'}
+        response = self.client.post('/census/addLDAPcensusVotacion/', data)
+        despues = Census.objects.count()
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(antes+1,despues)
+
+    def test_ldap_check_votacion_wrong_login(self):
+
+        antes = Census.objects.count()
+        #Guardamos al usuario a introducir que ya esta en el ldap
+        u = User(username='curie')
+        u.set_password('123')
+        u.save()
+
+        admin = User(username='administrado')
+        admin.set_password('1234567asd')
+        admin.is_staff = True
+        admin.save()
+
+        #Hacemos la request
+        
+        self.client.force_login(u)
+        votacion = Votacion.objects.all().filter(fecha_inicio__isnull=False, fecha_fin__isnull=False)[0].id
+        data = {'voting': votacion, 'urlLdap': 'ldap.forumsys.com:389', 'branch': 'ou=chemists,dc=example,dc=com', 'treeSufix': 'cn=read-only-admin,dc=example,dc=com','pwd': 'password'}
+        response = self.client.post('/census/addLDAPcensusVotacion/', data)
+        despues = Census.objects.count()
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(antes,despues)
+    
+    
