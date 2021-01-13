@@ -160,6 +160,8 @@ class App extends React.Component {
                                             </View>
                                         </View> :
                                         <Voting styles={styles} setDone={this.setDone} voting={this.state.selectedVoting} user={this.state.user} token={this.state.token} resetSelected={() => this.setSelectedVoting(undefined)}/> )
+
+                                    )
                                 }
 
   
