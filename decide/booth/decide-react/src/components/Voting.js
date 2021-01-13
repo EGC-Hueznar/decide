@@ -6,7 +6,6 @@ import { postData } from '../utils';
 import config from '../config.json';
 import { StyleSheet} from "react-native";
 import RadioForm from 'react-native-simple-radio-button';
-import { styles } from "../styles";
 
 export default class Voting extends Component {
 
@@ -84,6 +83,8 @@ export default class Voting extends Component {
     render() {
         const { voting, resetSelected } = this.props;
 
+        const {styles} = this.props;
+
         return <View style={styles.htmlStyle}>
         <View View style={styles.body}>
         <View style={styles.container}>
@@ -95,7 +96,8 @@ export default class Voting extends Component {
                 <View style={{ flex: 1, backgroundColor: "powderblue" }} />
               </View>
               <View style={styles.clearfix}>
-                <RadioForm
+                <RadioForm 
+                  labelColor={styles.labelColor}
                   style={styles.radioStyle}
                   radio_props={this.state.options}
                   initial={-1}
@@ -110,13 +112,7 @@ export default class Voting extends Component {
               {this.state.noSelection && (
                 <View style={styles.textStyle}>
                   <Text
-                    style={{
-                      // fontWeight: "bold",
-                      color: "#0000ff",
-                      // fontFamily: "calibri",
-                      fontSize: 15,
-                      textAlign: 'center'
-                    }}
+                    style={styles.state}
                   >
                     Debe seleccionar una opción
                   </Text>

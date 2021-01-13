@@ -6,5 +6,7 @@
     "STORE_URL": "/store/",
     "VOTING_URL": "/voting/",
     "CENSUS_VOTINGS_URL": "/census/votings/",
+    "ALL_VOTINGS_URL": "/census/allvotings/",
+    "VOTING_VOTERS_URL": "/census/voters/",
     "KEYBITS": 256
 }

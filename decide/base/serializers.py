@@ -17,3 +17,12 @@ class KeySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Key
         fields = ('p', 'g', 'y')
+
+class KeySerializerString(serializers.HyperlinkedModelSerializer):
+    p = serializers.CharField()
+    g = serializers.CharField()
+    y = serializers.CharField()
+
+    class Meta:
+        model = Key
+        fields = ('p', 'g', 'y')

@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react';
 import {FlatList, Text, TouchableOpacity, View, StyleSheet, Button, SafeAreaView} from 'react-native';
 

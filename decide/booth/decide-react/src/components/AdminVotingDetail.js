@@ -1,31 +1,14 @@
 import React, { Component } from 'react';
 import { Alert, StyleSheet, Button, Text, View, SafeAreaView, FlatList } from 'react-native';
 import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
+import axios from 'axios';
+import config from '../config.json';
 
 export default class AdminVoting extends Component {
 
     state = {
         options: new Array(),
-        voters: [
-        {
-            id: 1,
-            first_name: undefined,
-            last_name: undefined,
-            email: undefined,
-        },
-        {
-            id: 2,
-            first_name: "Pedro",
-            last_name: "Gómez",
-            email: "pedro@gmail.com",
-        },
-        {
-            id: 3,
-            first_name: "Luis",
-            last_name: "Pérez",
-            email: undefined,
-        },
-        ],
+        voters: new Array(),
     }
 
 
@@ -37,8 +20,15 @@ export default class AdminVoting extends Component {
         this.setState({options: cleanedOptions});
     }
 
+    loadVoters = () => {
+        axios.get(`${config.VOTING_VOTERS_URL}${this.props.voting.id}`).then(response => {
+            this.setState({voters: response.data});
+        });
+    }
+
     componentDidMount() {
         this.setOptions(this.props.voting);
+        this.loadVoters();
     }
 
 
