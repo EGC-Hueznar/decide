@@ -4,10 +4,12 @@ from django.test import TestCase
 from rest_framework.test import APIClient
 
 from .models import Census
+
 from base import mods
 from base.tests import BaseTestCase
 from .ldapMethods import LdapCensus
 from .views import *
+#import pdb
 
 
 class CensusTestCase(BaseTestCase):
@@ -80,3 +82,21 @@ class CensusTestCase(BaseTestCase):
     def test_connection_check(self):
         connection = LdapCensus().ldapConnectionMethod('ldap.forumsys.com:389','cn=read-only-admin,dc=example,dc=com', 'password')
         self.assert_(connection is not None)
+    
+    def test_ldap_groups_check(self):
+
+        self.login()
+        antes = Census.objects.count()
+        print(antes)
+        #Guardamos al usuario a introducir que ya esta en el ldap
+        u = User(username='curie')
+        u.set_password('123')
+        u.save()
+        
+        #Hacemos la request
+        data = {'voting': '1', 'urlLdap': 'ldap.forumsys.com:389','treeSufix': 'cn=read-only-admin,dc=example,dc=com','branch':'ou=chemists,dc=example,dc=com','pwd': 'password'}
+        #pdb.set_trace()
+        response = self.client.post('/census/addLDAPcensus', data, format='json')
+        despues = Census.objects.count()
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(antes+1,despues)
