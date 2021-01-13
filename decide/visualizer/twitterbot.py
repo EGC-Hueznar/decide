@@ -40,12 +40,12 @@ def send_twitter_report_voting(voting):
     vot_name = voting.name
     vot_desc = voting.desc
     vot_q = voting.question
-    options = voting_q.options.all()
+    options = vot_q.options.all()
     post = voting.postproc
    
     tweet = "Votación: " + voting.name +"\n"
-    tweet += "Descripción: " + str(voting_desc) +"\n"
-    tweet += str(voting_q) + "\n"
+    tweet += "Descripción: " + str(vot_desc) +"\n"
+    tweet += str(vot_q) + "\n"
     tweet += "\nResultados: \n"
     for option in post:
         tweet += option.get('option') + " - " + str(option.get('votes')) + " votos \n"
