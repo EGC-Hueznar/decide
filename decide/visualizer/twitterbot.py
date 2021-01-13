@@ -33,8 +33,11 @@ def send_twitter_report_json(voting):
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret_key)
     auth.set_access_token(access_token, access_token_secret)
     api = tweepy.API(auth)
-    return api.update_status(tweet)
-    
+    if len(tweet) < 280:
+        return api.update_status(tweet)
+    else:
+        return api.update_status("La votación " + vot_name +" contiene demasiados caracteres para compartirla.")
+
 def send_twitter_report_voting(voting):
     vot_id = voting.id
     vot_name = voting.name
@@ -52,7 +55,11 @@ def send_twitter_report_voting(voting):
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret_key)
     auth.set_access_token(access_token, access_token_secret)
     api = tweepy.API(auth)
-    return api.update_status(tweet)
+    if len(tweet) < 280:
+        return api.update_status(tweet)
+    else:
+        return api.update_status("La votación " + vot_name +" contiene demasiados caracteres para compartirla.")
+    
 
 def send_twitter_report_binary(v):
     vot_id = v.id
@@ -68,7 +75,10 @@ def send_twitter_report_binary(v):
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret_key)
     auth.set_access_token(access_token, access_token_secret)
     api = tweepy.API(auth)
-    return  api.update_status(tweet)
+    if len(tweet) < 280:
+        return api.update_status(tweet)
+    else:
+        return api.update_status("La votación " + vot_title +" contiene demasiados caracteres para compartirla.")
 
 def send_twitter_report_normal(v):
     voting_id = v.id
@@ -90,7 +100,11 @@ def send_twitter_report_normal(v):
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret_key)
     auth.set_access_token(access_token, access_token_secret)
     api = tweepy.API(auth)
-    return api.update_status(tweet)
+    if len(tweet) < 280:
+        return api.update_status(tweet)
+    else:
+        return api.update_status("La votación " + voting_title +" contiene demasiados caracteres para compartirla.")
+    
 
 def send_twitter_report_preferencia(v):
     voting_id = v.id
@@ -112,7 +126,11 @@ def send_twitter_report_preferencia(v):
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret_key)
     auth.set_access_token(access_token, access_token_secret)
     api = tweepy.API(auth)
-    return api.update_status(tweet)
+    if len(tweet) < 280:
+        return api.update_status(tweet)
+    else:
+        return api.update_status("La votación " + voting_title +" contiene demasiados caracteres para compartirla.")
+    
 
 def send_twitter_report_mult(v):
     voting_id = v.id
@@ -135,4 +153,8 @@ def send_twitter_report_mult(v):
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret_key)
     auth.set_access_token(access_token, access_token_secret)
     api = tweepy.API(auth)
-    return api.update_status(tweet)
+    if len(tweet) < 280:
+        return api.update_status(tweet)
+    else:
+        return api.update_status("La votación " + voting_title +" contiene demasiados caracteres para compartirla.")
+    

@@ -9,6 +9,7 @@ from census.models import Census
 import telegram
 from voting.tests import *
 from visualizer.telegrambot import *
+from visualizer.twitterbot import *
 import time
 
 
@@ -453,8 +454,7 @@ class SendTelegramVotacionMultipleTest(BaseTestCase):
         self.assertEqual(message.chat.title,"Actualizaciones Decide Huéznar")
 
 class SendTwitterVotacion():
-    # Test de creación de Twitter
-    def test_send_twitter(self):
+    def create_twitter(self):
         consumer_key = 'ZXutSjYogRFQ1cGSqBExHdFYQ'
         consumer_secret_key = 'bOQoMVaIcYUrTzPba0ogudtIZi6HJZtfTdBaG09EVG60UN6k8Y'
         access_token = '1346151287306530817-DshaN1ufww133bG0S8KKSRFWpaBn0y'
@@ -463,4 +463,93 @@ class SendTwitterVotacion():
         auth.set_access_token(access_token, access_token_secret)
         api = tweepy.API(auth)
         return api
-        
+    
+    def test_update(self):
+        consumer_key = 'ZXutSjYogRFQ1cGSqBExHdFYQ'
+        consumer_secret_key = 'bOQoMVaIcYUrTzPba0ogudtIZi6HJZtfTdBaG09EVG60UN6k8Y'
+        access_token = '1346151287306530817-DshaN1ufww133bG0S8KKSRFWpaBn0y'
+        access_token_secret = 'vlIKntFymAL3Us2CcnkdbYpa1i2LJ9Q9RwVAt9OFSp668'
+        auth = tweepy.OAuthHandler(consumer_key, consumer_secret_key)
+        auth.set_access_token(access_token, access_token_secret)
+        api = tweepy.API(auth)
+        self.assertEqual(api.update_status("Estoy es una prueba."), "Esto es una prueba.")
+    
+    def test_not_update(self):
+        consumer_key = 'ZXutSjYogRFQ1cGSqBExHdFYQ'
+        consumer_secret_key = 'bOQoMVaIcYUrTzPba0ogudtIZi6HJZtfTdBaG09EVG60UN6k8Y'
+        access_token = '1346151287306530817-DshaN1ufww133bG0S8KKSRFWpaBn0y'
+        access_token_secret = 'vlIKntFymAL3Us2CcnkdbYpa1i2LJ9Q9RwVAt9OFSp668'
+        auth = tweepy.OAuthHandler(consumer_key, consumer_secret_key)
+        auth.set_access_token(access_token, access_token_secret)
+        api = tweepy.API(auth)
+        self.assertNotEqual(api.update_status("Estoy es una prueba."), "Esto es una prueba2.")
+
+    def test_userid(self):
+        consumer_key = 'ZXutSjYogRFQ1cGSqBExHdFYQ'
+        consumer_secret_key = 'bOQoMVaIcYUrTzPba0ogudtIZi6HJZtfTdBaG09EVG60UN6k8Y'
+        access_token = '1346151287306530817-DshaN1ufww133bG0S8KKSRFWpaBn0y'
+        access_token_secret = 'vlIKntFymAL3Us2CcnkdbYpa1i2LJ9Q9RwVAt9OFSp668'
+        auth = tweepy.OAuthHandler(consumer_key, consumer_secret_key)
+        auth.set_access_token(access_token, access_token_secret)
+        api = tweepy.API(auth)
+        screen_name = "DecideEGC"
+        user = api.get_user(screen_name)     
+        self.assertEqual(user.id_str, "1346151287306530817")
+
+    def test_not_userid(self):
+        consumer_key = 'ZXutSjYogRFQ1cGSqBExHdFYQ'
+        consumer_secret_key = 'bOQoMVaIcYUrTzPba0ogudtIZi6HJZtfTdBaG09EVG60UN6k8Y'
+        access_token = '1346151287306530817-DshaN1ufww133bG0S8KKSRFWpaBn0y'
+        access_token_secret = 'vlIKntFymAL3Us2CcnkdbYpa1i2LJ9Q9RwVAt9OFSp668'
+        auth = tweepy.OAuthHandler(consumer_key, consumer_secret_key)
+        auth.set_access_token(access_token, access_token_secret)
+        api = tweepy.API(auth)
+        screen_name = "DecideEGC"
+        user = api.get_user(screen_name)     
+        self.assertNotEqual(user.id_str, "1346151287306530818")
+    
+    def test_username(self):
+        consumer_key = 'ZXutSjYogRFQ1cGSqBExHdFYQ'
+        consumer_secret_key = 'bOQoMVaIcYUrTzPba0ogudtIZi6HJZtfTdBaG09EVG60UN6k8Y'
+        access_token = '1346151287306530817-DshaN1ufww133bG0S8KKSRFWpaBn0y'
+        access_token_secret = 'vlIKntFymAL3Us2CcnkdbYpa1i2LJ9Q9RwVAt9OFSp668'
+        auth = tweepy.OAuthHandler(consumer_key, consumer_secret_key)
+        auth.set_access_token(access_token, access_token_secret)
+        api = tweepy.API(auth)
+        screen_name = "DecideEGC"
+        user = api.get_user(screen_name)     
+        self.assertEqual(user.name, "DecideEGC")
+
+    def test_not_username(self):
+        consumer_key = 'ZXutSjYogRFQ1cGSqBExHdFYQ'
+        consumer_secret_key = 'bOQoMVaIcYUrTzPba0ogudtIZi6HJZtfTdBaG09EVG60UN6k8Y'
+        access_token = '1346151287306530817-DshaN1ufww133bG0S8KKSRFWpaBn0y'
+        access_token_secret = 'vlIKntFymAL3Us2CcnkdbYpa1i2LJ9Q9RwVAt9OFSp668'
+        auth = tweepy.OAuthHandler(consumer_key, consumer_secret_key)
+        auth.set_access_token(access_token, access_token_secret)
+        api = tweepy.API(auth)
+        screen_name = "DecideEGC"
+        user = api.get_user(screen_name)     
+        self.assertNotEqual(user.name, "DecideEGC1")
+
+    def test_tweet(self):
+        consumer_key = 'ZXutSjYogRFQ1cGSqBExHdFYQ'
+        consumer_secret_key = 'bOQoMVaIcYUrTzPba0ogudtIZi6HJZtfTdBaG09EVG60UN6k8Y'
+        access_token = '1346151287306530817-DshaN1ufww133bG0S8KKSRFWpaBn0y'
+        access_token_secret = 'vlIKntFymAL3Us2CcnkdbYpa1i2LJ9Q9RwVAt9OFSp668'
+        auth = tweepy.OAuthHandler(consumer_key, consumer_secret_key)
+        auth.set_access_token(access_token, access_token_secret)
+        api = tweepy.API(auth)
+        tweet = "Hello world"  
+        self.assertEqual(api.get_tweet(1346211432115929088), tweet)
+
+    def test_not_tweet(self):
+        consumer_key = 'ZXutSjYogRFQ1cGSqBExHdFYQ'
+        consumer_secret_key = 'bOQoMVaIcYUrTzPba0ogudtIZi6HJZtfTdBaG09EVG60UN6k8Y'
+        access_token = '1346151287306530817-DshaN1ufww133bG0S8KKSRFWpaBn0y'
+        access_token_secret = 'vlIKntFymAL3Us2CcnkdbYpa1i2LJ9Q9RwVAt9OFSp668'
+        auth = tweepy.OAuthHandler(consumer_key, consumer_secret_key)
+        auth.set_access_token(access_token, access_token_secret)
+        api = tweepy.API(auth)
+        tweet = "Hello world1"  
+        self.assertNotEqual(api.get_tweet(1346211432115929088), tweet)
