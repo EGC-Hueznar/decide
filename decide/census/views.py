@@ -104,7 +104,7 @@ def main_census(request):
 def importCensusFromLdapBinaria(request):
 
     if request.user.is_staff:
-
+        
         if request.method == 'POST':
             form = CensusAddLdapFormVotacionBinaria(request.POST)
 
@@ -132,15 +132,17 @@ def importCensusFromLdapBinaria(request):
                         #census = Census(voting_id=voting, voter_id=username)
                         census = Census(voting_id=voting, voter_id=username, type='VB')
                         census.save()
-
+            
             return redirect('/admin/census/census')
         else:
+            
             form = CensusAddLdapFormVotacionBinaria()
 
         context = {
             'form': form,
         }
         return render(request, template_name='importarCensusLdapBinaria.html', context=context)
+        
     else:
         messages.add_message(request, messages.ERROR, "permiso denegado")
         return redirect('/admin')

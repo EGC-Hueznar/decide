@@ -110,7 +110,7 @@ class CensusTestCase(BaseTestCase):
         despues = Census.objects.count()
         self.assertEqual(response.status_code, 302)
         self.assertEqual(antes+1,despues)
-
+    
     def test_ldap_check_votacion_preferencia_get(self):
         antes = Census.objects.count()
         #Guardamos al usuario a introducir que ya esta en el ldap
@@ -124,13 +124,14 @@ class CensusTestCase(BaseTestCase):
         admin.save()
 
         #Hacemos la request
-        
+    
         self.client.force_login(admin)
         votacion = VotacionPreferencia.objects.all().filter(fecha_inicio__isnull=False, fecha_fin__isnull=False)[0].id
         response = self.client.get('/census/addLDAPcensusPreferencia/')
         despues = Census.objects.count()
         self.assertEqual(response.status_code, 200)
         self.assertEqual(antes,despues)
+    
     def test_ldap_check_votacion_preferencia_wrongLogin(self):
 
         antes = Census.objects.count()
@@ -175,6 +176,7 @@ class CensusTestCase(BaseTestCase):
         despues = Census.objects.count()
         self.assertEqual(response.status_code, 302)
         self.assertEqual(antes+1,despues)
+
     def test_ldap_check_votacion_binaria_get(self):
         antes = Census.objects.count()
       
@@ -195,6 +197,7 @@ class CensusTestCase(BaseTestCase):
         despues = Census.objects.count()
         self.assertEqual(response.status_code, 200)
         self.assertEqual(antes,despues)
+
     #Añade censo a una votación binaria que tenga fechas de inicio y fin distintas a null
     #El usuario que añadirá el censo no será administrador del sistema y por lo tanto se espera que no se añada censo
     def test_ldap_check_votacion_binaria_wrong_login(self):
@@ -270,6 +273,26 @@ class CensusTestCase(BaseTestCase):
         self.client.post('/census/addLDAPcensusMultiple/', data)
         despues = Census.objects.count()
         self.assertEqual(antes,despues)
+
+    def test_ldap_check_votacion_multiple_get(self):
+        antes = Census.objects.count()
+      
+        u = User(username='curie')
+        u.set_password('123')
+        u.save()
+
+        admin = User(username='administrado')
+        admin.set_password('1234567asd')
+        admin.is_staff = True
+        admin.save()
+
+        #Hacemos la request
+        
+        self.client.force_login(admin)
+        response = self.client.get('/census/addLDAPcensusMultiple/')
+        despues = Census.objects.count()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(antes,despues)
     
     def test_ldap_check_votacion_pass(self):
 
@@ -316,5 +339,26 @@ class CensusTestCase(BaseTestCase):
         despues = Census.objects.count()
         self.assertEqual(response.status_code, 302)
         self.assertEqual(antes,despues)
+
+
     
+    def test_ldap_check_votacion_get(self):
+        antes = Census.objects.count()
+      
+        u = User(username='curie')
+        u.set_password('123')
+        u.save()
+
+        admin = User(username='administrado')
+        admin.set_password('1234567asd')
+        admin.is_staff = True
+        admin.save()
+
+        #Hacemos la request
+        
+        self.client.force_login(admin)
+        response = self.client.get('/census/addLDAPcensusVotacion/')
+        despues = Census.objects.count()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(antes,despues)
     
