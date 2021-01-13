@@ -67,21 +67,29 @@
                         </tbody>
                     </table>
                     <a href="telegram_report">Compartir votación en Telegram</a>
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div id="container"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <figure class="highcharts-figure">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div id="container2"></div>
-                            </div>
-                        </div>
-                    </figure>
+                    <br>
+                    <br>
+                    <div>
+                        <input id="enseñarBarra" type="radio" onclick="mostrarGaficaBarrasVotos()" checked> Gráfico de barras</input>
+                        <br>
+                        <br>
+                        <input id="enseñarTarta" type="radio" onclick="mostrarGaficaTartaVotos()"> Gráfico de sectores</input>
 
+                        <div id="graficabarras" class="container-fluid">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div id="container"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <figure id="graficatarta" class="highcharts-figure" style="display: none;">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div id="container2"></div>
+                                </div>
+                            </div>
+                        </figure>
+                    </div>
                 </div>
 
             {% endif %}
@@ -91,6 +99,18 @@
 {% endblock %}
 
 {% block extrabody %}
+    <script>
+        function mostrarGaficaBarrasVotos() {
+		    document.getElementById("graficabarras").style.display = "inline";
+		    document.getElementById("graficatarta").style.display = "none";
+		    document.getElementById("enseñarTarta").checked = !document.getElementById("enseñarTarta").checked;
+        }
+        function mostrarGaficaTartaVotos() {
+		    document.getElementById("graficabarras").style.display = "none";
+		    document.getElementById("graficatarta").style.display = "inline";
+		    document.getElementById("enseñarBarra").checked = !document.getElementById("enseñarBarra").checked;
+        }
+    </script>
     <script type="application/javascript">
         Highcharts.chart('container', {
             chart: {
