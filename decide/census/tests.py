@@ -9,6 +9,7 @@ from base import mods
 from base.tests import BaseTestCase
 from .ldapMethods import LdapCensus
 from .views import *
+import os.path
 from datetime import datetime
 import pytz
 import time
@@ -53,6 +54,27 @@ class CensusTestCase(BaseTestCase):
         response = self.client.get('/census/?voting_id={}'.format(1), format='json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {'voters': [1]})
+
+    def test_import(self):
+        # GET the import form
+        response = self.client.get('/census/import')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'importar.html')
+
+        # POST the import form
+        input_format = 'xlsfile'
+        filename = os.path.join(
+            os.path.dirname(__file__),
+            'importar.xlsx')
+        with open(filename, "rb") as f:
+            data = {
+                'xlsfile': f,
+            }
+            response = self.client.post('/census/import', data)
+        self.assertEqual(response.status_code, 200)
+
+        
+
 
     def test_add_new_voters_conflict(self):
         data = {'voting_id': 1, 'voters': [1]}
