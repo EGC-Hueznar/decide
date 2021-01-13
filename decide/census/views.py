@@ -27,99 +27,25 @@ from django.contrib import messages
 from voting.serializers import VotingSerializer
 
 
-def importar(request):
-    # template = loader.get_template('export/importar.html')
-    if request.method == 'POST':
-        census_resource = CensusResource()
-        dataset = Dataset()
-        # print(dataset)
-        nuevos_censos = request.FILES['xlsfile']
-        # print(nuevas_personas)
-        imported_data = dataset.load(nuevos_censos.read())
-        # print(dataset)
-        result = census_resource.import_data(dataset, dry_run=True)  # Test the data import
-        # print(result.has_errors())
-        if not result.has_errors():
-            census_resource.import_data(dataset, dry_run=False)  # Actually import now
-    return render(request, 'importar.html')
-
-#Metodos propios
-
-#Este metodo procesa los parametros pasados por el formulario para llamar a los metodos de conexión e importación de LDAP para poder
-#Crear así el censo con los usuarios de la rama de LDAP que se han pasado anteriormente, si y solo si esos usuarios estan registrados
-#previamente en el sistema.
-def importCensusFromLdap(request):
-
-        if request.user.is_staff:
-
-            if request.method == 'POST':
-                form = CensusAddLdapForm(request.POST)
-
-                if form.is_valid():
-                    urlLdap = form.cleaned_data['urlLdap']
-                    treeSufix = form.cleaned_data['treeSufix']
-                    pwd = form.cleaned_data['pwd']
-                    branch = form.cleaned_data['branch']
-                    voting = form.cleaned_data['voting'].__getattribute__('pk')
-
-                    voters = User.objects.all()
-                    usernameList = LdapCensus().LdapGroups(urlLdap, treeSufix, pwd, branch)
-
-                    userList = []
-                    for username in usernameList:
-
-                        user = voters.filter(username=username)
-                        if user:
-                            user = user.values('id')[0]['id']
-                            userList.append(user)
-
-                if request.user.is_authenticated:
-                    for username in userList:
-                        census = Census(voting_id=voting, voter_id=username)
-                        census.save()
-
-                return redirect('/admin/census/census')
-            else:
-                form = CensusAddLdapForm()
-
-            context = {
-                'form': form,
-            }
-            return render(request, template_name='importCensusLdap.html', context=context)
-        else:
-            messages.add_message(request, messages.ERROR, "permiso denegado")
-            return redirect('/admin')
-
-def main_census(request):
-
-    census = Census.objects.all()
-    votings = Voting.objects.all()
-    voters = User.objects.all()
-    return render(request,"main_index.html",{'census': census, 'votings':votings, 'voters':voters})
-
-
-
-
-#Metodos iniciales
 class CensusCreate(generics.ListCreateAPIView):
     permission_classes = (UserIsStaff,)
-    def create(self, request, *args, **kwargs):
+
+    def create(self, request, type, *args, **kwargs):
         voting_id = request.data.get('voting_id')
         voters = request.data.get('voters')
         try:
             for voter in voters:
-                census = Census(voting_id=voting_id, voter_id=voter)
+                census = Census(voting_id=voting_id, voter_id=voter, type=type)
                 census.save()
         except IntegrityError:
             return Response('Error try to create census', status=ST_409)
         return Response('Census created', status=ST_201)
 
-
-
-    def list(self, request, *args, **kwargs):
+    def list(self, request, type, *args, **kwargs):
         voting_id = request.GET.get('voting_id')
-        voters = Census.objects.filter(voting_id=voting_id).values_list('voter_id', flat=True)
+        voters = Census.objects.filter(voting_id=voting_id, type=type).values_list('voter_id', flat=True)
         return Response({'voters': voters})
+
 
 class CensusDetail(generics.RetrieveDestroyAPIView):
 
@@ -154,6 +80,7 @@ class ListVotingsByVoter(generics.ListCreateAPIView):
                          'votaciones_preferencia': votaciones_preferencia,
                          'votings': votings})
 
+
 def fullExport(request):
     census_resource = CensusResource()
     dataset = census_resource.export()
@@ -186,4 +113,64 @@ def export(request, voting_id):
     else:
         response = HttpResponseBadRequest('Invalid format')
     return response
+
+
+def importar(request):
+    if request.method == 'POST':
+        census_resource = CensusResource()
+        dataset = Dataset()
+        nuevos_censos = request.FILES['xlsfile']
+        imported_data = dataset.load(nuevos_censos.read())
+        result = census_resource.import_data(dataset, dry_run=True)  # Test the data import
+        if not result.has_errors():
+            census_resource.import_data(dataset, dry_run=False)  # Actually import now
+    return render(request, 'importar.html')
+
+
+# Este metodo procesa los parametros pasados por el formulario para llamar a los metodos de conexión e importación de LDAP para poder
+# Crear así el censo con los usuarios de la rama de LDAP que se han pasado anteriormente, si y solo si esos usuarios estan registrados
+# previamente en el sistema.
+def importCensusFromLdap(request):
+    if request.user.is_staff:
+        if request.method == 'POST':
+            form = CensusAddLdapForm(request.POST)
+            if form.is_valid():
+                urlLdap = form.cleaned_data['urlLdap']
+                treeSufix = form.cleaned_data['treeSufix']
+                pwd = form.cleaned_data['pwd']
+                branch = form.cleaned_data['branch']
+                voting = form.cleaned_data['voting'].__getattribute__('pk')
+
+                voters = User.objects.all()
+                usernameList = LdapCensus().LdapGroups(urlLdap, treeSufix, pwd, branch)
+
+                userList = []
+                for username in usernameList:
+                    user = voters.filter(username=username)
+                    if user:
+                        user = user.values('id')[0]['id']
+                        userList.append(user)
+
+            if request.user.is_authenticated:
+                for username in userList:
+                    census = Census(voting_id=voting, voter_id=username)
+                    census.save()
+
+            return redirect('/admin/census/census')
+        else:
+            form = CensusAddLdapForm()
+        context = {
+            'form': form,
+        }
+        return render(request, template_name='importCensusLdap.html', context=context)
+    else:
+        messages.add_message(request, messages.ERROR, "permiso denegado")
+        return redirect('/admin')
+
+
+def main_census(request):
+    census = Census.objects.all()
+    votings = Voting.objects.all()
+    voters = User.objects.all()
+    return render(request, "main_index.html", {'census': census, 'votings': votings, 'voters': voters})
 
