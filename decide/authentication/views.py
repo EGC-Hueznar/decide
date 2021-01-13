@@ -11,6 +11,7 @@ from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 
+from base.perms import UserIsStaff
 from .serializers import UserSerializer
 
 
@@ -53,3 +54,19 @@ class RegisterView(APIView):
         except IntegrityError:
             return Response({}, status=HTTP_400_BAD_REQUEST)
         return Response({'user_pk': user.pk, 'token': token.key}, HTTP_201_CREATED)
+
+
+class ListUsers(APIView):
+    permission_classes = (UserIsStaff,)
+
+    def get(self, request):
+        users = User.objects.all().values_list('id', flat=True)
+        return Response({'users': users})
+
+
+class GetUserDetails(APIView):
+    permission_classes = (UserIsStaff,)
+
+    def get(self, request, user_id):
+        user = User.objects.get(id=user_id)
+        return Response(UserSerializer(user, many=False).data)
