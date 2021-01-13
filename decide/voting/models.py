@@ -34,7 +34,30 @@ class VotacionBinaria(models.Model):
     def addRespuestaBinaria(self,respuestaBinaria):
         respuestaBinaria.votacionBinaria = self
         respuestaBinaria.save()
-        
+
+    def toJson(self):
+        res = {'titulo': self.titulo,
+               'descripcion': str(self.descripcion),
+               'fecha_inicio': str(self.fecha_inicio),
+               'fecha_fin': str(self.fecha_fin)}
+        respuestas = []
+        for r in self.respuestasBinarias.all():
+            respuestas.append({'id': r.id, 'respuesta': r.respuesta})
+        res['respuestas'] = respuestas
+        return res
+
+    def doPostProc(self):
+        si = self.Numero_De_Trues()
+        no = self.Numero_De_Falses()
+        respuestasJson = {
+            'titulo': self.titulo,
+            'descripcion': self.descripcion,
+            'Inicio de la votacion': str(self.fecha_inicio),
+            'Cierre de la votacion': str(self.fecha_fin),
+            'Numero de respuetas a Sí': si,
+            'Numero de respuetas a No': no,
+        }
+        return respuestasJson
 
 #MODELO DE RESPUESTA BINARIA
 class RespuestaBinaria(models.Model):
@@ -66,6 +89,36 @@ class Votacion(models.Model):
     def addPregunta(self,pregunta):
         pregunta.votacion = self
         pregunta.save()
+
+    def toJson(self):
+        res = {'titulo': self.titulo,
+               'descripcion': str(self.descripcion),
+               'fecha_inicio': str(self.fecha_inicio),
+               'fecha_fin': str(self.fecha_fin)}
+        preguntas = []
+        for p in self.preguntas.all():
+            respuestas = []
+            for r in p.respuestas.all():
+                respuestas.append({'id': r.id, 'respuesta': r.respuesta})
+            preguntas.append({'id': p.id, 'pregunta': p.textoPregunta, 'respuestas': respuestas})
+        res['preguntas'] = preguntas
+        return res
+
+    def doPostProc(self):
+        respuestasJson = {
+            'titulo': self.titulo,
+            'descripcion': self.descripcion,
+            'Inicio de la votacion': str(self.fecha_inicio),
+            'Cierre de la votacion': str(self.fecha_fin),
+        }
+        listaPreguntas = []
+        for p in self.preguntas.all():
+            listaPreguntas.append({'Pregunta': p.textoPregunta,
+                                   'Respuesta Media': p.Media_De_Las_Respuestas(),
+                                   'Respuesta Maxima': p.Respuesta_Maxima(),
+                                   'Respuesta Minima': p.Respuesta_Minima()})
+        respuestasJson["preguntas"] = listaPreguntas
+        return respuestasJson
 
 #MODELO DE PREGUNTAS
 class Pregunta(models.Model):
@@ -131,6 +184,38 @@ class VotacionMultiple(models.Model):
 
     def __str__(self):
         return self.titulo
+
+    def toJson(self):
+        res = {'titulo': self.titulo,
+               'descripcion': str(self.descripcion),
+               'fecha_inicio': str(self.fecha_inicio),
+               'fecha_fin': str(self.fecha_fin)}
+        preguntasMultiples = []
+        for p in self.preguntasMultiples.all():
+            opcionesMultiple = []
+            for om in p.opcionesMultiples.all():
+                opcionesMultiple.append({'id': om.id, 'opcion': om.nombre_opcion, 'n_votado': om.n_votado})
+            preguntasMultiples.append({'id': p.id, 'pregunta': p.textoPregunta, 'opciones': opcionesMultiple})
+        res['preguntas'] = preguntasMultiples
+        return res
+
+    def doPostProc(self):
+        respuestasJson = {
+            'titulo': self.titulo,
+            'descripcion': self.descripcion,
+            'Inicio de la votacion': str(self.fecha_inicio),
+            'Cierre de la votacion': str(self.fecha_fin),
+        }
+        listaPreguntas = []
+        for p in self.preguntasMultiples.all():
+            listaRespuestas = []
+            for r in p.opcionesMultiples.all():
+                listaRespuestas.append({"Numero de veces que se ha votado " + r.nombre_opcion: r.n_votado})
+            listaPreguntas.append({'Pregunta': p.textoPregunta,
+                                   'Resultados de las opciones': listaRespuestas})
+        respuestasJson["preguntas"] = listaPreguntas
+        return respuestasJson
+
       # DEVUELVE EL NÚMERO DE PREGUNTAS QUE TIENE ASOCIDADA UNA VOTACION MULTIPLE
     def Numero_De_Preguntas_Multiple(self):
         return PreguntaMultiple.objects.filter(votacionMultiple_id=self.id).count()
@@ -203,6 +288,42 @@ class VotacionPreferencia(models.Model):
     fecha_fin = models.DateTimeField(blank=True, null=True)
     def __str__(self):
         return self.titulo
+
+    def toJson(self):
+        res = {'titulo': self.titulo,
+               'descripcion': str(self.descripcion),
+               'fecha_inicio': str(self.fecha_inicio),
+               'fecha_fin': str(self.fecha_fin)}
+        preguntasPreferencia = []
+        for p in self.preguntasPreferencia.all():
+            opcionesRespuesta = []
+            for op in p.opcionesRespuesta.all():
+                respuestasPreferencia = []
+                for rp in op.respuestasPreferencia.all():
+                    respuestasPreferencia.append({'id': rp.id, 'orden_preferencia': rp.orden_preferencia})
+                opcionesRespuesta.append(
+                    {"id": op.id, 'nombre_opcion': op.nombre_opcion, 'respuestas': respuestasPreferencia})
+            preguntasPreferencia.append({'id': p.id, 'pregunta': p.textoPregunta, 'opciones': opcionesRespuesta})
+        res['preguntas'] = preguntasPreferencia
+        return res
+
+    def doPostProc(self):
+        respuestasJson = {
+            'titulo': self.titulo,
+            'descripcion': self.descripcion,
+            'Inicio de la votacion': str(self.fecha_inicio),
+            'Cierre de la votacion': str(self.fecha_fin),
+        }
+        listaPreguntas = []
+        for p in self.preguntasPreferencia.all():
+            listaRespuestas = []
+            for r in p.opcionesRespuesta.all():
+                listaRespuestas.append({"Media de Preferencia de la opcion: ": r.Media_Preferencia(),
+                                        "Votos dados a la opcion: ": str(r.Respuestas_Opcion())})
+            listaPreguntas.append({'Pregunta': p.textoPregunta,
+                                   'Resultados de las opciones': listaRespuestas})
+        respuestasJson["preguntas"] = listaPreguntas
+        return respuestasJson
 
     # DEVUELVE EL NÚMERO DE PREGUNTAS QUE TIENE ASOCIDADA UNA VOTACION DE PREFERENCIA
     def Numero_De_Preguntas_Preferencia(self):
@@ -277,8 +398,6 @@ class OpcionRespuesta(models.Model):
 
         for key in result:
             result[key] = str(result[key]) + " veces"
-
-        print(result)
         return sorted(result.items())
 
 class RespuestaPreferencia(models.Model):
