@@ -11,7 +11,7 @@ import axios from 'axios';
 import MockAdapter from "axios-mock-adapter";
 import config from '../config.json'
 import { postData } from '../utils';
-import { light } from "../styles";
+import { light, dark } from "../styles";
 
 // Hide warning
 console.error = () => {}
@@ -362,6 +362,16 @@ describe('Testing App methods',() => {
         instance.setDone(true);
         expect(wrapper.state('done')).toBe(true);
     });
+
+
+    it('Correct setStyles', () => {
+        const wrapper = shallow(<App />);
+
+        const instance = wrapper.instance();
+        expect(wrapper.state('styles')).toBe('light');
+        instance.setStyles('dark')
+        expect(wrapper.state('styles')).toBe('dark')
+    })
 
 })
 
