@@ -53,7 +53,7 @@
                         {% for op in opcion %}
                         <tr>
                             {% if forloop.first %}
-                            <th rowspan="{{opcion | length}}"><a href="/opcionDetails/{{opt.number}}">{{pregunta.textoPregunta}}</a></th>
+                            <th rowspan="{{opcion | length}}">{{pregunta.textoPregunta}}</th>
                             {% endif %}
                             <td>{{op.nombre_opcion}}</td>
                             <td>{{op.Media_Preferencia}}</td>
