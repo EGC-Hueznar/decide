@@ -30,7 +30,7 @@ href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
         <h4>{% trans 'Adding voters on a vote' %}</h4>
 
         <div>
-            <form action="{% url 'addLDAPcensus' %}" method="POST">
+            <form action="{% url 'addLDAPcensusMultiple' %}" method="POST">
                 {% csrf_token %}
                 <table>
                     <tr>
