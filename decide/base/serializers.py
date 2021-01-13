@@ -10,6 +10,15 @@ class AuthSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class KeySerializer(serializers.HyperlinkedModelSerializer):
+    p = serializers.IntegerField()
+    g = serializers.IntegerField()
+    y = serializers.IntegerField()
+
+    class Meta:
+        model = Key
+        fields = ('p', 'g', 'y')
+
+class KeySerializerString(serializers.HyperlinkedModelSerializer):
     p = serializers.CharField()
     g = serializers.CharField()
     y = serializers.CharField()
