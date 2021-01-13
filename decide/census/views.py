@@ -25,6 +25,7 @@ from census.forms import *
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from voting.serializers import VotingSerializer
+import pytest
 
 
 def importar(request):
@@ -101,12 +102,14 @@ def main_census(request):
 #Crear así el censo con los usuarios de la rama de LDAP que se han pasado anteriormente, si y solo si esos usuarios estan registrados
 #previamente en el sistema.
 def importCensusFromLdapBinaria(request):
+
     if request.user.is_staff:
 
         if request.method == 'POST':
             form = CensusAddLdapFormVotacionBinaria(request.POST)
 
             if form.is_valid():
+
                 urlLdap = form.cleaned_data['urlLdap']
                 treeSufix = form.cleaned_data['treeSufix']
                 pwd = form.cleaned_data['pwd']
@@ -124,11 +127,11 @@ def importCensusFromLdapBinaria(request):
                         user = user.values('id')[0]['id']
                         userList.append(user)
                     
-            if request.user.is_authenticated:   
-                for username in userList:         
-                    #census = Census(voting_id=voting, voter_id=username)
-                    census = Census(voting_id=1, voter_id=1, type='VB')
-                    census.save()
+                if request.user.is_authenticated:   
+                    for username in userList:         
+                        #census = Census(voting_id=voting, voter_id=username)
+                        census = Census(voting_id=voting, voter_id=username, type='VB')
+                        census.save()
 
             return redirect('/admin/census/census')
         else:
