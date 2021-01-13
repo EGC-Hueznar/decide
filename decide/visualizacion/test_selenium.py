@@ -172,3 +172,13 @@ class TestGraficasVotacionNormal(StaticLiveServerTestCase):
         self.driver.find_element(By.ID, "enseñarTarta").click()
         time.sleep(3)
         self.assertEqual(self.driver.find_element(By.ID, "graficabarras").get_attribute("style"), "display: none;")
+
+    def test_mostrar_grafico_barras(self):
+        self.driver.get(f'{self.live_server_url}/visualizer/')
+        self.driver.find_element(By.LINK_TEXT, "Ver").click()
+        time.sleep(3)
+        self.driver.find_element_by_link_text(self.vo1.titulo).click()
+        time.sleep(3)
+        self.driver.find_element(By.ID, "enseñarBarra").click()
+        time.sleep(3)
+        self.assertEqual(self.driver.find_element(By.ID, "graficatarta").get_attribute("style"), "display: none;")
