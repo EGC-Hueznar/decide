@@ -8,9 +8,13 @@ Object.keys(botCommands).map(key => {
   bot.commands.set(botCommands[key].name, botCommands[key]);
 });
 
-const TOKEN = process.env.TOKEN;
+const TOKEN = process.env.BOT_TEST_TOKEN;
 
-bot.login(TOKEN);
+function loginBot(){
+  bot.login(TOKEN);
+}
+
+loginBot()
 
 bot.on('ready', () => {
   console.info(`Logged in as ${bot.user.tag}!`);
@@ -30,3 +34,6 @@ bot.on('message', msg => {
     msg.reply('there was an error trying to execute that command!');
   }
 });
+
+exports.client = bot
+exports.loginBot = loginBot
