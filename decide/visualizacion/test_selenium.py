@@ -150,41 +150,76 @@ class TestVisualizerIndex(StaticLiveServerTestCase):
 
 class TestBinaryGraphs(StaticLiveServerTestCase):
     def setUp(self):
-        #creamos la votacion        
+        #creamos la votacion binaria
         self.votacion = VotacionBinaria(titulo='titulo binario test',descripcion='desc binario test',fecha_inicio=datetime.datetime(2020, 7, 5), fecha_fin=datetime.datetime(2020, 7, 6))
         self.votacion.save()
-        self.votacion2 = VotacionBinaria(titulo="titulo binario test 2", descripcion="desc binario test 2",fecha_inicio=datetime.datetime(2020, 7, 5), fecha_fin=datetime.datetime(2020, 7, 6))
-        self.votacion2.save()
-        #creamos la pregunta
-        q = Question(desc = "Aquí tiene su pregunta: ")
-        q.save()
-        #creamos las respuestas
-        r1  = RespuestaBinaria(respuesta = 1)
-        r2  = RespuestaBinaria(respuesta = 0)
-        r3 = RespuestaBinaria(respuesta = 1)
-
-        self.votacion.addRespuestaBinaria(r1)
-        self.votacion.addRespuestaBinaria(r2)
-        self.votacion.addRespuestaBinaria(r3)
-
 
         #creamos el web driver
         options = webdriver.ChromeOptions()
+        options.headless = True
         self.driver = webdriver.Chrome(options=options)
         super().setUp()
-  
+
     def tearDown(self):
         self.driver.quit()
-        self.votacion2=None
         self.votacion=None
         super().tearDown()
-        
-    def test_bin(self):
+
+    def test_binary_votos(self):
+        #accedemos a la vista de votaciones binarias
         self.driver.get(f'{self.live_server_url}/visualizer/binaria')
-        time.sleep(2)
+        #accedemos al primer elemento de la tabla
         self.driver.find_element(By.XPATH, "//div[@id=\'app-visualizer\']/div/table/tbody/tr/th/a").click()
-        time.sleep(2)
+        #buscamos que estén los div con id=container y id=container2 que contienen las gráficas de votos
+        #esto nos indica que las gráficas se han generado
         self.driver.find_element(By.ID, "container")
         self.driver.find_element(By.ID, "container2")
+
+    def test_binary_puntos(self):
+        #accedemos a la vista de votaciones binarias
+        self.driver.get(f'{self.live_server_url}/visualizer/binaria')
+        #accedemos al primer elemento de la tabla
+        self.driver.find_element(By.XPATH, "//div[@id=\'app-visualizer\']/div/table/tbody/tr/th/a").click()
+        #buscamos que estén los div con id=container3 y id=container4 que contienen las gráficas de puntos
+        #esto nos indica que las gráficas se han generado
+        self.driver.find_element(By.ID, "container3")
+        self.driver.find_element(By.ID, "container4")
+
+
+class TestMultiGraphs(StaticLiveServerTestCase):
+    def setUp(self):
+        #creamos la votacion múltiple
+        self.votacion=VotacionMultiple(titulo="titulo multiple test", descripcion="desc multiple test", fecha_inicio=datetime.datetime(2020, 10, 6), fecha_fin=datetime.datetime(2020, 11, 7))
+        self.votacion.save()
+
+        #creamos el web driver
+        options = webdriver.ChromeOptions()
+        options.headless = True
+        self.driver = webdriver.Chrome(options=options)
+        super().setUp()
+
+    def tearDown(self):
+        #vaciamos los campos que hemos utilizado
+        self.driver.quit()
+        self.votacion=None
+        super().tearDown()
+
+    def test_multi_votos(self):
+        #accedemos a la vista de votaciones múltiples
+        self.driver.get(f'{self.live_server_url}/visualizer/multiple')
+        #accedemos al primer elemento de la tabla
+        self.driver.find_element(By.XPATH, "//div[@id=\'app-visualizer\']/div/table/tbody/tr/th/a").click()
+        #buscamos que estén los div con id=container y id=container2 que contienen las gráficas de votos
+        #esto nos indica que las gráficas se han generado
+        self.driver.find_element(By.ID, "container")
+        self.driver.find_element(By.ID, "container2")
+
+    def test_multi_puntos(self):
+        #accedemos a la vista de votaciones múltiples
+        self.driver.get(f'{self.live_server_url}/visualizer/multiple')
+        #accedemos al primer elemento de la tabla
+        self.driver.find_element(By.XPATH, "//div[@id=\'app-visualizer\']/div/table/tbody/tr/th/a").click()
+        #buscamos que estén los div con id=container3 y id=container4 que contienen las gráficas de puntos
+        #esto nos indica que las gráficas se han generado
         self.driver.find_element(By.ID, "container3")
         self.driver.find_element(By.ID, "container4")
