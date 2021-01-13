@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% load i18n static %}
+{% block extrahead %}
+    <link type="text/css" rel="stylesheet"
+         href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet"
+         href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
+    <link type="text/css" rel="stylesheet" href="{% static "booth/style.css" %}" />
+{% endblock %}
+{% block content %}
+    <div id="app-visualizer">
+        <nav class="navbar navbar-dark bg-secondary navbar-expand">
+            <h1 class="navbar-brand">Decide</h1>
+        </nav>
+        <div class="voting container">
+            <br>
+            <div class="contador">
+                <h2>Entre los 5 tipos hay {{total}} votaciones</h2>
+            </div>
+            <br>
+            <h2 class="heading">Tipos de votaciones:</h2>
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Próximamente</th>
+                        <th>Pendientes</th>
+                        <th>Acabado</th>
+                        <th>Total</th>
+                        <th>Ver votaciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>Ver votaciones del tipo normal</th>
+                        <th>{{cantNProx}}</th>
+                        <th>{{cantNPend}}</th>
+                        <th>{{cantNFin}}</th>
+                        <th>{{cantNorm}}</th>
+                        <th><a href="./{{'normal'}}/" class="btn btn-primary">Ver</a></th>
+                    </tr>
+                    <tr>
+                        <th>Ver votaciones del tipo por preferencia</th>
+                        <th>{{cantPProx}}</th>
+                        <th>{{cantPPend}}</th>
+                        <th>{{cantPFin}}</th>
+                        <th>{{cantPref}}</th>
+                        <th><a href="./{{'preferencia'}}/" class="btn btn-primary">Ver</a></th>
+                    </tr>
+                    <tr>
+                        <th>Ver votaciones del tipo múltiple</th>
+                        <th>{{cantMProx}}</th>
+                        <th>{{cantMPend}}</th>
+                        <th>{{cantMFin}}</th>
+                        <th>{{cantMult}}</th>
+                        <th><a href="./{{'multiple'}}/" class="btn btn-primary">Ver</a></th>
+                    </tr>
+                    <tr>
+                        <th>Ver votaciones del tipo binaria</th>
+                        <th>{{cantBProx}}</th>
+                        <th>{{cantBPend}}</th>
+                        <th>{{cantBFin}}</th>
+                        <th>{{cantBin}}</th>
+                        <th><a href="./{{'binaria'}}/" class="btn btn-primary">Ver</a></th>
+                    </tr>
+                    <tr>
+                        <th>Ver votaciones del tipo default</th>
+                        <th>{{cantProx}}</th>
+                        <th>{{cantPend}}</th>
+                        <th>{{cantFin}}</th>
+                        <th>{{cantidad}}</th>
+                        <th><a href="./{{'default'}}/" class="btn btn-primary">Ver</a></th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+{% block extrabody %}
+    <!-- Vuejs -->
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+
+    <script>
+        var voting = {{voting|safe}};
+        var app = new Vue({
+            delimiters: ['[[', ']]'],
+            el: '#app-visualizer',
+            data: {
+                voting: voting
+            }
+        })
+    </script>
+</body>
+{% endblock %}

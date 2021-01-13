@@ -212,6 +212,7 @@ def getAllVotacionesPreferencia(request):
     res = json.dumps(res)
     return HttpResponse(res, content_type='application/json')
 
+
 class VotingView(generics.ListCreateAPIView):
     queryset = Voting.objects.all()
     serializer_class = VotingSerializer
