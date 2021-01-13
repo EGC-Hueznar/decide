@@ -7,7 +7,6 @@ import axios from 'axios';
 import config from './config.json';
 import { postData } from './utils';
 import AsyncStorage from '@react-native-community/async-storage'
-import * as JSONbig from "json-bigint";
 import { light, dark } from "./styles";
 
 
@@ -100,9 +99,7 @@ class App extends React.Component {
         this.setDone(false)
         axios.get(`${config.CENSUS_VOTINGS_URL}${this.state.user.id}/`).then(response => {
             const votings = response.data.votings;
-            axios.get(config.VOTING_URL, {
-              transformResponse: res => JSONbig.parse(res)
-            }).then(response => { 
+            axios.get(config.VOTING_URL).then(response => { 
                 this.setState({votings: response.data.filter(v => votings.includes(v.id) 
                     && v.start_date 
                     && Date.parse(v.start_date) < Date.now() 

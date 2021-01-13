@@ -19,9 +19,7 @@ module.exports = {
             var votings = {} 
             await utils.axiosGet(`${urls.BASE_URL}${urls.CENSUS_VOTINGS_URL}${usuarioDecideId}/`).then(async response => {
                 votings = response.data.votings
-                await utils.axiosGet(urls.BASE_URL + urls.VOTING_URL, {
-                transformResponse: res => JSONbig.parse(res)
-                }).then(async response => {
+                await utils.axiosGet(urls.BASE_URL + urls.VOTING_URL).then(async response => {
                     votings={votings: response.data.filter(v => votings.includes(v.id) 
                         && v.start_date 
                         && Date.parse(v.start_date) < Date.now() 
