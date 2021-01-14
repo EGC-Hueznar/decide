@@ -436,21 +436,153 @@ describe('Testing App style',() => {
         wrapperButton = wrapper.find(TouchableOpacity).at(1);
         expect(wrapperButton.prop("style").backgroundColor).toBe("#0064cd");
     });
-    
-    /*
-    it('Correct "Votación enviada" font weight', async () => {
-        wrapper = mount(<App/>);
-        wrapper.instance().setState({signup:false});
-        wrapper.instance().setState({selectedVoting:false})
-        wrapper.instance().render();
-        wrapperText = wrapper.find(Text).at(0);
-        expect(wrapper.state('signup')).toBe(false);
-        expect(wrapper.state('selectedVoting')).toBe(false);
-        expect(wrapperText.props).toBe("500");
-    });
-    */
+
 
     
+    it('Correct Mock loadVotings', async () => {
+        correctVoting = [1,2,3]
+        
+        const mockAxios =  new MockAdapter(axios);
+        mockAxios.onGet(`${config.CENSUS_VOTINGS_URL}1/`).reply(200, correctVoting)
+
+        const ans = await axios.get(`${config.CENSUS_VOTINGS_URL}1/`)
+
+        await new Promise(r => setTimeout(r, 250)); 
+        expect(String(ans.data)).toBe(String(correctVoting));
+    });
+
+
+    it('Correct Mock loadVotings2', async () => {
+    
+    const votings = [{
+    id: 2,
+    name: "Vote2",
+    desc: "Esta es una descripción de prueba creada para ver como queda el texto de la descripción",
+    question: {
+        desc:"Color favorito",
+        options:[{
+                number:1,
+                option:"Rojo"
+            },
+            {
+                number:2,
+                option:"Amarillo"
+            },
+            {
+                number:3,
+                option:"Cyan (Azul)"
+            },
+            {
+                number:4,
+                option:"Otro"
+            }
+        ]
+    },
+    pub_key: {
+        p:"1.0779545050313737e+77",
+        g:"4.238427403087084e+76",
+        y:"5.270561551615331e+76"
+    },
+    start_date:"2021-01-12T12:08:28.469991Z",
+    end_date:null,
+    auths:[{
+            name:"test",
+            url:"http://localhost:8000",
+            me:true
+        }
+    ],
+    tally:null,
+    postproc:null},
+    {   
+    id: 1,
+    name: "Votacion",
+    desc: "",
+    question: {
+        desc:"Color favorito",
+        options:[{
+                number:1,
+                option:"Rojo"
+            },
+            {
+                number:2,
+                option:"Amarillo"
+            },
+            {
+                number:3,
+                option:"Cyan (Azul)"
+            },
+            {
+                number:4,
+                option:"Otro"
+            }
+        ]
+    },
+    pub_key: {
+        p:"8.029228140198205e+76",
+        g:"3.235761470093718e+76",
+        y:"6.818583710286106e+76"
+    },
+    start_date:"2021-01-12T12:08:28.487695Z",
+    end_date:null,
+    auths:[{
+            name:"test",
+            url:"http://localhost:8000",
+            me:true
+        }
+    ],
+    tally:null,
+    postproc:null},
+    {   
+        id: 3,
+        name: "Test3",
+        desc: "Prueba",
+        question: {
+            desc:"Color favorito",
+            options:[{
+                    number:1,
+                    option:"Rojo"
+                },
+                {
+                    number:2,
+                    option:"Amarillo"
+                },
+                {
+                    number:3,
+                    option:"Cyan (Azul)"
+                },
+                {
+                    number:4,
+                    option:"Otro"
+                }
+            ]
+        },
+        pub_key: {
+            p:"6.178616200531794e+76",
+            g:"5.5132376062826775e+76",
+            y:"5.59174128989179e+76"
+        },
+        start_date:"2021-01-12T12:20:07.065776Z",
+        end_date:null,
+        auths:[{
+                name:"test2",
+                url:"http://localhost:8000",
+                me:false
+            }
+        ],
+        tally:null,
+        postproc:null}
+
+]
+        
+    const mockAxios =  new MockAdapter(axios);
+    mockAxios.onGet(config.VOTING_URL).reply(200, votings)
+
+    const ans = await axios.get(config.VOTING_URL)
+
+    await new Promise(r => setTimeout(r, 250)); 
+    expect(String(ans.data)).toBe(String(votings));
+    });
+
 
 
 })
