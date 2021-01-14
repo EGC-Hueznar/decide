@@ -12,14 +12,13 @@ export default class AdminUsers extends Component {
 
     render_user = ({item}) => (
             <View style={styles.item}>
-                <Text style={styles.userName}>{item.first_name ? `${item.first_name} ${item.last_name ? item.last_name : ""}` : `Usuario ${item.id}`}</Text>
-                {item.email && <Text>{item.email}</Text>}
+                <Text style={styles.userName}>Usuario {item}</Text>
             </View>
     );
 
     loadUsers = () => {
         axios.get(config.GET_ALL_USERS_URL).then(response => {
-            this.setState({users: response.data});
+            this.setState({users: response.data.users});
         });
     }
 

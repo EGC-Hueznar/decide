@@ -1,25 +1,40 @@
 import React, { Component } from 'react';
 import { Text, StyleSheet, TouchableOpacity, SafeAreaView, FlatList, View, Button } from 'react-native';
 import RadioForm from 'react-native-simple-radio-button';
+import { postData } from '../utils';
+import config from '../config.json';
 
 export default class AddUserForm extends Component {
 
     state = {
         options: new Array(),
         voterId: undefined,
+        success: undefined,
     }
 
     setOptions = (voters) => {
         const cleanedOptions = voters.map(opt => ({
-            label: `${opt.first_name} ${opt.last_name}`,
-            value: opt.id
+            label: `Usuario ${opt}`,
+            value: opt
         }))
         this.setState({options: cleanedOptions});
     }
 
     setUserId = (id) => {
         this.setState({voterId: id});
-        console.log(id);
+    }
+
+
+    send = () => {
+        this.setState({success: undefined});
+        const data = {
+                voting_id: this.props.voting.id,
+                voters: [this.state.voterId],
+            };
+        postData(`${config.CENSUS_URL}${this.props.voting.voting_type}/`, data)
+            .catch(error => {
+            });
+            this.setState({success: true});
     }
 
     componentDidMount() {
@@ -45,13 +60,19 @@ export default class AddUserForm extends Component {
                       onPress={(val) => this.setUserId(val)}
                       buttonSize={20}
                     />
+                    {this.state.success && (<Text style={styles.success}>¡Usuario añadido!</Text>)}
                     <View style={styles.sections}>
                     <View style={styles.button}>
-                        <Button color="linear-gradient(top, #049cdb, #0064cd)" title="Cancelar"
-                         onPress={() => this.props.enableEditing(false)}/>
+                        <Button color="linear-gradient(top, #049cdb, #0064cd)" title={this.state.success ? "Volver" : "Cancelar"}
+                         onPress={() => {this.props.enableEditing(false); this.setState({success: true});}}/>
                     </View>
                     <View style={styles.button}>
-                        <Button color="linear-gradient(top, #049cdb, #0064cd)" title="Añadir" disabled={this.state.voterId == undefined}/>
+                        <Button color="linear-gradient(top, #049cdb, #0064cd)"
+                                title="Añadir"
+                                disabled={this.state.voterId == undefined}
+                                onPress={() => {this.send(); this.props.loadCensus(this.props.voting);
+                                                this.props.loadUsers();}}
+                        />
                     </View>
                 </View>
             </View>
@@ -61,6 +82,11 @@ export default class AddUserForm extends Component {
 }
 
 const styles = StyleSheet.create({
+ success: {
+    color: "#0b6623",
+    fontSize: 20,
+    fontWeight: "bold",
+ },
  container: {
     paddingTop: 60,
     paddingBottom: 60,

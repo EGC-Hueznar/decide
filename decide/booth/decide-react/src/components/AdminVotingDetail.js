@@ -9,41 +9,38 @@ import AddUserForm from './AddUserForm';
 export default class AdminVoting extends Component {
 
     state = {
-        voters: new Array(),
+        voters: [],
         isEditing: false,
-        availableVoters: [
-            {
-                id: 0,
-                first_name: "Andrés",
-                last_name: "Pérez",
-            },
-            {
-                id: 1,
-                first_name: "Paula",
-                last_name: "Vigo",
-            },
-        ],
+        users: [],
     }
 
     enableEditing = (edit) =>  {
+        console.log(edit);
         this.setState({isEditing: edit});
     }
 
-    loadVoters = (voting) => {
+    loadCensus = (voting) => {
         axios.get(`${config.CENSUS_URL}${voting.voting_type}?voting_id=${voting.id}`).then(response => {
-            this.setState({voters: response.data});
+            this.setState({voters: response.data.voters});
         });
     }
 
+    loadUsers = () => {
+        axios.get(config.GET_ALL_USERS_URL).then(response => {
+            this.setState({users: response.data.users.filter((v) => !this.state.voters.includes(v))});
+        });
+    }
+
+
     componentDidMount() {
-        this.loadVoters(this.props.voting);
+        this.loadCensus(this.props.voting);
+        this.loadUsers();
     }
 
 
     render_user = ({item}) => (
             <View style={styles.item}>
-                <Text style={styles.userName}>{item.first_name ? `${item.first_name} ${item.last_name ? item.last_name : ""}` : `Usuario ${item.id}`}</Text>
-                {item.email && <Text>{item.email}</Text>}
+                <Text style={styles.userName}>Usuario {item}</Text>
             </View>
     );
 
@@ -56,7 +53,7 @@ export default class AdminVoting extends Component {
             <View style={styles.content}>
                 <View style={styles.section}>
                     <Text style={styles.title}>{voting.titulo}</Text>
-                    <Text style={styles.text}>{voting.descripcion} {voting.voting_type}</Text>
+                    <Text style={styles.text}>{voting.descripcion}</Text>
                     <Text style={styles.text}>Fecha: {voting.fecha_inicio.split("+")[0]}</Text>
                 </View>
                 <View style={styles.button}>
@@ -70,9 +67,9 @@ export default class AdminVoting extends Component {
                     <FlatList data={this.state.voters} renderItem={this.render_user} />
                 </SafeAreaView>
                 <View style={styles.button}>
-                    <Button color="linear-gradient(top, #049cdb, #0064cd)" title="Añadir participante" onPress={() => this.enableEditing(true)} disabled={this.state.availableVoters.length == 0}/>
+                    <Button color="linear-gradient(top, #049cdb, #0064cd)" title="Añadir participante" onPress={() => this.enableEditing(true)} disabled={this.state.users.length == 0}/>
                 </View>
-            </View> : <AddUserForm voting={voting} users={this.state.availableVoters} enableEditing={this.enableEditing}/>}
+            </View> : <AddUserForm voting={voting} users={this.state.users} loadCensus={this.loadCensus} loadUsers={this.loadUsers}  voting={voting} enableEditing={this.enableEditing}/>}
             </View>
         );
     }

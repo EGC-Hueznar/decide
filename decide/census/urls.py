@@ -5,7 +5,7 @@ from census.views import importCensusFromLdap
 
 
 urlpatterns = [
-    re_path('^(?P<type>votacionBinaria|votacion|votacionPreferencia|votacionMultiple|voting)/$', views.CensusCreate.as_view(), name='census_create'),
+    re_path('^(?P<type>VB|V|VP|VM|Vo)/$', views.CensusCreate.as_view(), name='census_create'),
     path('<int:voting_id>/', views.CensusDetail.as_view(), name='census_detail'),
     path('import', importar, name='import'),
     path('addLDAPcensus', importCensusFromLdap, name='addLDAPcensus'),

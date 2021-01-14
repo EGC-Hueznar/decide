@@ -30,7 +30,7 @@ export default class Admin extends Component {
             titulo: v.titulo,
             descripcion: v.descripcion,
             fecha_inicio: v.fecha_inicio,
-            voting_type: "votacion",
+            voting_type: "V",
          }))
         });
         });
@@ -40,7 +40,7 @@ export default class Admin extends Component {
             titulo: v.titulo,
             descripcion: v.descripcion,
             fecha_inicio: v.fecha_inicio,
-            voting_type: "votacionBinaria",
+            voting_type: "VB",
          }))
          });
         });
@@ -50,7 +50,7 @@ export default class Admin extends Component {
             titulo: v.titulo,
             descripcion: v.descripcion,
             fecha_inicio: v.fecha_inicio,
-            voting_type: "votacionMultiple",
+            voting_type: "VM",
          }))});
         });
         axios.get(`${config.ALL_VOTINGS_URL}votacionPreferencia/all`).then(response => {
@@ -59,8 +59,9 @@ export default class Admin extends Component {
             titulo: v.titulo,
             descripcion: v.descripcion,
             fecha_inicio: v.fecha_inicio,
-            voting_type: "votacionPreferencia",
-         }))});
+            voting_type: "VP",
+         }))
+        });
         });
     }
 
