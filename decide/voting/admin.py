@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils import timezone
 
 from .models import *
-#from visualizer.telegrambot import *
+from visualizer.telegrambot import *
 
 from .filters import StartedFilter
 #Funcion que comienza una votacion
@@ -11,7 +11,7 @@ def comienzaVotacion(modeladmin,request,queryset):
         votacion.fecha_inicio = timezone.now()
         votacion.save()
         #enviarMensajeABotDeTelegram
-        #send_telegram_report(v)
+        send_telegram_report(votacion)
 comienzaVotacion.short_description = "Comenzar la votación"
 
 #Funcion que termina una votacion
@@ -20,7 +20,7 @@ def terminaVotacion(modeladmin,request,queryset):
         votacion.fecha_fin = timezone.now()
         votacion.save()
         #enviarMensajeABotDeTelegram
-        #send_telegram_report(v)
+        send_telegram_report(votacion)
 terminaVotacion.short_description = "Terminar la votación"
 
 #Votaciones Binarias
@@ -99,47 +99,47 @@ class OpcionMultipleAdmin(admin.ModelAdmin):
     list_display = ('id','nombre_opcion','n_votado','Nombre_Pregunta_Multiple')
 
 
+def start(modeladmin, request, queryset):
+    for v in queryset.all():
+        v.create_pubkey()
+        v.start_date = timezone.now()
+        v.save()
+        send_telegram_report(v)
 
-# def start(modeladmin, request, queryset):
-#     for v in queryset.all():
-#         v.create_pubkey()
-#         v.start_date = timezone.now()
-#         v.save()
-#
-#
-# def stop(ModelAdmin, request, queryset):
-#     for v in queryset.all():
-#         v.end_date = timezone.now()
-#         v.save()
-#
-#
-# def tally(ModelAdmin, request, queryset):
-#     for v in queryset.filter(end_date__lt=timezone.now()):
-#         token = request.session.get('auth-token', '')
-#         v.tally_votes(token)
-#
-#
-# class QuestionOptionInline(admin.TabularInline):
-#     model = QuestionOption
-#
-#
-# class QuestionAdmin(admin.ModelAdmin):
-#     inlines = [QuestionOptionInline]
-#
-#
-# class VotingAdmin(admin.ModelAdmin):
-#     list_display = ('name', 'start_date', 'end_date')
-#     readonly_fields = ('start_date', 'end_date', 'pub_key',
-#                        'tally', 'postproc')
-#     date_hierarchy = 'start_date'
-#     list_filter = (StartedFilter,)
-#     search_fields = ('name', )
-#
-#     actions = [ start, stop, tally ]
-#
-#
-# admin.site.register(Voting, VotingAdmin)
-# admin.site.register(Question, QuestionAdmin)
+
+def stop(ModelAdmin, request, queryset):
+    for v in queryset.all():
+        v.end_date = timezone.now()
+        v.save()
+        send_telegram_report(v)
+
+def tally(ModelAdmin, request, queryset):
+    for v in queryset.filter(end_date__lt=timezone.now()):
+        token = request.session.get('auth-token', '')
+        v.tally_votes(token)
+        send_telegram_report(v)
+
+class QuestionOptionInline(admin.TabularInline):
+    model = QuestionOption
+
+
+class QuestionAdmin(admin.ModelAdmin):
+    inlines = [QuestionOptionInline]
+
+
+class VotingAdmin(admin.ModelAdmin):
+    list_display = ('name', 'start_date', 'end_date')
+    readonly_fields = ('start_date', 'end_date', 'pub_key',
+                       'tally', 'postproc')
+    date_hierarchy = 'start_date'
+    list_filter = (StartedFilter,)
+    search_fields = ('name', )
+
+    actions = [ start, stop, tally ]
+
+
+admin.site.register(Voting, VotingAdmin)
+admin.site.register(Question, QuestionAdmin)
 
 admin.site.register(VotacionBinaria,VotacionBinariaAdmin)
 admin.site.register(RespuestaBinaria,RepuestaBinariaAdmin)

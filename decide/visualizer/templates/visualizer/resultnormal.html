@@ -22,37 +22,47 @@
         </nav>
 
         <div class="voting container">
-            
-            <h1>{{ voting.id }} - {{ voting.name }}</h1>
+            <h1>Votacion normal</h1>
             <a href="telegram_report">Compartir votación en Telegram</a>
+            <a href="twitter_report">Compartir votación en Twitter</a>
+            <h1>{{ voting.id }} - {{ voting.titulo }}</h1>
+
             <br>
-            {% if voting.start_date == null %}
+            {% if voting.fecha_inicio == null %}
                 <h2>Votación no comenzada</h2>
-            {% elif voting.end_date == null %}
+            {% elif voting.fecha_fin == null %}
                 <h2>Votación en curso</h2>
             {% else %}
+
                 <div>
                     <h2 class="heading">Resultados:</h2>
+                    <br>
+                    <p>Descripción:</p>
+                    <p>{{voting.descripcion}}</p>
 
                     <table class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th>Opción</th>
+                                <th>Pregunta</th>
                                 <th>Puntuación</th>
                                 <th>Votos</th>
+                                <th>Minimo</th>
+                                <th>Máximo</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for opt in voting.postproc %}
+                            {% for pregunta in resultados %}
                                 <tr>
-                                    <th>{{opt.option}}</th>
-                                    <td>{{opt.postproc}}</td>
-                                    <td class="text-muted">{{opt.votes}}</td>
+                                    <th>{{pregunta.textoPregunta}}</th>
+                                    <td>{{pregunta.Media_De_Las_Respuestas}}</td>
+                                    <td>{{pregunta.Numero_De_Respuestas}}</td>
+                                    <td>{{pregunta.Respuesta_Minima}}</td>
+                                    <td>{{pregunta.Respuesta_Maxima}}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
                     </table>
-                    <a href="twitter_report">Compartir votación en Twitter</a>
+
                     <br>
                     <br>
                     <div>
@@ -72,51 +82,69 @@
                     <br>
                     <!-- GRAFICAS DE VOTOS -->
                     <div id="graficasDeVotos">
-                        <input id="enseñarBarra" type="radio" onclick="mostrarGaficaBarrasVotos()"> Gráfico de barras</input>
+                        <input id="enseñarBarra" type="radio" onclick="mostrarGaficaBarrasVotos()" checked> Gráfico de barras</input>
                         <br>
                         <br>
-                        <input id="enseñarTarta" type="radio" onclick="mostrarGaficaTartaVotos()" checked> Gráfico de sectores</input>
+                        <input id="enseñarTarta" type="radio" onclick="mostrarGaficaTartaVotos()"> Gráfico de sectores</input>
 
-                        <div id="graficabarras" class="container-fluid" style="display:none;">
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div id="container"></div>
-                                </div>
+                
+                   
+                    <div id="graficabarras" class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div id="container"></div>
                             </div>
                         </div>
-                        <figure id="graficatarta" class="highcharts-figure">
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div id="container2"></div>
-                                </div>
-                            </div>
-                        </figure>
                     </div>
+                    <table id="graficatarta" style="display: none;">
+                        <tr>
+                            <td>
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div id="container2"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div id="container3"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                        
+                </div>
 
                     <!-- GRAFICAS DE PUNTUACIONES -->
-                    <div id="graficasDePuntuaciones" style="display:none;">
-                        <input id="enseñarBarraPuntuacion" type="radio" onclick="mostrarGaficaBarrasPuntuaciones()"> Gráfico de barras</input>
-                        <br>
-                        <br>
-                        <input id="enseñarTartaPuntuacion" type="radio" onclick="mostrarGaficaTartaPuntuaciones()" checked> Gráfico de sectores</input>
+                <div id="graficasDePuntuaciones" style="display:none;">
+                    <input id="enseñarBarraPuntuacion" type="radio" onclick="mostrarGaficaBarrasPuntuaciones()"> Gráfico de barras</input>
+                    <br>
+                    <br>
+                    <input id="enseñarTartaPuntuacion" type="radio" onclick="mostrarGaficaTartaPuntuaciones()" checked> Gráfico de sectores</input>
 
-                        <div id="graficabarraspuntuacion" class="container-fluid" style="display:none;">
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div id="container3"></div>
-                                </div>
+                    <div id="graficabarraspuntuacion" class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div id="container4"></div>
                             </div>
                         </div>
-                        <figure id="graficatartapuntuacion" class="highcharts-figure">
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div id="container4"></div>
-                                </div>
-                            </div>
-                        </figure>
                     </div>
-
+                    <div id="graficatartapuntuacion" class="container-fluid" style="display: none;">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div id="container5"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                
+
             {% endif %}
 
         </div>
@@ -124,27 +152,13 @@
 {% endblock %}
 
 {% block extrabody %}
-    <!-- Vuejs -->
-    <script src="https://unpkg.com/vue"></script>
-    <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
-    <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
-
-    <script>
-        var voting = {{voting|safe}};
-        var app = new Vue({
-            delimiters: ['[[', ']]'],
-            el: '#app-visualizer',
-            data: {
-                voting: voting
-            }
-        })
-    </script>
     <script>
         function mostrarPuntuaciones() {
 		    document.getElementById("graficasDePuntuaciones").style.display = "inline";
             document.getElementById("graficasDeVotos").style.display = "none";
             document.getElementById("botonMostrarPuntuaciones").style.color = "#4858e1";
             document.getElementById("botonMostrarVotos").style.color = "#5b5858";
+            //document.getElementById("enseñarBarraPuntuacion").checked = !document.getElementById("enseñarBarraPuntuacion").checked;
         }
         function mostrarVotos() {
 		    document.getElementById("graficasDePuntuaciones").style.display = "none";
@@ -179,22 +193,22 @@
                 type: 'bar'
             },
             title: {
-                text: 'Comparación de <b>votos</b> en gráfico de barras'
+                text: 'Comparación de <b>máximo y mínimo de puntos</b> en gráfico de barras'
             },
             xAxis: {
-                categories: {{opcion|safe}},
+                categories: {{textos|safe}},
                 crosshair: true
             },
             yAxis: {
                 min: 0,
                 title: {
-                    text: 'Número de votos'
+                    text: 'Número de puntos'
                 }
             },
             tooltip: {
                 headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
                 pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                    '<td style="padding:0"><b> {point.y:.if} voto(s)</b></td></tr>',
+                    '<td style="padding:0"><b> {point.y:.if} punto(s)</b></td></tr>',
                 footerFormat: '</table>',
                 shared: true,
                 useHTML: true
@@ -207,11 +221,15 @@
                 }
             },
             series: [{
-                name: 'Votos',
+                name: 'Votación máxima',
                 showInLegend: false,
                 colorByPoint: true,
-                data: {{voto|safe}}
-
+                data: {{respuestasMax|safe}}
+            },{
+                name: 'Votación mínima',
+                showInLegend: false,
+                colorByPoint: true,
+                data: {{respuestasMin|safe}}
             }]
         });
     </script>
@@ -224,7 +242,7 @@
                 type: 'pie'
             },
             title: {
-                text: 'Comparación de <b>votos</b> en gráfico de sectores'
+                text: 'Comparación de <b>puntuaciones máximas</b> en gráfico de sectores'
             },
             tooltip: {
                 pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -245,22 +263,58 @@
                 }
             },
             series: [{
-                name: 'Votos',
+                name: 'Votación máxima',
                 colorByPoint: true,
-                data: {{dataVotos|safe}}
+                data: {{dataMax|safe}}
             }]
         });
     </script>
     <script type="application/javascript">
         Highcharts.chart('container3', {
             chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie'
+            },
+            title: {
+                text: 'Comparación de <b>puntuaciones mínimas</b> en gráfico de sectores'
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            accessibility: {
+                point: {
+                    valueSuffix: '%'
+                }
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                    }
+                }
+            },
+            series: [{
+                name: 'Votación mínima',
+                colorByPoint: true,
+                data: {{dataMin|safe}}
+            }]
+        });
+    </script>
+    <script type="application/javascript">
+        Highcharts.chart('container4', {
+            chart: {
                 type: 'bar'
             },
             title: {
-                text: 'Comparación de <b>puntuaciones</b> en gráfico de barras'
+                text: 'Comparación de <b>la media de puntuaciones</b> en gráfico de barras'
             },
             xAxis: {
-                categories: {{opcion|safe}},
+                categories: {{textos|safe}},
                 crosshair: true
             },
             yAxis: {
@@ -272,7 +326,7 @@
             tooltip: {
                 headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
                 pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                    '<td style="padding:0"><b> {point.y:.if} voto(s)</b></td></tr>',
+                    '<td style="padding:0"><b> {point.y:.if} punto(s)</b></td></tr>',
                 footerFormat: '</table>',
                 shared: true,
                 useHTML: true
@@ -285,16 +339,15 @@
                 }
             },
             series: [{
-                name: 'Votos',
+                name: 'Votación media',
                 showInLegend: false,
                 colorByPoint: true,
-                data: {{puntuacion|safe}}
-
+                data: {{respuestasMedia|safe}}
             }]
         });
     </script>
     <script type="application/javascript">
-        Highcharts.chart('container4', {
+        Highcharts.chart('container5', {
             chart: {
                 plotBackgroundColor: null,
                 plotBorderWidth: null,
@@ -302,7 +355,7 @@
                 type: 'pie'
             },
             title: {
-                text: 'Comparación de <b>puntuaciones</b> en gráfico de sectores'
+                text: 'Comparación de <b>las medias de las puntuaciones</b> en gráfico de sectores'
             },
             tooltip: {
                 pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -323,12 +376,11 @@
                 }
             },
             series: [{
-                name: 'Puntos',
+                name: 'Votación media',
                 colorByPoint: true,
-                data: {{dataPuntuaciones|safe}}
+                data: {{dataMedia|safe}}
             }]
         });
     </script>
-
 </body>
 {% endblock %}

@@ -14,6 +14,31 @@ from django.http import HttpResponse
 import json
 from django.core import serializers
 
+def votacionBinariaATxt(id):
+    v = VotacionBinaria.objects.filter(id=id).first()
+    res = "Titulo: " + v.titulo + "\n" + \
+          "Descripcion: " + v.descripcion+"\n"+\
+          "Fecha de Inicio de la Votación: "+ str(v.fecha_inicio)+"\n"+\
+           "Fecha de Fin de la Votación: " + str(v.fecha_fin)+"\n"+\
+            "Número de Respuestas a Sí: " + str(v.Numero_De_Trues())+"\n"+ \
+          "Número de Respuestas a No: " + str(v.Numero_De_Falses())+"\n";
+    return res;
+def downloadVotacionBinaria(request,id):
+    res = votacionBinariaATxt(id)
+    response = HttpResponse(res, content_type='application/text charset=utf-8')
+    response['Content-Disposition'] = 'attachment; filename="Votacion Binaria.txt"'
+    return response
+
+def downloadAllVotacionBinaria(request):
+    votaciones = VotacionBinaria.objects.all()
+    res = ""
+    for v in votaciones:
+        res = res +  votacionBinariaATxt(v.id)
+        res = res + "-------------------------------\n"
+    response = HttpResponse(res, content_type='application/text charset=utf-8')
+    response['Content-Disposition'] = 'attachment; filename="Votacion Binaria Todas.txt"'
+    return response
+
 def  getVotacionBinariaById(request,id):
     v = VotacionBinaria.objects.filter(id=id).first().toJson()
     v = json.dumps(v)
@@ -29,6 +54,42 @@ def getAllVotacionesBinarias(request):
     res['votaciones'] = listaVotaciones
     res = json.dumps(res)
     return HttpResponse(res, content_type='application/json')
+
+#-----------------------------------------------------
+
+def votacionNormalATxt(id):
+    v = Votacion.objects.filter(id=id).first()
+    res = "Titulo: " + v.titulo + "\n" + \
+          "Descripcion: " + v.descripcion+"\n"+\
+          "Fecha de Inicio de la Votación: "+ str(v.fecha_inicio)+"\n"+\
+          "Fecha de Fin de la Votación: " + str(v.fecha_fin)+"\n"+\
+           "Número de preguntas: " +  str(v.Numero_De_Preguntas())+"\n"+\
+           "Preguntas de la votación: "+"\n"+\
+            "*************************"+"\n"
+
+    for pregunta in v.preguntas.all():
+        res = res + " -Pregunta: "+ pregunta.textoPregunta+"\n" +\
+                "Número de respuestas: "+ str(pregunta.Numero_De_Respuestas())+"\n"+\
+                "Media de las respuestas: "+ str(pregunta.Media_De_Las_Respuestas())+"\n"+\
+                "Respuesta máxima: "+ str(pregunta.Respuesta_Maxima())+"\n"+\
+                "Respuesta mínima: "+ str(pregunta.Respuesta_Minima())+"\n"
+    return res
+
+def downloadVotacionNomral(request,id):
+    res = votacionNormalATxt(id)
+    response = HttpResponse(res, content_type='application/text charset=utf-8')
+    response['Content-Disposition'] = 'attachment; filename="Votacion Normal.txt"'
+    return response
+
+def downloadAllVotacionNormal(request):
+    votaciones = Votacion.objects.all()
+    res = ""
+    for v in votaciones:
+        res = res +  votacionNormalATxt(v.id)
+        res = res + "-------------------------------\n"
+    response = HttpResponse(res, content_type='application/text charset=utf-8')
+    response['Content-Disposition'] = 'attachment; filename="Votacion Normal Todas.txt"'
+    return response
 
 def  getVotacionById(request,id):
     v = Votacion.objects.filter(id=id).first().toJson()
@@ -46,6 +107,40 @@ def getAllVotaciones(request):
     res = json.dumps(res)
     return HttpResponse(res, content_type='application/json')
 
+#-----------------------------------------------------
+
+def votacionMultipleATxt(id):
+    v = VotacionMultiple.objects.filter(id=id).first()
+    res = "Titulo: " + v.titulo + "\n" + \
+          "Descripcion: " + v.descripcion+"\n"+\
+          "Fecha de Inicio de la Votación: "+ str(v.fecha_inicio)+"\n"+\
+          "Fecha de Fin de la Votación: " + str(v.fecha_fin)+"\n"+\
+           "Número de preguntas: " +  str(v.Numero_De_Preguntas_Multiple())+"\n"+\
+           "Preguntas de la votación: "+"\n"+\
+            "*************************"+"\n"
+
+    for pregunta in v.preguntasMultiples.all():
+        res = res + " -Pregunta: "+ pregunta.textoPregunta+"\n" +\
+                "Número de opciones: "+ str(pregunta.Numero_De_Opciones())+"\n"+\
+                "Votos dados a las opciones: "+ str(pregunta.cuentaOpcionesMultiple())+"\n"
+    return res
+
+def downloadVotacionMultiple(request,id):
+    res = votacionMultipleATxt(id)
+    response = HttpResponse(res, content_type='application/text charset=utf-8')
+    response['Content-Disposition'] = 'attachment; filename="Votacion Multiple.txt"'
+    return response
+
+def downloadAllVotacionMultiple(request):
+    votaciones = VotacionMultiple.objects.all()
+    res = ""
+    for v in votaciones:
+        res = res +  votacionMultipleATxt(v.id)
+        res = res + "-------------------------------\n"
+    response = HttpResponse(res, content_type='application/text charset=utf-8')
+    response['Content-Disposition'] = 'attachment; filename="Votacion Multiple Todas.txt"'
+    return response
+
 def  getVotacionMultipleById(request,id):
     v = VotacionMultiple.objects.filter(id=id).first().toJson()
     v = json.dumps(v)
@@ -62,6 +157,45 @@ def getAllVotacionesMultiples(request):
     res = json.dumps(res)
     return HttpResponse(res, content_type='application/json')
 
+#-----------------------------------------------------
+
+def votacionPreferenciaATxt(id):
+    v = VotacionPreferencia.objects.filter(id=id).first()
+    res = "Titulo: " + v.titulo + "\n" + \
+          "Descripcion: " + v.descripcion+"\n"+\
+          "Fecha de Inicio de la Votación: "+ str(v.fecha_inicio)+"\n"+\
+          "Fecha de Fin de la Votación: " + str(v.fecha_fin)+"\n"+\
+           "Número de preguntas: " +  str(v.Numero_De_Preguntas_Preferencia())+"\n"+\
+           "Preguntas de la votación: "+"\n"+\
+            "*************************"+"\n"
+
+    for pregunta in v.preguntasPreferencia.all():
+        res = res + " -Pregunta: "+ pregunta.textoPregunta+"\n" +\
+                "Número de opciones: "+ str(pregunta.Numero_De_Opciones())+"\n"+\
+                "Opciones de la Pregunta: \n"
+        for opcion in pregunta.opcionesRespuesta.all():
+            res  = res + "Opción: "+ opcion.nombre_opcion+"\n"+\
+                "Media de Preferencia de la opción: "+str(opcion.Media_Preferencia())+"\n"+\
+                "Respuestas de la opción: " + str(opcion.Respuestas_Opcion())+"\n"
+
+    return res
+
+def downloadVotacionPreferencia(request,id):
+    res = votacionPreferenciaATxt(id)
+    response = HttpResponse(res, content_type='application/text charset=utf-8')
+    response['Content-Disposition'] = 'attachment; filename="Votacion Preferencia.txt"'
+    return response
+
+def downloadAllVotacionPreferencia(request):
+    votaciones = VotacionPreferencia.objects.all()
+    res = ""
+    for v in votaciones:
+        res = res +  votacionPreferenciaATxt(v.id)
+        res = res + "-------------------------------\n"
+    response = HttpResponse(res, content_type='application/text charset=utf-8')
+    response['Content-Disposition'] = 'attachment; filename="Votacion Preferencia Todas.txt"'
+    return response
+
 def  getVotacionPreferenciaById(request,id):
     v = VotacionPreferencia.objects.filter(id=id).first().toJson()
     v = json.dumps(v)
@@ -77,6 +211,7 @@ def getAllVotacionesPreferencia(request):
     res['votaciones'] = listaVotaciones
     res = json.dumps(res)
     return HttpResponse(res, content_type='application/json')
+
 
 class VotingView(generics.ListCreateAPIView):
     queryset = Voting.objects.all()

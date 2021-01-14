@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from .models import Question, QuestionOption, Voting
-from base.serializers import KeySerializer, AuthSerializer
+from base.serializers import KeySerializerString, AuthSerializer, KeySerializer
 
 
 class QuestionOptionSerializer(serializers.HyperlinkedModelSerializer):
@@ -19,7 +19,7 @@ class QuestionSerializer(serializers.HyperlinkedModelSerializer):
 
 class VotingSerializer(serializers.HyperlinkedModelSerializer):
     question = QuestionSerializer(many=False)
-    pub_key = KeySerializer()
+    pub_key = KeySerializerString()
     auths = AuthSerializer(many=True)
 
     class Meta:

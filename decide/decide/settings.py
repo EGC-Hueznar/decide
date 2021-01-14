@@ -58,6 +58,7 @@ AUTHENTICATION_BACKENDS = [
     'base.backends.AuthBackend',
 ]
 
+
 MODULES = [
     'authentication',
     'base',
