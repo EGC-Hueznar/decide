@@ -130,7 +130,7 @@ class App extends React.Component {
                 <Barra styles={styles} toggleTheme={this.setStyles} urlLogout={this.state.urlLogout} signup={this.state.signup} setSignup={this.setSignup} token={this.state.token} setToken={this.setToken} setUser={this.setUser} handleSetStorage={this.handleSetStorage}/>
                 
 
-                                {this.state.signup ? 
+                                {this.state.signup || !this.state.user ? 
                                     <Login styles={styles} setUser={this.setUser} setToken={this.setToken} setSignup={this.setSignup} token={this.state.token} handleSetStorage={this.handleSetStorage}/>
                                     : 
                                     (this.state.user.is_staff ? (<Admin votings={this.state.votings}/>) : (!this.state.selectedVoting ?

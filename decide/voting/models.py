@@ -296,7 +296,7 @@ class VotacionPreferencia(models.Model):
     def toJson(self):
         res = {'id': self.id,
                'titulo': self.titulo,
-               'descripción': str(self.descripcion),
+               'descripcion': str(self.descripcion),
                'fecha_inicio': str(self.fecha_inicio),
                'fecha_fin': str(self.fecha_fin)}
         preguntasPreferencia = []

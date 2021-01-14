@@ -54,7 +54,7 @@ export default class AdminVoting extends Component {
                 <View style={styles.section}>
                     <Text style={styles.title}>{voting.titulo}</Text>
                     <Text style={styles.text}>{voting.descripcion}</Text>
-                    <Text style={styles.text}>Fecha: {voting.fecha_inicio.split("+")[0]}</Text>
+                    <Text style={styles.text}>Fecha: {voting.fecha_inicio ? voting.fecha_inicio.split("+")[0] : "Sin determinar"}</Text>
                 </View>
                 <View style={styles.button}>
                     <Button color="linear-gradient(top, #049cdb, #0064cd)" title="Volver al inicio" onPress={() => this.props.setSelectedVoting(undefined)}/>
