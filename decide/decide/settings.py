@@ -113,9 +113,9 @@ IMPORT_EXPORT_USE_TRANSACTIONS = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'decideEGC',
-        'USER': 'decideEGC',
-        'PASSWORD': 'decideEGC',
+        'NAME': 'decide',
+        'USER': 'decide',
+        'PASSWORD': 'decide',
         'HOST': 'localhost',
         'PORT': '5432',
     }

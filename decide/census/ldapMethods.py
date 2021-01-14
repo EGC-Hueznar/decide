@@ -11,11 +11,11 @@ class LdapCensus:
 
     #Este metodo llama al primero para establecer una conexion y posteriormente hacer una busqueda por la rama
     #indicada donde se encuentran los usuarios a añadir en el censo.
+
     def LdapGroups(self, LdapUrl, auth, psw, branch):
         conn = LdapCensus().ldapConnectionMethod(LdapUrl, auth, psw)
         conn.search(search_base=branch, search_filter='(objectclass=*)', attributes=[ALL_ATTRIBUTES])
         ldapList = []
-        print(conn.entries)
         for entries in conn.entries:
             text = str(entries)
             group = re.findall('uid=(.+?),', text, re.DOTALL)
