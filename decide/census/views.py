@@ -295,9 +295,9 @@ def fullExport(request):
     return response
 
 
-def export(request, voting_id):
+def export(request, type, voting_id):
     census_resourse = CensusResource()
-    dataset = census_resourse.export(Census.objects.filter(voting_id=voting_id))
+    dataset = census_resourse.export(Census.objects.filter(voting_id=voting_id, type=type))
     if request.GET.get('format') == 'csv' or request.GET.get('format') is None:
         response = HttpResponse(dataset.csv, content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="census.csv"'

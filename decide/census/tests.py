@@ -109,6 +109,11 @@ class CensusTestCase(BaseTestCase):
         self.assertEqual(response.status_code, 204)
         self.assertEqual(0, Census.objects.count())
 
+    #Comprueba si se crea una conexion con la base de datos
+    def test_connection_check(self):
+        connection = LdapCensus().ldapConnectionMethod('ldap.forumsys.com:389','cn=read-only-admin,dc=example,dc=com', 'password')
+        self.assert_(connection is not None)
+
     #Añade censo a una votación binaria que tenga fechas de inicio y fin distintas a null
     #El usuario que añadirá el censo será administrador del sistema
     def test_ldap_check_votacion_preferencia_pass(self):
@@ -383,4 +388,67 @@ class CensusTestCase(BaseTestCase):
         despues = Census.objects.count()
         self.assertEqual(response.status_code, 200)
         self.assertEqual(antes,despues)
-    
+        
+
+class ExportsFullCensusTest(BaseTestCase):
+    def setUp(self):
+        self.censusb = Census(voting_id=1, voter_id=1, type='VB')
+        self.censusv = Census(voting_id=1, voter_id=1, type='V')
+        self.censusb.save()
+        self.censusv.save()
+        super().setUp()
+
+    def tearDown(self):
+        super().tearDown()
+        self.censusb = None
+        self.censusv = None
+
+    def testFullExportDefault(self):
+        response = self.client.get('/census/export/')
+        self.assertEquals(response.get('Content-Type'), 'text/csv')
+        self.assertEquals(response.get('Content-Disposition'), 'attachment; filename="census.csv"')
+
+    def testFullExportExcel(self):
+        response = self.client.get('/census/export/?format=xls')
+        self.assertEquals(response.get('Content-Type'), 'application/vnd.ms-excel')
+        self.assertEquals(response.get('Content-Disposition'), 'attachment; filename="census.xls"')
+
+    def testFullExportJson(self):
+        response = self.client.get('/census/export/?format=json')
+        self.assertEquals(response.get('Content-Type'), 'application/json')
+        self.assertEquals(response.get('Content-Disposition'), 'attachment; filename="census.json"')
+
+    def testFullExportFails(self):
+        response = self.client.get('/census/export/?format=wrong_format')
+        self.assertEquals(response.status_code, 400)
+
+
+class ExportsCensusTest(BaseTestCase):
+    def setUp(self):
+        self.census = Census(voting_id=1, voter_id=1, type='VB')
+        self.census.save()
+        super().setUp()
+
+    def tearDown(self):
+        super().tearDown()
+        self.census = None
+
+    def testFullExportDefault(self):
+        response = self.client.get('/census/export/VB/1/')
+        self.assertEquals(response.get('Content-Type'), 'text/csv')
+        self.assertEquals(response.get('Content-Disposition'), 'attachment; filename="census.csv"')
+
+    def testFullExportExcel(self):
+        response = self.client.get('/census/export/VB/1/?format=xls')
+        self.assertEquals(response.get('Content-Type'), 'application/vnd.ms-excel')
+        self.assertEquals(response.get('Content-Disposition'), 'attachment; filename="census.xls"')
+
+    def testFullExportJson(self):
+        response = self.client.get('/census/export/VB/1/?format=json')
+        self.assertEquals(response.get('Content-Type'), 'application/json')
+        self.assertEquals(response.get('Content-Disposition'), 'attachment; filename="census.json"')
+
+    def testFullExportFails(self):
+        response = self.client.get('/census/export/VB/1/?format=wrong_format')
+        self.assertEquals(response.status_code, 400)
+
