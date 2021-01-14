@@ -13,13 +13,14 @@ import os.path
 from datetime import datetime
 import pytz
 import time
+from voting.models import *
 
 
 class CensusTestCase(BaseTestCase):
 
     def setUp(self):
         super().setUp()
-        self.census = Census(voting_id=1, voter_id=1)
+        self.census = Census(voting_id=1, voter_id=1, type='Vo')
         self.census.save()
         self.vb = VotacionBinaria(titulo='titulo 1', descripcion='Descripcion1', fecha_inicio=datetime(2021,1,15,9,00, tzinfo=pytz.UTC), fecha_fin=datetime(2021,1,16,9,00, tzinfo=pytz.UTC))
         self.vm = VotacionMultiple(titulo='titulo 1', descripcion='Descripcion1', fecha_inicio=datetime(2021,1,15,9,00, tzinfo=pytz.UTC), fecha_fin=datetime(2021,1,16,9,00, tzinfo=pytz.UTC))
@@ -29,9 +30,16 @@ class CensusTestCase(BaseTestCase):
         self.vm.save()
         self.vo.save()
         self.vp.save()
+
+
     def tearDown(self):
         super().tearDown()
         self.census = None
+        self.vb = None
+        self.vm = None
+        self.vo = None
+        self.vp = None
+
 
     def test_check_vote_permissions(self):
         response = self.client.get('/census/{}/?voter_id={}'.format(1, 2), format='json')
@@ -73,9 +81,6 @@ class CensusTestCase(BaseTestCase):
             response = self.client.post('/census/import', data)
         self.assertEqual(response.status_code, 200)
 
-        
-
-
     def test_add_new_voters_conflict(self):
         data = {'voting_id': 1, 'voters': [1]}
         response = self.client.post('/census/', data, format='json')
@@ -109,10 +114,9 @@ class CensusTestCase(BaseTestCase):
         self.assertEqual(response.status_code, 204)
         self.assertEqual(0, Census.objects.count())
 
-    #Comprueba si se crea una conexion con la base de datos
-    def test_connection_check(self):
-        connection = LdapCensus().ldapConnectionMethod('ldap.forumsys.com:389','cn=read-only-admin,dc=example,dc=com', 'password')
-        self.assert_(connection is not None)
+    def testVotingsByVoter(self):
+        response = self.client.get('/census/votings/1/')
+        self.assertEqual(response.status_code, 200)
 
     #Añade censo a una votación binaria que tenga fechas de inicio y fin distintas a null
     #El usuario que añadirá el censo será administrador del sistema
