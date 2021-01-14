@@ -36,7 +36,8 @@ class VotacionBinaria(models.Model):
         respuestaBinaria.save()
 
     def toJson(self):
-        res = {'titulo': self.titulo,
+        res = {'id': self.id,
+               'titulo': self.titulo,
                'descripcion': str(self.descripcion),
                'fecha_inicio': str(self.fecha_inicio),
                'fecha_fin': str(self.fecha_fin)}
@@ -79,7 +80,8 @@ class Votacion(models.Model):
         pregunta.save()
 
     def toJson(self):
-        res = {'titulo': self.titulo,
+        res = {'id': self.id,
+               'titulo': self.titulo,
                'descripcion': str(self.descripcion),
                'fecha_inicio': str(self.fecha_inicio),
                'fecha_fin': str(self.fecha_fin)}
@@ -158,7 +160,8 @@ class VotacionMultiple(models.Model):
         return self.titulo
 
     def toJson(self):
-        res = {'titulo': self.titulo,
+        res = {'id': self.id,
+               'titulo': self.titulo,
                'descripcion': str(self.descripcion),
                'fecha_inicio': str(self.fecha_inicio),
                'fecha_fin': str(self.fecha_fin)}
@@ -244,7 +247,8 @@ class VotacionPreferencia(models.Model):
         return self.titulo
 
     def toJson(self):
-        res = {'titulo': self.titulo,
+        res = {'id': self.id,
+               'titulo': self.titulo,
                'descripción': str(self.descripcion),
                'fecha_inicio': str(self.fecha_inicio),
                'fecha_fin': str(self.fecha_fin)}

@@ -225,7 +225,6 @@ def importCensusFromLdapPreferencia(request):
 
 
 class CensusCreate(generics.ListCreateAPIView):
-    permission_classes = (UserIsStaff,)
 
     def create(self, request, type, *args, **kwargs):
         voting_id = request.data.get('voting_id')

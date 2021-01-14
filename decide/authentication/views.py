@@ -57,7 +57,6 @@ class RegisterView(APIView):
 
 
 class ListUsers(APIView):
-    permission_classes = (UserIsStaff,)
 
     def get(self, request):
         users = User.objects.all().values_list('id', flat=True)
@@ -65,7 +64,6 @@ class ListUsers(APIView):
 
 
 class GetUserDetails(APIView):
-    permission_classes = (UserIsStaff,)
 
     def get(self, request, user_id):
         user = User.objects.get(id=user_id)
