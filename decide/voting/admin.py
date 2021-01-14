@@ -99,7 +99,6 @@ class OpcionMultipleAdmin(admin.ModelAdmin):
     list_display = ('id','nombre_opcion','n_votado','Nombre_Pregunta_Multiple')
 
 
-
 def start(modeladmin, request, queryset):
     for v in queryset.all():
         v.create_pubkey()

@@ -36,7 +36,8 @@ class VotacionBinaria(models.Model):
         respuestaBinaria.save()
 
     def toJson(self):
-        res = {'titulo': self.titulo,
+        res = {'id': self.id,
+               'titulo': self.titulo,
                'descripcion': str(self.descripcion),
                'fecha_inicio': str(self.fecha_inicio),
                'fecha_fin': str(self.fecha_fin)}
@@ -45,7 +46,7 @@ class VotacionBinaria(models.Model):
             respuestas.append({'id': r.id, 'respuesta': r.respuesta})
         res['respuestas'] = respuestas
         return res
-
+      
     def doPostProc(self):
         si = self.Numero_De_Trues()
         no = self.Numero_De_Falses()
@@ -58,6 +59,7 @@ class VotacionBinaria(models.Model):
             'Numero de respuetas a No': no,
         }
         return respuestasJson
+
 
 #MODELO DE RESPUESTA BINARIA
 class RespuestaBinaria(models.Model):
@@ -91,7 +93,8 @@ class Votacion(models.Model):
         pregunta.save()
 
     def toJson(self):
-        res = {'titulo': self.titulo,
+        res = {'id': self.id,
+               'titulo': self.titulo,
                'descripcion': str(self.descripcion),
                'fecha_inicio': str(self.fecha_inicio),
                'fecha_fin': str(self.fecha_fin)}
@@ -186,7 +189,8 @@ class VotacionMultiple(models.Model):
         return self.titulo
 
     def toJson(self):
-        res = {'titulo': self.titulo,
+        res = {'id': self.id,
+               'titulo': self.titulo,
                'descripcion': str(self.descripcion),
                'fecha_inicio': str(self.fecha_inicio),
                'fecha_fin': str(self.fecha_fin)}
@@ -262,7 +266,7 @@ class PreguntaMultiple(models.Model):
             opcion.preguntaMultiple = self
             opcion.n_votado = opcion.n_votado + 1
             opcion.save()
-1
+#1
 class OpcionMultiple(models.Model):
     id = models.AutoField(primary_key=True)
     preguntaMultiple = models.ForeignKey(PreguntaMultiple,on_delete = models.CASCADE,related_name="opcionesMultiples")
@@ -290,8 +294,9 @@ class VotacionPreferencia(models.Model):
         return self.titulo
 
     def toJson(self):
-        res = {'titulo': self.titulo,
-               'descripcion': str(self.descripcion),
+        res = {'id': self.id,
+               'titulo': self.titulo,
+               'descripción': str(self.descripcion),
                'fecha_inicio': str(self.fecha_inicio),
                'fecha_fin': str(self.fecha_fin)}
         preguntasPreferencia = []

@@ -29,5 +29,4 @@ urlpatterns = [
 
     path('downloadPreferencia/<id>', views.downloadVotacionPreferencia, name='Download Preferencia'),
     path('downloadPreferenciaAll', views.downloadAllVotacionPreferencia, name='Download Preferencia All')
-
 ]
