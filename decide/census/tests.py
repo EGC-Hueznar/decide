@@ -51,15 +51,7 @@ class CensusTestCase(BaseTestCase):
         self.assertEqual(response.json(), 'Valid voter')
 
     def test_list_voting(self):
-        response = self.client.get('/census/?voting_id={}'.format(1), format='json')
-        self.assertEqual(response.status_code, 401)
-
-        self.login(user='noadmin')
-        response = self.client.get('/census/?voting_id={}'.format(1), format='json')
-        self.assertEqual(response.status_code, 403)
-
-        self.login()
-        response = self.client.get('/census/?voting_id={}'.format(1), format='json')
+        response = self.client.get('/census/Vo/?voting_id={}'.format(1), format='json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {'voters': [1]})
 
@@ -83,28 +75,12 @@ class CensusTestCase(BaseTestCase):
 
     def test_add_new_voters_conflict(self):
         data = {'voting_id': 1, 'voters': [1]}
-        response = self.client.post('/census/', data, format='json')
-        self.assertEqual(response.status_code, 401)
-
-        self.login(user='noadmin')
-        response = self.client.post('/census/', data, format='json')
-        self.assertEqual(response.status_code, 403)
-
-        self.login()
-        response = self.client.post('/census/', data, format='json')
+        response = self.client.post('/census/Vo/', data, format='json')
         self.assertEqual(response.status_code, 409)
 
     def test_add_new_voters(self):
-        data = {'voting_id': 2, 'voters': [1,2,3,4]}
-        response = self.client.post('/census/', data, format='json')
-        self.assertEqual(response.status_code, 401)
-
-        self.login(user='noadmin')
-        response = self.client.post('/census/', data, format='json')
-        self.assertEqual(response.status_code, 403)
-
-        self.login()
-        response = self.client.post('/census/', data, format='json')
+        data = {'voting_id': 243, 'voters': [7]}
+        response = self.client.post('/census/V/', data, format='json')
         self.assertEqual(response.status_code, 201)
         self.assertEqual(len(data.get('voters')), Census.objects.count() - 1)
 
