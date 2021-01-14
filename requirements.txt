@@ -13,3 +13,5 @@ django-import-export==2.5.0
 ldap3==2.8.1
 telegram-send==0.25
 tweepy
+django_heroku
+gunicorn
