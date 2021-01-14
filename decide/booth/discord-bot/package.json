@@ -4,16 +4,18 @@
   "description": "Discord bot for decide-full-hueznar-cabina",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "corde"
   },
   "author": "Michiel Mulders, Álvaro E. Martos, Francisco J. Rosa, Nicolás Pazos",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.21.1",
+    "corde": "^1.0.2",
     "discord.js": "^11.5.1",
     "dotenv": "^8.2.0",
     "fs": "0.0.1-security",
     "jsbn": "^1.1.0",
-    "json-bigint": "^1.0.0"
+    "json-bigint": "^1.0.0",
+    "prettier": "^2.2.1"
   }
 }
