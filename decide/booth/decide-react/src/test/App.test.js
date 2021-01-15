@@ -584,5 +584,145 @@ describe('Testing App style',() => {
     });
 
 
+    it('Correct Mock loadVotings4', async () => {
+    
+        const wrapper = shallow(<App />);
+
+        const votingsTest = [{
+        
+        id: 2,
+        name: "Vote2",
+        desc: "Esta es una descripción de prueba creada para ver como queda el texto de la descripción",
+        question: {
+            desc:"Color favorito",
+            options:[{
+                    number:1,
+                    option:"Rojo"
+                },
+                {
+                    number:2,
+                    option:"Amarillo"
+                },
+                {
+                    number:3,
+                    option:"Cyan (Azul)"
+                },
+                {
+                    number:4,
+                    option:"Otro"
+                }
+            ]
+        },
+        pub_key: {
+            p:"1.0779545050313737e+77",
+            g:"4.238427403087084e+76",
+            y:"5.270561551615331e+76"
+        },
+        start_date:"2021-01-12T12:08:28.469991Z",
+        end_date:null,
+        auths:[{
+                name:"test",
+                url:"http://localhost:8000",
+                me:true
+            }
+        ],
+        tally:null,
+        postproc:null},
+        {   
+        id: 1,
+        name: "Votacion",
+        desc: "",
+        question: {
+            desc:"Color favorito",
+            options:[{
+                    number:1,
+                    option:"Rojo"
+                },
+                {
+                    number:2,
+                    option:"Amarillo"
+                },
+                {
+                    number:3,
+                    option:"Cyan (Azul)"
+                },
+                {
+                    number:4,
+                    option:"Otro"
+                }
+            ]
+        },
+        pub_key: {
+            p:"8.029228140198205e+76",
+            g:"3.235761470093718e+76",
+            y:"6.818583710286106e+76"
+        },
+        start_date:"2021-01-12T12:08:28.487695Z",
+        end_date:null,
+        auths:[{
+                name:"test",
+                url:"http://localhost:8000",
+                me:true
+            }
+        ],
+        tally:null,
+        postproc:null},
+        {
+        id: 3,
+        name: "Test3",
+        desc: "Prueba",
+        question: {
+            desc:"Color favorito",
+            options:[{
+                    number:1,
+                    option:"Rojo"
+                },
+                {
+                    number:2,
+                    option:"Amarillo"
+                },
+                {
+                    number:3,
+                    option:"Cyan (Azul)"
+                },
+                {
+                    number:4,
+                    option:"Otro"
+                }
+            ]
+        },
+        pub_key: {
+            p:"6.178616200531794e+76",
+            g:"5.5132376062826775e+76",
+            y:"5.59174128989179e+76"
+        },
+        start_date:"2021-01-12T12:20:07.065776Z",
+        end_date:null,
+        auths:[{
+                name:"test2",
+                url:"http://localhost:8000",
+                me:false
+            }
+        ],
+        tally:null,
+        postproc:null}]
+        
+    correctVoting = {votings:[1,2]}
+
+    const mockAxios =  new MockAdapter(axios);
+    
+    mockAxios.onGet(config.VOTING_URL).reply(200, votingsTest)
+    mockAxios.onGet(`${config.CENSUS_VOTINGS_URL}1/`).reply(200, correctVoting)
+
+    const instance = wrapper.instance()
+    const user = {id:1}
+
+    await instance.setState({user:user})    
+    await instance.loadVotings()
+
+    await new Promise(r => setTimeout(r, 250));
+
+    expect(instance.state.votings).toHaveLength(2);
+    });
 
 })
