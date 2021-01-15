@@ -23,13 +23,18 @@ class App extends React.Component {
         styles: 'light'
     }
 
-    setStyles = () => {
-        this.setState({styles : this.state.styles === 'light' ? 'dark' : 'light'});
-    }
 
     init = () => {
-        this.clearStorage()
-        this.handleGetStorage('decide')        
+        this.handleGetStorage('decide')
+        this.styleGetStorage('styles')        
+    }
+
+    styleGetStorage = (key) => {
+        return AsyncStorage.getItem(key).then((style) =>{
+            if (style){
+                this.setState({styles: style})
+            }
+        });
     }
 
     //Sustituye a la gestión de las cookies
@@ -37,7 +42,7 @@ class App extends React.Component {
         AsyncStorage.setItem(key, value)
     }
 
-    //Sustituye a la gestión de las cookies. Actualiza el estado
+    //Sustituye a la gestión de las cookies. Actualiza el  estado
     handleGetStorage = (key) => {
         return AsyncStorage.getItem(key).then((decide) =>{
             if (decide != null && decide != ""){
@@ -46,11 +51,6 @@ class App extends React.Component {
             }
         });
     }
-
-    clearStorage = () => {
-        AsyncStorage.clear
-    }
-
     
     //Get User para la alternativa a las cookies
     getUser = (tokenStorage) => {
@@ -96,6 +96,11 @@ class App extends React.Component {
         this.setState({done:done2});
     }
 
+    setStyles = async() => {
+        await this.setState({styles : this.state.styles === 'light' ? 'dark' : 'light'});
+        this.handleSetStorage("styles", this.state.styles);
+    }
+
     loadVotings = () => {
         this.setDone(false)
         axios.get(`${config.CENSUS_VOTINGS_URL}${this.state.user.id}/`).then(response => {
@@ -112,7 +117,6 @@ class App extends React.Component {
 
     componentDidMount() {
         this.init();
-        this.render();
     }
 
     render_voting = ({item}) => {
