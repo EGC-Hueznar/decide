@@ -25,6 +25,14 @@ matrix:
         - coverage run --branch --source=. ./manage.py test voting census booth visualizer --keepdb --with-xunit
         - coverage xml
         - python-codacy-coverage -r coverage.xml
+   deploy:
+    provider: heroku
+    app: egchueznar
+    on:
+      branch: releaseM3
+    strategy: git
+    api_key:
+      secure: 1a9370fe-7079-4132-98a0-6a6dab139fd4
 
     - language: node_js
       node_js:
@@ -39,11 +47,3 @@ matrix:
         
 notifications:
   email: false
-deploy:
-  provider: heroku
-  app: egchueznar
-  on:
-    branch: releaseM3
-  strategy: git
-  api_key:
-    secure: 1a9370fe-7079-4132-98a0-6a6dab139fd4
