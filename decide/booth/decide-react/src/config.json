@@ -2,9 +2,14 @@
     "BASE_URL": "",
     "LOGIN_URL": "/authentication/login/",
     "GETUSER_URL": "/authentication/getuser/",
+    "GET_ALL_USERS_URL": "/authentication/getallusers/",
+    "GET_USER_INFO_URL": "/authentication/getuserdetails/",
     "LOGOUT_URL": "/authentication/logout/",
     "STORE_URL": "/store/",
     "VOTING_URL": "/voting/",
     "CENSUS_VOTINGS_URL": "/census/votings/",
+    "ALL_VOTINGS_URL": "/voting/",
+    "CENSUS_URL": "/census/",
+    "VOTING_VOTERS_URL": "/census/voters/",
     "KEYBITS": 256
 }

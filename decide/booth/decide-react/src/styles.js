@@ -31,7 +31,7 @@ const light = StyleSheet.create({
         fontSize: 24,
         fontWeight: 'bold',
         color: '#000000',
-        lineHeight: 1.2,
+        //lineHeight: 1.2,
         textAlign: 'center',
         width: '100%',
         padding: 30

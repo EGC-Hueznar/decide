@@ -1,6 +1,7 @@
 import React from 'react';
 import Barra from './components/Barra';
 import Login from './components/Login';
+import Admin from './components/Admin';
 import Voting from './components/Voting';
 import {StatusBar, FlatList, Text, TouchableOpacity, View, SafeAreaView} from 'react-native';
 import axios from 'axios';
@@ -22,13 +23,18 @@ class App extends React.Component {
         styles: 'light'
     }
 
-    setStyles = () => {
-        this.setState({styles : this.state.styles === 'light' ? 'dark' : 'light'});
-    }
 
     init = () => {
-        this.clearStorage()
-        this.handleGetStorage('decide')        
+        this.handleGetStorage('decide')
+        this.styleGetStorage('styles')        
+    }
+
+    styleGetStorage = (key) => {
+        return AsyncStorage.getItem(key).then((style) =>{
+            if (style){
+                this.setState({styles: style})
+            }
+        });
     }
 
     //Sustituye a la gestión de las cookies
@@ -36,7 +42,7 @@ class App extends React.Component {
         AsyncStorage.setItem(key, value)
     }
 
-    //Sustituye a la gestión de las cookies. Actualiza el estado
+    //Sustituye a la gestión de las cookies. Actualiza el  estado
     handleGetStorage = (key) => {
         return AsyncStorage.getItem(key).then((decide) =>{
             if (decide != null && decide != ""){
@@ -45,11 +51,6 @@ class App extends React.Component {
             }
         });
     }
-
-    clearStorage = () => {
-        AsyncStorage.clear
-    }
-
     
     //Get User para la alternativa a las cookies
     getUser = (tokenStorage) => {
@@ -95,11 +96,16 @@ class App extends React.Component {
         this.setState({done:done2});
     }
 
+    setStyles = async() => {
+        await this.setState({styles : this.state.styles === 'light' ? 'dark' : 'light'});
+        this.handleSetStorage("styles", this.state.styles);
+    }
+
     loadVotings = () => {
         this.setDone(false)
         axios.get(`${config.CENSUS_VOTINGS_URL}${this.state.user.id}/`).then(response => {
             const votings = response.data.votings;
-            axios.get(config.VOTING_URL).then(response => { 
+            axios.get(config.VOTING_URL).then(response => {
                 this.setState({votings: response.data.filter(v => votings.includes(v.id) 
                     && v.start_date 
                     && Date.parse(v.start_date) < Date.now() 
@@ -111,10 +117,9 @@ class App extends React.Component {
 
     componentDidMount() {
         this.init();
-        this.render();
     }
 
-    render_voting = ({item}) => {        
+    render_voting = ({item}) => {
         const styles = this.state.styles === 'light' ? light : dark;
         return <TouchableOpacity onPress={() => this.setSelectedVoting(item)} disabled={!item.start_date}>
         <View style={styles.item}><Text style={styles.sectionHeader}>{item.name}</Text></View></TouchableOpacity>}
@@ -129,10 +134,10 @@ class App extends React.Component {
                 <Barra styles={styles} toggleTheme={this.setStyles} urlLogout={this.state.urlLogout} signup={this.state.signup} setSignup={this.setSignup} token={this.state.token} setToken={this.setToken} setUser={this.setUser} handleSetStorage={this.handleSetStorage}/>
                 
 
-                                {this.state.signup ? 
+                                {this.state.signup || !this.state.user ? 
                                     <Login styles={styles} setUser={this.setUser} setToken={this.setToken} setSignup={this.setSignup} token={this.state.token} handleSetStorage={this.handleSetStorage}/>
                                     : 
-                                    (!this.state.selectedVoting ? 
+                                    (this.state.user.is_staff ? (<Admin votings={this.state.votings}/>) : (!this.state.selectedVoting ?
                                         <View>
                                             <View View style={styles.html}>
                                                 <View View style={styles.body}>
@@ -159,6 +164,8 @@ class App extends React.Component {
                                             </View>
                                         </View> :
                                         <Voting styles={styles} setDone={this.setDone} voting={this.state.selectedVoting} user={this.state.user} token={this.state.token} resetSelected={() => this.setSelectedVoting(undefined)}/> )
+
+                                    )
                                 }
 
   

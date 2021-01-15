@@ -25,7 +25,7 @@ matrix:
         - coverage run --branch --source=. ./manage.py test voting census booth visualizer --keepdb --with-xunit
         - coverage xml
         - python-codacy-coverage -r coverage.xml
-
+  
     - language: node_js
       node_js:
         - "12"
@@ -36,7 +36,7 @@ matrix:
         - npm install jest
       script:
         - npm test
-
+        
     - language: node_js
       node_js:
         - "12"
@@ -58,5 +58,6 @@ matrix:
         - npm install prettier
       script:
         - npm test
+        
 notifications:
   email: false
