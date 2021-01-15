@@ -107,15 +107,14 @@ describe('componentDidMount call other methods',() =>{
 
         const instance = wrapper.instance()
 
-
         const initSpy = jest.spyOn(instance,'init')
-        const clearStorageSpy = jest.spyOn(instance,'clearStorage')
+        const stylesGetSpy = jest.spyOn(instance,'styleGetStorage')
         const handleGetSpy = jest.spyOn(instance,'handleGetStorage')
 
         instance.componentDidMount()
 
         expect(initSpy).toHaveBeenCalled()
-        expect(clearStorageSpy).toHaveBeenCalled()
+        expect(stylesGetSpy).toHaveBeenCalled()
         expect(handleGetSpy).toHaveBeenCalled()
     })
 
@@ -126,11 +125,11 @@ describe('componentDidMount call other methods',() =>{
         let instance = wrapper.instance()
     
         const initSpy = jest.spyOn(instance,'init')
-        const clearStorageSpy = jest.spyOn(instance,'clearStorage')
+        const stylesGetSpy = jest.spyOn(instance,'styleGetStorage')
         const handleGetSpy = jest.spyOn(instance,'handleGetStorage')
         
         expect(initSpy).toBeCalledTimes(0)
-        expect(clearStorageSpy).toBeCalledTimes(0)
+        expect(stylesGetSpy).toBeCalledTimes(0)
         expect(handleGetSpy).toBeCalledTimes(0)
     
     })
