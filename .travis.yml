@@ -25,7 +25,7 @@ matrix:
         - coverage run --branch --source=. ./manage.py test voting census booth visualizer --keepdb --with-xunit
         - coverage xml
         - python-codacy-coverage -r coverage.xml
-   deploy:
+  deploy:
     provider: heroku
     app: egchueznar
     on:
