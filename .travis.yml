@@ -37,5 +37,26 @@ matrix:
       script:
         - npm test
         
+    - language: node_js
+      node_js:
+        - "12"
+      before_install:
+        - cd decide/booth/discord-bot
+        - |
+          cat >./corde.json << EOF
+          {
+          "cordeTestToken":  "$CORDE_TEST_TOKEN",
+          "botTestId":  "797429012493762590",
+          "botTestToken":  "$BOT_TEST_TOKEN",
+          "guildId":  "798686286755135578",
+          "channelId":  "798686286755135581",
+          "botPrefix":  "!",
+          "testFiles":  ["./tests"]
+          }
+      install:
+        - npm install
+        - npm install prettier
+      script:
+        - npm test
 notifications:
   email: false
