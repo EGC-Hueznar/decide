@@ -14,16 +14,29 @@ WORKDIR /app
 RUN git clone -b releaseM3 https://github.com/EGC-Hueznar/decide  .
 RUN pip install -r requirements.txt
 
+<<<<<<< HEAD
 WORKDIR /app/decide/booth/decide-react
 RUN npm install
 RUN npm install --global expo-cli
 RUN expo build:web
 
+=======
+
+WORKDIR /app/decide/booth/decide-react
+RUN npm install
+RUN npm install --global expo-cli
+RUN expo build:web
+
+>>>>>>> 39541a11e77301166eaf10ff3ea0e4d4cea232c4
 WORKDIR /app/decide
 # local settings.py
 ADD docker-settings.py /app/decide/local_settings.py
 RUN ./manage.py collectstatic
+<<<<<<< HEAD
 
 RUN cp -r booth/decide-react/web-build/static/js ../static
 
 #CMD ["gunicorn", "-w 5", "decide.wsgi", "--timeout=500", "-b 0.0.0.0:5000"]
+=======
+#CMD ["gunicorn", "-w 5", "decide.wsgi", "--timeout=500", "-b 0.0.0.0:5000"]
+>>>>>>> 39541a11e77301166eaf10ff3ea0e4d4cea232c4

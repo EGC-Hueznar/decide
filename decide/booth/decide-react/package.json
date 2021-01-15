@@ -9,7 +9,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "test": "jest",
-    "eject": "expo eject"
+    "eject": "expo eject",
+    "build": "expo build:web"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.12.1",
