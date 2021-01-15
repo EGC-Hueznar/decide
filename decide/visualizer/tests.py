@@ -310,7 +310,7 @@ class SendTelegramVotacionNormalTest(BaseTestCase):
         v.save()
         v2 = Votacion(titulo="Votación Normal Test 2", descripcion="Descripcion 2")
         v2.save()
-        q1  = Pregunta(textoPregunta = "Pregunta Normal 1")
+        q1  = Pregunta(textoPregunta = "Pregunta Normal 1 ")
         q2  = Pregunta(textoPregunta = "Pregunta Normal 2")
         r1 = Respuesta(respuesta = 2)
         r2 = Respuesta(respuesta = 10)
