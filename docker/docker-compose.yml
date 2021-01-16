@@ -26,7 +26,7 @@ services:
     networks:
       - decide
     environment:
-      - BOT_TEST_TOKEN=Nzk3NDI5MDEyNDkzNzYyNTkw.X_mVpA.EB5_wNkuWJKyod302mR4nnAL9ME
+      - BOT_TEST_TOKEN=
   nginx:
     restart: always
     container_name: decide_nginx
