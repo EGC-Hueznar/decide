@@ -7,40 +7,117 @@
     <link type="text/css" rel="stylesheet"
          href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
     <link type="text/css" rel="stylesheet" href="{% static "booth/style.css" %}" />
+    <!-- <script src="{% static "js/Chart.js" %}"></script> -->
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
 {% endblock %}
 
 {% block content %}
     <div id="app-visualizer">
         <!-- Navbar -->
-        <b-navbar type="dark" variant="secondary">
-            <b-navbar-brand tag="h1">Decide</b-navbar-brand>
-        </b-navbar>
+        <nav class="navbar navbar-dark bg-secondary navbar-expand">
+            <h1 class="navbar-brand">Decide</h1>
+        </nav>
 
         <div class="voting container">
-            <h1>[[ voting.id ]] - [[ voting.name ]]</h1>
+            
+            <h1>{{ voting.id }} - {{ voting.name }}</h1>
+            <a href="telegram_report">Compartir votación en Telegram</a>
+            <br>
+            {% if voting.start_date == null %}
+                <h2>Votación no comenzada</h2>
+            {% elif voting.end_date == null %}
+                <h2>Votación en curso</h2>
+            {% else %}
+                <div>
+                    <h2 class="heading">Resultados:</h2>
 
-            <h2 v-if="!voting.start_date">Votación no comenzada</h2>
-            <h2 v-else-if="!voting.end_date">Votación en curso</h2>
-            <div v-else>
-                <h2 class="heading">Resultados:</h2>
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Opción</th>
+                                <th>Puntuación</th>
+                                <th>Votos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for opt in voting.postproc %}
+                                <tr>
+                                    <th>{{opt.option}}</th>
+                                    <td>{{opt.postproc}}</td>
+                                    <td class="text-muted">{{opt.votes}}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <a href="twitter_report">Compartir votación en Twitter</a>
+                    <br>
+                    <br>
+                    <div>
+                        <table style="margin: auto;" class="table table-striped">
+                            <thead>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th><button id="botonMostrarVotos" onclick="mostrarVotos()" class="btn btn-link" style="color: #4858e1;">Gráficos de votos</button></th>
+                                <th><button id="botonMostrarPuntuaciones" onclick="mostrarPuntuaciones()" class="btn btn-link" style="color: #5b5858;">Gráficos de puntuaciones</button></th>
+                            </thead>
+                        </table>
+                    </div>
+                    <br>
+                    <!-- GRAFICAS DE VOTOS -->
+                    <div id="graficasDeVotos">
+                        <input id="enseñarBarra" type="radio" onclick="mostrarGaficaBarrasVotos()"> Gráfico de barras</input>
+                        <br>
+                        <br>
+                        <input id="enseñarTarta" type="radio" onclick="mostrarGaficaTartaVotos()" checked> Gráfico de sectores</input>
 
-                <table class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>Opción</th>
-                            <th>Puntuación</th>
-                            <th>Votos</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="opt in voting.postproc" :key="opt.number">
-                            <th>[[opt.option]]</th>
-                            <td>[[opt.postproc]]</td>
-                            <td class="text-muted">[[opt.votes]]</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                        <div id="graficabarras" class="container-fluid" style="display:none;">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div id="container"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <figure id="graficatarta" class="highcharts-figure">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div id="container2"></div>
+                                </div>
+                            </div>
+                        </figure>
+                    </div>
+
+                    <!-- GRAFICAS DE PUNTUACIONES -->
+                    <div id="graficasDePuntuaciones" style="display:none;">
+                        <input id="enseñarBarraPuntuacion" type="radio" onclick="mostrarGaficaBarrasPuntuaciones()"> Gráfico de barras</input>
+                        <br>
+                        <br>
+                        <input id="enseñarTartaPuntuacion" type="radio" onclick="mostrarGaficaTartaPuntuaciones()" checked> Gráfico de sectores</input>
+
+                        <div id="graficabarraspuntuacion" class="container-fluid" style="display:none;">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div id="container3"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <figure id="graficatartapuntuacion" class="highcharts-figure">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div id="container4"></div>
+                                </div>
+                            </div>
+                        </figure>
+                    </div>
+
+                </div>
+            {% endif %}
 
         </div>
     </div>
@@ -62,5 +139,196 @@
             }
         })
     </script>
+    <script>
+        function mostrarPuntuaciones() {
+		    document.getElementById("graficasDePuntuaciones").style.display = "inline";
+            document.getElementById("graficasDeVotos").style.display = "none";
+            document.getElementById("botonMostrarPuntuaciones").style.color = "#4858e1";
+            document.getElementById("botonMostrarVotos").style.color = "#5b5858";
+        }
+        function mostrarVotos() {
+		    document.getElementById("graficasDePuntuaciones").style.display = "none";
+            document.getElementById("graficasDeVotos").style.display = "inline";
+            document.getElementById("botonMostrarPuntuaciones").style.color = "#5b5858";
+            document.getElementById("botonMostrarVotos").style.color = "#4858e1";
+        }
+        function mostrarGaficaBarrasVotos() {
+		    document.getElementById("graficabarras").style.display = "inline";
+		    document.getElementById("graficatarta").style.display = "none";
+		    document.getElementById("enseñarTarta").checked = !document.getElementById("enseñarTarta").checked;
+        }
+        function mostrarGaficaTartaVotos() {
+		    document.getElementById("graficabarras").style.display = "none";
+		    document.getElementById("graficatarta").style.display = "inline";
+		    document.getElementById("enseñarBarra").checked = !document.getElementById("enseñarBarra").checked;
+        }
+        function mostrarGaficaBarrasPuntuaciones() {
+		    document.getElementById("graficabarraspuntuacion").style.display = "inline";
+		    document.getElementById("graficatartapuntuacion").style.display = "none";
+		    document.getElementById("enseñarTartaPuntuacion").checked = !document.getElementById("enseñarTartaPuntuacion").checked;
+        }
+        function mostrarGaficaTartaPuntuaciones() {
+		    document.getElementById("graficabarraspuntuacion").style.display = "none";
+		    document.getElementById("graficatartapuntuacion").style.display = "inline";
+		    document.getElementById("enseñarBarraPuntuacion").checked = !document.getElementById("enseñarBarraPuntuacion").checked;
+        }
+    </script>
+    <script type="application/javascript">
+        Highcharts.chart('container', {
+            chart: {
+                type: 'bar'
+            },
+            title: {
+                text: 'Comparación de <b>votos</b> en gráfico de barras'
+            },
+            xAxis: {
+                categories: {{opcion|safe}},
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Número de votos'
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b> {point.y:.if} voto(s)</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        enabled: true
+                    }
+                }
+            },
+            series: [{
+                name: 'Votos',
+                showInLegend: false,
+                colorByPoint: true,
+                data: {{voto|safe}}
+
+            }]
+        });
+    </script>
+    <script type="application/javascript">
+        Highcharts.chart('container2', {
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie'
+            },
+            title: {
+                text: 'Comparación de <b>votos</b> en gráfico de sectores'
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            accessibility: {
+                point: {
+                    valueSuffix: '%'
+                }
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                    }
+                }
+            },
+            series: [{
+                name: 'Votos',
+                colorByPoint: true,
+                data: {{dataVotos|safe}}
+            }]
+        });
+    </script>
+    <script type="application/javascript">
+        Highcharts.chart('container3', {
+            chart: {
+                type: 'bar'
+            },
+            title: {
+                text: 'Comparación de <b>puntuaciones</b> en gráfico de barras'
+            },
+            xAxis: {
+                categories: {{opcion|safe}},
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Número de puntos'
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b> {point.y:.if} voto(s)</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        enabled: true
+                    }
+                }
+            },
+            series: [{
+                name: 'Votos',
+                showInLegend: false,
+                colorByPoint: true,
+                data: {{puntuacion|safe}}
+
+            }]
+        });
+    </script>
+    <script type="application/javascript">
+        Highcharts.chart('container4', {
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie'
+            },
+            title: {
+                text: 'Comparación de <b>puntuaciones</b> en gráfico de sectores'
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            accessibility: {
+                point: {
+                    valueSuffix: '%'
+                }
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                    }
+                }
+            },
+            series: [{
+                name: 'Puntos',
+                colorByPoint: true,
+                data: {{dataPuntuaciones|safe}}
+            }]
+        });
+    </script>
+
 </body>
 {% endblock %}
