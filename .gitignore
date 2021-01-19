@@ -101,6 +101,11 @@ ENV/
 .mypy_cache/
 
 .vagrant
+
+
+#localsettings
+decide/local_settings.py
+
 egc/bin/activate.csh
 egc/bin/activate.fish
 egc/bin/chardetect
@@ -169,3 +174,4 @@ egc/bin/pip3
 egc/bin/pip3.8
 egc/bin/python
 egc/bin/python3
+

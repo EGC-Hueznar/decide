@@ -4,24 +4,60 @@ services:
   - postgresql
 addons:
   postgresql: "9.4"
-before_script:
-  - psql -U postgres -c "DROP DATABASE IF EXISTS test_decide"
-  - psql -U postgres -c "create user decide password 'decide'"
-  - psql -U postgres -c "create database test_decide owner decide"
-  - psql -U postgres -c "ALTER USER decide CREATEDB"
-  - psql -U postgres -c "create database decide owner decide"
-  - cd decide
-  - python ./manage.py makemigrations
-  - python ./manage.py migrate
-language: python
-python:
-  - "3.6"
-install:
-  - pip install -r requirements.txt
-  - pip install codacy-coverage
-script:
-  - coverage run --branch --source=. ./manage.py test voting census booth visualizer --keepdb --with-xunit
-  - coverage xml
-  - python-codacy-coverage -r coverage.xml
+matrix:
+  include:
+    - language: python
+      python: 
+        - "3.6"
+      before_install:
+        - psql -U postgres -c "DROP DATABASE IF EXISTS test_decide"
+        - psql -U postgres -c "create user decide password 'decide'"
+        - psql -U postgres -c "create database test_decide owner decide"
+        - psql -U postgres -c "ALTER USER decide CREATEDB"
+        - psql -U postgres -c "create database decide owner decide"
+      install:
+        - pip install -r requirements.txt
+        - pip install codacy-coverage
+      script:
+        - cd decide
+        - python ./manage.py makemigrations
+        - python ./manage.py migrate
+        - coverage run --branch --source=. ./manage.py test voting census booth visualizer --keepdb --with-xunit
+        - coverage xml
+        - python-codacy-coverage -r coverage.xml
+  
+    - language: node_js
+      node_js:
+        - "12"
+      before_install:
+        - cd decide/booth/decide-react
+      install:
+        - npm install
+        - npm install jest
+      script:
+        - npm test
+        
+    - language: node_js
+      node_js:
+        - "12"
+      before_install:
+        - cd decide/booth/discord-bot
+        - |
+          cat >./corde.json << EOF
+          {
+          "cordeTestToken":  "$CORDE_TEST_TOKEN",
+          "botTestId":  "797429012493762590",
+          "botTestToken":  "$BOT_TEST_TOKEN",
+          "guildId":  "798686286755135578",
+          "channelId":  "798686286755135581",
+          "botPrefix":  "!",
+          "testFiles":  ["./tests"]
+          }
+      install:
+        - npm install
+        - npm install prettier
+      script:
+        - npm test
+        
 notifications:
   email: false
