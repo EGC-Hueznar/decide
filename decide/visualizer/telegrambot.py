@@ -97,28 +97,28 @@ def send_telegram_report_normal(v):
     voting_start = v.fecha_inicio
     voting_end = v.fecha_fin
     voting_questions = v.preguntas.all()
-    status = "Votación no comenzada"
+    status = "Voting not started"
     if voting_start is not None:     
         if voting_end is None:
             a = str(voting_start).split(" ")[0].split("-")
-            start_date=a[2] + " del " + a[1] + " de " + a[0]
-            status = "Votación en Curso. Comenzada el " + start_date
+            start_date=a[2] + "th " + a[1] + ", " + a[0]
+            status = "Ongoing voting. Started on " + start_date
         else:
             a = str(voting_end).split(" ")[0].split("-")
-            end_date=a[2] + " del " + a[1] + " de " + a[0]
-            status = "Votación Finalizada el " + end_date
-    text = "REPORTE DE ESTADO VOTACIÓN NORMAL\n\n"
-    text += "Votación: " + str(voting_id) + " - " + voting_title +"\n"
-    text += "Estado: " + status + "\n"
-    text += "Descripción: " + str(voting_desc) + "\n\n"
+            end_date=a[2] + "th " + a[1] + ", " + a[0]
+            status = "Voting ended on " + end_date
+    text = "NORMAL VOTING STATE REPORT\n\n"
+    text += "Voting: " + str(voting_id) + " - " + voting_title +"\n"
+    text += "State: " + status + "\n"
+    text += "Desccription: " + str(voting_desc) + "\n\n"
     for question in voting_questions:
         text += question.textoPregunta + "\n"
         if Pregunta.Respuesta_Minima(question) == "None":
-            text += "No hay respuestas a esta pregunta \n\n"
+            text += "There are no answers for this question \n\n"
         else:
-            text += "Respuesta más baja: " + str(Pregunta.Respuesta_Minima(question)) + "\n"
-            text += "Respuesta más alta: " + str(Pregunta.Respuesta_Maxima(question)) + "\n"
-            text += "Calificación Media: " + str(Pregunta.Media_De_Las_Respuestas(question)) + "\n\n"
+            text += "Lowest answer: " + str(Pregunta.Respuesta_Minima(question)) + "\n"
+            text += "Highest answer: " + str(Pregunta.Respuesta_Maxima(question)) + "\n"
+            text += "Average calification: " + str(Pregunta.Media_De_Las_Respuestas(question)) + "\n\n"
 
     bot_token = '1415070510:AAE49OJPu4viYNo5Tfov4vzkoIyeNf_JBr4'
     bot = telegram.Bot(bot_token)
@@ -133,24 +133,24 @@ def send_telegram_report_preferencia(v):
     voting_start = v.fecha_inicio
     voting_end = v.fecha_fin
     voting_questions = v.preguntasPreferencia.all()
-    status = "Votación no comenzada"
+    status = "Voting not started"
     if voting_start is not None:     
         if voting_end is None:
             a = str(voting_start).split(" ")[0].split("-")
-            start_date=a[2] + " del " + a[1] + " de " + a[0]
-            status = "Votación en Curso. Comenzada el " + start_date
+            start_date=a[2] + "th " + a[1] + ", " + a[0]
+            status = "Ongoing voting. Started on " + start_date
         else:
             a = str(voting_end).split(" ")[0].split("-")
-            end_date=a[2] + " del " + a[1] + " de " + a[0]
-            status = "Votación Finalizada el " + end_date
-    text = "REPORTE DE ESTADO VOTACIÓN PREFERENCIA\n\n"
-    text += "Votación: " + str(voting_id) + " - " + voting_title +"\n"
-    text += "Estado: " + status + "\n"
-    text += "Descripción: " + str(voting_desc) + "\n\n"
+            end_date=a[2] + "th " + a[1] + ", " + a[0]
+            status = "Voting ended on " + end_date
+    text = "PREFERENCE VOTING STATE REPORT\n\n"
+    text += "Voting: " + str(voting_id) + " - " + voting_title +"\n"
+    text += "State: " + status + "\n"
+    text += "Description: " + str(voting_desc) + "\n\n"
     for question in voting_questions:
         text += question.textoPregunta + "\n"
         if PreguntaPreferencia.Numero_De_Opciones(question) == 0 :
-            text += "No hay opciones para esta pregunta \n"
+            text += "There are no options for this question \n"
         else:
             question_ans = question.opcionesRespuesta.all()
             for ans in question_ans:
