@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow, mount, configure } from 'enzyme';
-import { Button, Text, TextInput } from 'react-native';
+import { Button, Text, TextInput, View } from 'react-native';
 import Barra from '../components/Barra';
 import Adapter from 'enzyme-adapter-react-16';
 import config from '../config.json';
@@ -42,4 +42,10 @@ describe('Testing Barra style',() => {
         expect(wrapperText.props.style).toHaveProperty('fontSize', 14);
     });
 
+    it('Correct color dark style', async () => {
+        wrapper = mount(<Barra styles={dark} />);
+        
+        const wrapperView = wrapper.find(View).at(1);
+        expect(wrapperView.prop('style')).toHaveProperty('backgroundColor', '#666666');
+    });
 })
