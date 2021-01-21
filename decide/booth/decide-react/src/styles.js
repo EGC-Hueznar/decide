@@ -238,6 +238,17 @@ const dark = {
         height: '100%',
     },
 
+    barraStyle: {
+        width: '100%',
+        backgroundColor: '#666666',
+        justifyContent: 'space-between',
+        paddingHorizontal: 20,
+        paddingTop: 15,
+        paddingBottom: 15,
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
