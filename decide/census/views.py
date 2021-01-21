@@ -10,7 +10,7 @@ from rest_framework.status import (
         HTTP_401_UNAUTHORIZED as ST_401,
         HTTP_409_CONFLICT as ST_409
 )
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 
 from base.perms import UserIsStaff
 from .models import Census
@@ -316,3 +316,23 @@ def importCensusFromLdapPreferencia(request):
     else:
         messages.add_message(request, messages.ERROR, "permiso denegado")
         return redirect('/admin')
+
+
+def clone(request, type, voting_id):
+    target_id = request.GET.get('target_id')
+    target_type = request.GET.get('target_type')
+
+    if target_id is None or target_type is None:
+        return HttpResponseBadRequest('Target id and type are required.')
+
+    voters_to_clone = [c.voter_id for c in Census.objects.filter(type=type, voting_id=voting_id)]
+    current_voters = [c.voter_id for c in Census.objects.filter(type=target_type, voting_id=target_id)]
+    added_voters = []
+    for voter_id in voters_to_clone:
+        if voter_id not in current_voters:
+            c = Census(type=target_type, voting_id=target_id, voter_id=voter_id)
+            c.save()
+            added_voters.append(voter_id)
+    return JsonResponse({'target_id': target_id,
+                         'target_type': target_type,
+                         'voters_cloned': added_voters})
