@@ -432,3 +432,12 @@ class ExportsCensusTest(BaseTestCase):
         response = self.client.get('/census/export/VB/1/?format=wrong_format')
         self.assertEquals(response.status_code, 400)
 
+    def test_clone_census(self):
+        response = self.client.get('/census/Vo/1/clone/?target_id=2&target_type=Vo', format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(1, Census.objects.filter(voting_id=2, type='Vo').count())
+
+    def test_clone_census_fail(self):
+        response = self.client.get('/census/Vo/1/clone/', format='json')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(0, Census.objects.filter(voting_id=2, type='Vo').count())

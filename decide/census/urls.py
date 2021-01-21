@@ -15,7 +15,7 @@ urlpatterns = [
     path('addLDAPcensusVotacion/', importCensusFromLdapVotacion, name='addLDAPcensusVotacion'),
     path('votings/<int:voter_id>/', views.ListVotingsByVoter.as_view(), name='census_votings'),
     path('export/', views.fullExport, name='census_fullexport'),
-    re_path('^export/(?P<type>VB|V|VP|VM|Vo)/(?P<voting_id>[0-9]{1,})/$', views.export, name='census_export')
+    re_path('^export/(?P<type>VB|V|VP|VM|Vo)/(?P<voting_id>[0-9]{1,})/$', views.export, name='census_export'),
     re_path('^(?P<type>VB|V|VP|VM|Vo)/(?P<voting_id>[0-9]{1,})/clone/$', views.clone, name='census_clone'),
 ]
 
