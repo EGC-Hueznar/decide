@@ -46,7 +46,8 @@ class VotacionBinaria(models.Model):
             respuestas.append({'id': r.id, 'respuesta': r.respuesta})
         res['respuestas'] = respuestas
         return res
-      
+
+    toJson.short_description = "Votacion en formato JSON"
     def doPostProc(self):
         si = self.Numero_De_Trues()
         no = self.Numero_De_Falses()
@@ -107,6 +108,7 @@ class Votacion(models.Model):
         res['preguntas'] = preguntas
         return res
 
+    toJson.short_description = "Votacion en formato JSON"
     def doPostProc(self):
         respuestasJson = {
             'titulo': self.titulo,
@@ -203,6 +205,7 @@ class VotacionMultiple(models.Model):
         res['preguntas'] = preguntasMultiples
         return res
 
+    toJson.short_description = "Votacion en formato JSON"
     def doPostProc(self):
         respuestasJson = {
             'titulo': self.titulo,
@@ -312,6 +315,7 @@ class VotacionPreferencia(models.Model):
         res['preguntas'] = preguntasPreferencia
         return res
 
+    toJson.short_description = "Votacion en formato JSON"
     def doPostProc(self):
         respuestasJson = {
             'titulo': self.titulo,
