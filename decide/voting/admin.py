@@ -28,7 +28,7 @@ class RespuestaBinariaInline(admin.TabularInline):
     model = RespuestaBinaria
     extra = 1
 class VotacionBinariaAdmin(admin.ModelAdmin):
-    list_display=('id','titulo','descripcion','fecha_inicio','fecha_fin','Numero_De_Trues','Numero_De_Falses')
+    list_display=('id','titulo','descripcion','fecha_inicio','fecha_fin','Numero_De_Trues','Numero_De_Falses','toJson')
     inlines =[RespuestaBinariaInline]
     actions = [comienzaVotacion, terminaVotacion]
 class RepuestaBinariaAdmin(admin.ModelAdmin):
@@ -44,7 +44,7 @@ class PreguntaInline(admin.TabularInline):
     model = Pregunta
     extra = 1
 class VotacionAdmin(admin.ModelAdmin):
-    list_display=('id','titulo','descripcion','fecha_inicio','fecha_fin','Numero_De_Preguntas')
+    list_display=('id','titulo','descripcion','fecha_inicio','fecha_fin','Numero_De_Preguntas','toJson')
     inlines =[PreguntaInline]
     actions = [comienzaVotacion,terminaVotacion]
 
@@ -60,7 +60,7 @@ class PreguntaPreferenciaInline(admin.TabularInline):
     model = PreguntaPreferencia
     extra = 1
 class VotacionPreferenciaAdmin(admin.ModelAdmin):
-    list_display=('id','titulo','descripcion','fecha_inicio','fecha_fin','Numero_De_Preguntas_Preferencia')
+    list_display=('id','titulo','descripcion','fecha_inicio','fecha_fin','Numero_De_Preguntas_Preferencia','toJson')
     inlines =[PreguntaPreferenciaInline]
     actions = [comienzaVotacion, terminaVotacion]
 
@@ -87,7 +87,7 @@ class PreguntaMultipleInline(admin.TabularInline):
     model = PreguntaMultiple
     extra = 1
 class VotacionMultipleAdmin(admin.ModelAdmin):
-    list_display=('id','titulo','descripcion','fecha_inicio','fecha_fin','Numero_De_Preguntas_Multiple')
+    list_display=('id','titulo','descripcion','fecha_inicio','fecha_fin','Numero_De_Preguntas_Multiple','toJson')
     inlines =[PreguntaMultipleInline]
     actions = [comienzaVotacion, terminaVotacion]
 
